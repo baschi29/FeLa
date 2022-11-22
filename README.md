@@ -1,6 +1,4 @@
-# spfe
-
-To install all neccessary dependencies automatically after cloning this repo, just run `npm install` inside the FeLa directory! 
+# FeLa
 
 ## Getting started
 
