@@ -25,5 +25,9 @@
     "plugins": {
       "cordova-plugin-browsersync-gen2": {}
     }
+  },
+  "dependencies": {
+    "jquery": "^3.6.1",
+    "onsenui": "^2.12.6"
   }
 }
