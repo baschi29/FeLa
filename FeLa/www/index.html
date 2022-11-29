@@ -42,19 +42,9 @@
     <body>
 
         <!--Every page needs to embedded in an ONSENUI page element https://onsen.io/v2/guide/fundamentals.html#fundamentals-onsen-ui-101-->
-        <ons-page>
-            <ons-toolbar>
-                <div class="center">Lernen</div>
-              </ons-toolbar>
-            
-              <ons-tabbar id="main_tabbar" swipeable position="auto">
-                <ons-tab page="views/learn.html" label="Lernen" icon="ion-ios-home, material:md-home" badge="7" active>
-                </ons-tab>
-                <ons-tab page="views/test.html" label="Prüfung" icon="md-settings" active-icon="md-face">
-                </ons-tab>
-                <ons-tab page="views/stats.html" label="Statistiken" icon="md-settings" active-icon="md-face">
-                </ons-tab>
-              </ons-tabbar>
+        <ons-page id="index">
+            <!--Main Navigator for app to manage push/pop of pages-->
+            <ons-navigator swipeable id="mainNavigator" page="views/main_nav.html"></ons-navigator>
         </ons-page>
 
         <!--JavaScript at end of body for optimized loading-->
@@ -63,11 +53,7 @@
 
         <!--script part for handling onsenui for now in html file for clarity-->
         <script>
-            //Tabbar + Toolbar names
-            document.addEventListener('prechange', function(event) {
-            document.querySelector('ons-toolbar .center')
-                .innerHTML = event.tabItem.getAttribute('label');
-            });
+            
         </script>
     </body>
 </html>

@@ -1,3 +1,19 @@
-<ons-page>
+<ons-page id="test">
     <p>Platzhalter Prüfung</p>
+    <ons-button id="push-button">Platzhalter Testmodus starten</ons-button>
+
+    <script>
+        //example of pushing pages
+        document.addEventListener('init', function(event) {
+            var page = event.target;
+
+            if (page.id === 'test') {
+                page.querySelector('#push-button').onclick = function() {
+                document.querySelector('#mainNavigator').pushPage('views/q_test.html', {data: {title: 'Fragen Testmodus'}});
+                };
+            } else if (page.id === 'q_test') {
+                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+            }
+        });
+    </script>
 </ons-page>
