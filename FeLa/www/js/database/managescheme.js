@@ -1,5 +1,5 @@
 import { getDatabase } from "./database.js";
 
 export function createVersion0() {
-    // TODO
+    let db = getDatabase();
 }
