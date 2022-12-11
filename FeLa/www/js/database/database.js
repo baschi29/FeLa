@@ -27,54 +27,51 @@ export function getDatabase() {
 }
 
 // Initialize dabase, has to be called only after deviceready event has been registered!
+// sadly the sqlite plugin does not use proper promises but classical callback functions, which makes this a mess
 function initializeDatabase() {
 
     // Manages database scheme - right now only creates schema if there is none
-    function manageDatabaseScheme() {
+    function manageDatabaseScheme(callback) {
+        console.log("Managing database scheme");
 
-        // Returns -1 if database has no tables
-        // else database should have VersionTable from which the scheme version is returned
-        function getSchemeVersion() {
-            // transaction to check for tables in database using sqlite_master internal table - may not work!
-            db.readTransaction(function(tx) {
-                tx.executeSql('SELECT count(*) AS tableCount FROM sqlite_master WHERE type = "table"', [], function(tx, rs) {
-                    if (rs.rows.item(0).tableCount == 0) {
-                        return -1;
+        // transaction to check for tables in database using sqlite_master internal table - may not work, but works in browser!
+        db.readTransaction(function(tx) {
+            tx.executeSql('SELECT count(*) AS tableCount FROM sqlite_master WHERE type = "table"', [], function(tx, rs) {
+                if (rs.rows.item(0).tableCount == 0) {
+                    console.log("Database is empty! - creating database scheme from scratch");
+                    switch (intendedSchemeVersion) {
+                        case 0: createVersion0(callback);
+                        break;
+
+                        default: throw "Error: bad developer: unknown intended db scheme: " + intendedSchemeVersion;
                     }
-                    else {
-                        // transaction to read scheme version from VersionTable which hopefully exists
-                        db.readTransaction(function(tx) {
-                            tx.executeSql('SELECT version FROM VersionTable WHERE type = "scheme"', [], function(tx, rs) {
-                                return rs.rows.item(0).version;
-                            }, function(tx, error) {
-                                throw "Error: Failed opening version table" + JSON.stringify(error);
-                            });
+                }
+                else {
+                    // transaction to read scheme version from VersionTable which hopefully exists
+                    db.readTransaction(function(tx) {
+                        tx.executeSql('SELECT version FROM VersionTable WHERE type = "scheme"', [], function(tx, rs) {
+                            if (rs.rows.item(0).version == intendedSchemeVersion) {
+                                console.log("Current scheme version " + rs.rows.item(0).version + " is intended version. Ready to go!");
+                            }
+                            else {
+                                throw "Error: Current and intented scheme version do not match :( - only fix for now is to delete all application data";
+                            }                            
+                        }, function(tx, error) {
+                            throw "Error: Failed opening version table" + JSON.stringify(error);
                         });
-                    }
-                }, function(tx, error) {
-                    throw "Error: Error reading sqlite_master table" + JSON.stringify(error);
-                });
+                    });
+                }
+            }, function(tx, error) {
+                throw "Error: Error reading sqlite_master table" + JSON.stringify(error);
             });
-        }
-
-        let currentSchemeVersion = getSchemeVersion();
-        if (currentSchemeVersion = -1) {
-            console.log("Database is empty! - creating database scheme from scratch");
-            switch (intendedSchemeVersion) {
-                case 0: createVersion0();
-                break;
-
-                default: throw "Unknown intended db scheme: " + intendedSchemeVersion;
-            }
-        }
-        else {
-            // TODO: scheme upgrades (LATER)
-            console.log("Current database scheme version: " + currentSchemeVersion);
-        }
+        }, function(error) {
+            throw error;
+        });
     }
 
     // Populates Database if its empty
-    function populateDatabase() {
+    async function populateDatabase() {
+        console.log("Populating database");
         //TODO
     }
 
@@ -84,10 +81,8 @@ function initializeDatabase() {
             name:'fela.db',
             location:'default',
         }, function(db) {
-            console.log("Opened database");
             opened = true;
-            manageDatabaseScheme();
-            populateDatabase();
+            manageDatabaseScheme(populateDatabase);
         },
         function(err) {
             throw "Open database Error: " + JSON.stringify(err);
