@@ -8,12 +8,23 @@ Important: the plugin does not allow persistent storage when using the browser a
 import {createVersion0} from "./managescheme.js";
 
 // variable "holding" the database
-export var db = null;
+var db = null;
+var opened = false;
 // database scheme version our app intends to use
 var intendedSchemeVersion = 0;
 
 // Open database after deviceready event has fired (initialize database)
 document.addEventListener('deviceready', initializeDatabase);
+
+// return database only when it was opened succesfully
+export function getDatabase() {
+    if (opened) {
+        return db;
+    }
+    else {
+        throw "Error: tried to get database that wasn't successfully opened (yet?)"
+    }
+}
 
 // Initialize dabase, has to be called only after deviceready event has been registered!
 function initializeDatabase() {
@@ -48,6 +59,7 @@ function initializeDatabase() {
             location:'default',
         }, function(db) {
             console.log("Opened database");
+            opened = true;
             manageDatabaseScheme();
             populateDatabase();
         },
