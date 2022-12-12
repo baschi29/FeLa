@@ -47,9 +47,9 @@ function initializeDatabase() {
                     }
                 }
                 else {
-                    // transaction to read scheme version from VersionTable which hopefully exists
+                    // transaction to read scheme version from Versioning table which hopefully exists
                     db.readTransaction(function(tx) {
-                        tx.executeSql('SELECT version FROM VersionTable WHERE type = "scheme"', [], function(tx, rs) {
+                        tx.executeSql('SELECT version FROM Versioning WHERE type = "scheme"', [], function(tx, rs) {
                             if (rs.rows.item(0).version == intendedSchemeVersion) {
                                 console.log("Current scheme version " + rs.rows.item(0).version + " is intended version. Ready to go!");
                             }
