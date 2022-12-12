@@ -51,7 +51,8 @@ function initializeDatabase() {
                     db.readTransaction(function(tx) {
                         tx.executeSql('SELECT version FROM Versioning WHERE type = "scheme"', [], function(tx, rs) {
                             if (rs.rows.item(0).version == intendedSchemeVersion) {
-                                console.log("Current scheme version " + rs.rows.item(0).version + " is intended version. Ready to go!");
+                                console.log("Current scheme version " + rs.rows.item(0).version + " is intended version. Nothing to do!");
+                                callback();
                             }
                             else {
                                 throw "Error: Current and intented scheme version do not match :( - only fix for now is to delete all application data";
