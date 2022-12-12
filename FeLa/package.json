@@ -1,7 +1,7 @@
 {
-  "name": "io.cordova.fela",
+  "name": "com.ffb.fela",
   "displayName": "FeLa",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A simple app for learning chemical formulas.",
   "main": "index.js",
   "scripts": {
