@@ -1,5 +1,6 @@
 import { getDatabase } from "./database.js";
 
+// create scheme version 0 from scratch
 export function createVersion0(callback) {
     let db = getDatabase();
     db.transaction(function(tx) {
@@ -10,6 +11,7 @@ export function createVersion0(callback) {
         }, function(tx, error) {
           throw error;
         });
+        // TODO: add tables from entity-relationship-diagram
       }, function(error) {
         throw error;
       }, function() {
