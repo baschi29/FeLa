@@ -3,6 +3,7 @@ ables created with https://ozh.github.io/ascii-tables/
 USES INTEGER type to store UNIX timestamps in sqlite https://www.sqlitetutorial.net/sqlite-date/
 TODO: better logging, selftest */
 export function createVersion0(db, callback) {
+    
     db.transaction(function(tx) {
         /* creates Versioning table for storing scheme and data version information
         +-----------+-----------------+
@@ -18,7 +19,7 @@ export function createVersion0(db, callback) {
         +-----------+--------------+
         |           |              |
         +-----------+--------------+ */
-        tx.executeSql('CREATE TABLE Categories (category_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, ranking REAL)');
+        tx.executeSql('CREATE TABLE Categories (category_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, ranking REAL)');
         /* creates Compounds table for storing chemical compounds
         +-----------+--------------+------------------------------+--------------+
         | name TEXT | formula TEXT | category_id INTEGER FOREIGN KEY | ranking REAL |
@@ -43,15 +44,13 @@ export function createVersion0(db, callback) {
         tx.executeSql('CREATE TABLE Questions (question_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, timestamp INTEGER NOT NULL, result INTEGER NOT NULL, difficulty REAL, round_id INTEGER NOT NULL, compound_id INTEGER NOT NULL, FOREIGN KEY(round_id) REFERENCES Rounds(round_id), FOREIGN KEY(compound_id) REFERENCES Compounds(compound_id))');
         // sets scheme version to 0
         tx.executeSql('INSERT INTO Versioning (type, version) VALUES (?, ?)', ['scheme', 0], function(tx, resultSet) {
-            console.log('resultSet.insertId: ' + resultSet.insertId);
-            console.log('resultSet.rowsAffected: ' + resultSet.rowsAffected);
+            console.log('set scheme version to 0');
         }, function(tx, error) {
-          throw error;
+            throw error;
         });
         // sets data version to -1 (no data in database yet)
         tx.executeSql('INSERT INTO Versioning (type, version) VALUES (?, ?)', ['data', -1], function(tx, resultSet) {
-            console.log('resultSet.insertId: ' + resultSet.insertId);
-            console.log('resultSet.rowsAffected: ' + resultSet.rowsAffected);
+            console.log('set data version to -1');
         }, function(tx, error) {
             throw error;
         });
@@ -59,7 +58,7 @@ export function createVersion0(db, callback) {
       }, function(error) {
           throw error;
       }, function() {
-          console.log('Created database scheme version 0');
+          console.log('Transaction successfull: create database scheme version 0');
           callback();
       });
 }
