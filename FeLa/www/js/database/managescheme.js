@@ -1,11 +1,8 @@
-import { getDatabase } from "./database.js";
-
 /* create scheme version 0 from scratch
 ables created with https://ozh.github.io/ascii-tables/
 USES INTEGER type to store UNIX timestamps in sqlite https://www.sqlitetutorial.net/sqlite-date/
 TODO: better logging, selftest */
-export function createVersion0(callback) {
-    let db = getDatabase();
+export function createVersion0(db, callback) {
     db.transaction(function(tx) {
         /* creates Versioning table for storing scheme and data version information
         +-----------+-----------------+

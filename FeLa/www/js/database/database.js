@@ -1,5 +1,6 @@
 /*
 Javascript functions to handle the sqlite database provided by the cordova-sqlite-storage plugin
+Exports function used by the application logic
 https://github.com/storesafe/cordova-sqlite-storage
 Important: the plugin does not allow persistent storage when using the browser as a platform
 */
@@ -40,7 +41,7 @@ function initializeDatabase() {
                 if (rs.rows.item(0).tableCount == 0) {
                     console.log("Database is empty! - creating database scheme from scratch");
                     switch (intendedSchemeVersion) {
-                        case 0: createVersion0(callback);
+                        case 0: createVersion0(db, callback);
                         break;
 
                         default: throw "Error: bad developer: unknown intended db scheme: " + intendedSchemeVersion;
