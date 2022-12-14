@@ -18,7 +18,7 @@ document.addEventListener('deviceready', initializeDatabase);
 
 // return database only (to modules) when it was opened succesfully
 export function getDatabase() {
-    if (opened) {
+    if (opened && db != null) {
         return db;
     }
     else {
