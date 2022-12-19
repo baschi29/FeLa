@@ -1,14 +1,52 @@
 <ons-page id="test">
-    <p>Platzhalter Prüfung</p>
+    <!-- <p>Wähle deinen Prüfungsmodus:</p> -->
+    
+    <!-- <ons-toolbar>
+        <div class="center">Select input</div>
+    </ons-toolbar> -->
+    <p>
+    <h3>Wähle deinen Prüfungsmodus:</h3>
+    <h4>Schwierigkeit:</h4>
+    <ons-select id="choose-sel1" onchange="editSelects(event)">
+        <div class="center"></div>
+        <option value="level1">Multiple Choice</option>
+        <option value="level2">Material</option>
+        <option value="level3">Underbar</option>
+    </ons-select>
+    </p>
+    
+    <p>
+    <h4>Verbindungsart:</h4>
+    <ons-select id="choose-sel2" onchange="editSelects(event)">
+        <option value="typ1">Alle</option>
+        <option value="typ2">Schwefelverbindungen</option>
+        <option value="typ3">Wasserstoffverbindungen</option>
+    </ons-select>
+    </p>
+
+    <p>
+    <h4>Richtung:</h4>
+    <ons-select id="choose-sel3" onchange="editSelects(event)">
+        <option value="direct1">Gemischt</option>
+        <option value="direct2">Summenformel -> Name</option>
+        <option value="direct3">Name -> Summenformel</option>
+    </ons-select>
+    </p>
+    
     <ons-button id="push-button">Platzhalter Testmodus starten</ons-button>
 
     <script>
         //example of pushing pages
         document.addEventListener('init', function(event) {
+            const level = document.getElementById("choose-sel1");
+            const months = level.options;
+            var selectedMonth = months[level.selectedIndex].value;
+            localStorage.setItem('level', selectedMonth);
+            // alert( selectedMonth )
             var page = event.target;
 
             if (page.id === 'test') {
-                page.querySelector('#push-button').onclick = function() {
+                page.querySelector('#push-button').onclick = function() { 
                 document.querySelector('#mainNavigator').pushPage('views/q_test.html', {data: {title: 'Fragen Testmodus'}});
                 };
             } else if (page.id === 'q_test') {
