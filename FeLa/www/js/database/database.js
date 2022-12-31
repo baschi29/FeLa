@@ -4,16 +4,18 @@ Exports function used by the application logic
 https://github.com/storesafe/cordova-sqlite-storage
 Important: the plugin does not allow persistent storage when using the browser as a platform
 sadly the sqlite plugin does not use proper promises but classical callback functions, which makes this a mess
+luckily all own functions wrap them in a promise, see https://www.freecodecamp.org/news/how-to-make-a-promise-out-of-a-callback-function-in-javascript-d8ec35d1f981/
 */
 
 //imports nice utility functions from managescheme
-import {createVersion0} from "./managescheme.js";
-import { populateVersion0 } from "./populatedb.js";
+import {createScheme} from "./managescheme.js";
+import { populateData} from "./populatedb.js";
 
 // variable "holding" the database
 var db = null;
 // do not queue operations on unopened database
 var opened = false;
+var ready = false;
 // database version our app intends to use
 var intendedSchemeVersion = 0;
 var intendedDataVersion = 0;
@@ -21,10 +23,20 @@ var intendedDataVersion = 0;
 // Open and initialize database after deviceready event has fired
 document.addEventListener('deviceready', initializeDatabase);
 
+// helping function to indicate wheter database is open
+function isDatabaseOpen() {
+    return opened && db != null;
+}
+
+//helping function to indicate wheter database is ready for application operation
+function isDatabaseReady() {
+    return isDatabaseOpen() && ready;
+}
+
 // return database only (to modules) when it was opened succesfully
 export function getDatabase() {
     
-    if (opened && db != null) {
+    if (isDatabaseOpen()) {
         return db;
     }
     else {
@@ -34,95 +46,135 @@ export function getDatabase() {
 
 /* reads the scheme version from the database
 tx can be a readTransaction*/
-export function readSchemeVersion(tx, callback) {
+export async function readSchemeVersion(tx) {
     
-    if (opened && db != null) {
-        //TODO
-    }
-    else {
-        throw "Error: tried to get scheme version from database that wasn't successfully opened (yet?)"
-    }
+    return new Promise(function(resolve, reject) {
+
+        if (isDatabaseOpen()) {
+            tx.executeSql('SELECT version FROM Versioning WHERE type = "scheme"', [], function(tx, rs) {
+                resolve(rs.rows.item(0).version);         
+            }, function(tx, error) {
+                reject("Error: Failed opening version table" + JSON.stringify(error));
+            });
+        }
+        else {
+            reject("Error: tried to get scheme version from database that wasn't successfully opened (yet?)");
+        }   
+    });
 }
 
 /* reads the data version from the database
 tx can be a readTransaction*/
-export function readDataVersion(tx, callback) {
+export async function readDataVersion(tx) {
     
-    if (opened && db != null) {
-        //TODO
-    }
-    else {
-        throw "Error: tried to get data version from database that wasn't successfully opened (yet?)"
-    }
+    return new Promise(function(resolve, reject) {
+
+        if (isDatabaseOpen()) {
+            tx.executeSql('SELECT version FROM Versioning WHERE type = "data"', [], function(tx, rs) {
+                resolve(rs.rows.item(0).version);         
+            }, function(tx, error) {
+                reject("Error: Failed opening version table" + JSON.stringify(error));
+            });
+        }
+        else {
+            reject("Error: tried to get data version from database that wasn't successfully opened (yet?)");
+        }
+    });
 }
 
 /* determines wheter database is empty
 tx can be a readTransaction
 call with callback(result) where result is true when database is empty*/
-function isDatabaseEmpty(tx, callback) {
+async function isDatabaseEmpty(tx) {
     
-    if (opened && db != null) {
-        tx.executeSql('SELECT count(*) AS tableCount FROM sqlite_master WHERE type = "table"', [], function(tx, rs) {
-            if (rs.rows.item(0).tableCount == 0) {
-                callback(true);
-            }
-            else {
-                callback(false);
-            }
-        }, function(tx, error) {
-            throw "Error: Error reading sqlite_master table" + JSON.stringify(error);
-        });
-    }
-    else {
-        throw "Error: tried to get emptiness information from database that wasn't successfully opened (yet?)"
-    }
+    return new Promise(function(resolve, reject) {
+
+        if (opened && db != null) {
+            tx.executeSql('SELECT count(*) AS tableCount FROM sqlite_master WHERE type = "table"', [], function(tx, rs) {
+                // evaluates to true if database is empty
+                resolve(rs.rows.item(0).tableCount == 0);
+            }, function(tx, error) {
+                reject("Error: Error reading sqlite_master table" + JSON.stringify(error));
+            });
+        }
+        else {
+            reject("Error: tried to get emptiness information from database that wasn't successfully opened (yet?)");
+        }
+    });
 }
 
 // Initialize dabase, has to be called only after deviceready event has been registered!
-function initializeDatabase() {
+async function initializeDatabase() {
 
     // Manages database scheme - right now only creates schema if there is none
-    function manageDatabaseScheme(callback) {
-        console.log("Managing database scheme");
+    async function manageDatabaseScheme() {
+        
+        return new Promise(function(resolve, reject) {
+            
+            console.log("Managing database scheme");
 
-        // transaction to check for tables in database using sqlite_master internal table - may not work, but works in browser!
-        db.readTransaction(function(tx) {
-            isDatabaseEmpty(tx, function(empty) {
-                if (empty) {
-                    console.log("Database is empty! - creating database scheme from scratch");
-                    switch (intendedSchemeVersion) {
-                        case 0: createVersion0(db, callback);
-                        break;
+            // transaction to check for tables in database using sqlite_master internal table - may not work, but works in browser!
+            db.readTransaction(async function(tx) {
 
-                        default: throw "Error: bad developer: unknown intended db scheme: " + intendedSchemeVersion;
-                    }  
-                }
-                else {
-                    // transaction to read scheme version from Versioning table which hopefully exists
-                    db.readTransaction(function(tx) {
-                        tx.executeSql('SELECT version FROM Versioning WHERE type = "scheme"', [], function(tx, rs) {
-                            if (rs.rows.item(0).version == intendedSchemeVersion) {
-                                console.log("Current scheme version " + rs.rows.item(0).version + " is intended version. Nothing to do!");
-                                callback();
+                    if (await isDatabaseEmpty(tx)) {
+                        console.log("Database is empty! - creating database scheme version " + intendedSchemeVersion + " from scratch");
+                        createScheme(db, intendedSchemeVersion, -1).then(
+                            function(msg) {
+                                console.log(msg);
+                                resolve("Done managing scheme version");
+                            }, function(error) {
+                                reject(error);
+                            }
+                        );
+                    }
+                    else {
+                        console.log("Intended scheme version is " + intendedSchemeVersion);
+                        // transaction to read scheme version from Versioning table which hopefully exists
+                        db.readTransaction(async function(tx) {
+                            let fromversion = await readSchemeVersion(tx);
+                            if (fromversion == intendedSchemeVersion) {
+                                resolve("Current scheme version " + fromversion + " is intended version. Nothing to do!");
                             }
                             else {
-                                throw "Error: Current and intented scheme version do not match :( - only fix for now is to delete all application data";
-                            }                            
-                        }, function(tx, error) {
-                            throw "Error: Failed opening version table" + JSON.stringify(error);
+                                reject("Error: Current and intented scheme version do not match :( - only fix for now is to delete all application data");
+                            }
                         });
-                    });
-                }
+                    }
+            }, function(error) {
+                reject(error);
             });
-        }, function(error) {
-            throw error;
         });
+        
     }
 
     // Populates Database if its empty
-    function populateDatabase() {
-        console.log("Populating database");
-        populateVersion0(db);
+    async function populateDatabase() {
+        
+        return new Promise(function(resolve, reject) {
+            
+            console.log("Populating database with data version " + intendedDataVersion);
+
+            // transaction to check current database version
+            db.readTransaction(async function(tx) {
+                let fromversion = await readDataVersion(tx);
+                if (fromversion > intendedDataVersion) {
+                    reject("Error: current data version " + fromversion + " is higher than intended data version");
+                }
+                else if (fromversion == intendedDataVersion) {
+                    resolve("Current data version " + fromversion + " is intended version. Nothing to do!");
+                }
+                else {
+                    populateData(db, intendedDataVersion, fromversion).then(
+                        function(msg) {
+                            console.log(msg);
+                            resolve("Done populating database");
+                        }, function(error) {
+                            reject(error);
+                        }
+                    );
+                }
+            });
+        });
     }
 
     // opens and initializes database with a nice try and catch block
@@ -130,9 +182,23 @@ function initializeDatabase() {
         db = window.sqlitePlugin.openDatabase({
             name:'fela.db',
             location:'default',
-        }, function(db) {
+        }, async function(db) {
             opened = true;
-            manageDatabaseScheme(populateDatabase);
+            manageDatabaseScheme().then(
+                function(msg) {
+                    console.log(msg);
+                    populateDatabase().then(
+                        function(msg) {
+                            console.log(msg);
+                            ready = true;
+                        }, function(error) {
+                            throw error;
+                        }
+                    );
+                }, function(error) {
+                    throw error;
+                }
+            );
         },
         function(err) {
             throw "Open database Error: " + JSON.stringify(err);
