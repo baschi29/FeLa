@@ -10,8 +10,12 @@ function addCategory(tx, catName) {
 
 // adds a Compound with ranking 0, needs a transaction tx as an argument
 // searches for id of category by name in own subtransaction
-function addCompound(tx, compName, formula, catName) {
-    //TODO
+function addCompound(tx, compName, formula, compSplit, catName) {
+    tx.executeSql('INSERT INTO Compounds (name, formula, split, category_id, ranking) VALUES (?, ?, ?, (SELECT category_id FROM Categories WHERE name = ?), ?)', [compName, formula, compSplit, catName, 0.0], function(tx, resultSet) {
+        console.log('Added compound ' + compName);
+    }, function(tx, error) {
+        throw error;
+    });
 }
 
 function setDataVersion(tx, version) {
@@ -61,8 +65,9 @@ async function populateVersion0(db) {
 
         //transaction for actually adding stuff
         db.transaction(function(tx) {
-            //TODO: read in and loop through categories
+            //TODO: read in and loop through categories from json file
             addCategory(tx, "Test");
+            addCompound(tx, "Juhu", "JH", "Ju-hu", "Test");
             setDataVersion(tx, 0);
         }, function(error) {
             reject(error);

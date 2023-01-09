@@ -51,12 +51,12 @@ async function createVersion0(db) {
             +-----------+--------------+ */
             tx.executeSql('CREATE TABLE Categories (category_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, ranking REAL)');
             /* creates Compounds table for storing chemical compounds
-            +-----------+--------------+------------------------------+--------------+
-            | name TEXT | formula TEXT | category_id INTEGER FOREIGN KEY | ranking REAL |
-            +-----------+--------------+------------------------------+--------------+
-            |           |              |                              |              |
-            +-----------+--------------+------------------------------+--------------+ */
-            tx.executeSql('CREATE TABLE Compounds (compound_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, formula TEXT NOT NULL, category_id INTEGER NOT NULL, ranking REAL, FOREIGN KEY(category_id) REFERENCES Categories(category_id))');
+            +-----------+--------------+------------------------+---------------------+--------------+
+            | name TEXT | formula TEXT | split TEXT category_id | INTEGER FOREIGN KEY | ranking REAL |
+            +-----------+--------------+------------------------+---------------------+--------------+
+            |           |              |                        |                     |              |
+            +-----------+--------------+------------------------+---------------------+--------------+ */
+            tx.executeSql('CREATE TABLE Compounds (compound_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, formula TEXT NOT NULL, split TEXT NOT NULL, category_id INTEGER NOT NULL, ranking REAL, FOREIGN KEY(category_id) REFERENCES Categories(category_id))');
             /* creates Rounds table for storing information over attempted question rounds
             +-----------+-------------------+--------------+
             | type TEXT | timestamp INTEGER | ranking REAL |
