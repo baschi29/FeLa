@@ -4,14 +4,48 @@
       <div class="center"></div>
     </ons-toolbar>
 
-    
-    <p>
-      Platzhalter für Fragerunden im Testmodus   
+  
+  <div id="MultChoice" style='visibility: hidden;'>
+    <p style="text-align: center">
+      Platzhalter Verbindungsname/Verbindung
     </p>
+    <v-ons-button>Tap me</v-ons-button>
+
+    <v-ons-button modifier="large" modifier="outline" style="margin: 6px 0">Large</v-ons-button>
+    <v-ons-button modifier="large" style="margin: 6px 0">Large</v-ons-button>
+    <v-ons-button modifier="large" style="margin: 6px 0">Large</v-ons-button>
+    <v-ons-button modifier="large" style="margin: 6px 0">Large</v-ons-button>
+
+  </div>
+
+  <div id="DandD" style='visibility: hidden;'>
+    <p>
+      Test2 
+    </p>
+    <ons-icon icon="md-apple" size="50px" style="color: #9E9D9D"></ons-icon>
+    This is iOS
+  </div>
+
+  <div id="Freitext" style='visibility: hidden;'>
+    <ons-icon icon="md-apple" size="50px" style="color: #9E9D9D"></ons-icon>
+    This is iOS
+  </div>
     
 
     <script>
-      let actualLevel = localStorage.getItem('level');
+      var actualLevel = localStorage.getItem('level');
       
+      var node;
+      if (actualLevel == 'level1') {
+        node = document.getElementById('MultChoice');
+      }
+      else if (actualLevel == 'level2') {
+        node = document.getElementById('DandD');
+      }
+      else if (actualLevel == 'level3') {
+        node = document.getElementById('Freitext');
+      }
+      node.style.visibility = 'visible';
+
     </script>
 </ons-page>

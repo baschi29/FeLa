@@ -7,17 +7,17 @@
     <p>
     <h3>Wähle deinen Prüfungsmodus:</h3>
     <h4>Schwierigkeit:</h4>
-    <ons-select id="choose-sel1" onchange="editSelects(event)">
+    <ons-select id="choose-sel1" >
         <div class="center"></div>
         <option value="level1">Multiple Choice</option>
-        <option value="level2">Material</option>
-        <option value="level3">Underbar</option>
+        <option value="level2">Drag and Drop</option>
+        <option value="level3">Freitext</option>
     </ons-select>
     </p>
     
     <p>
     <h4>Verbindungsart:</h4>
-    <ons-select id="choose-sel2" onchange="editSelects(event)">
+    <ons-select id="choose-sel2" >
         <option value="typ1">Alle</option>
         <option value="typ2">Schwefelverbindungen</option>
         <option value="typ3">Wasserstoffverbindungen</option>
@@ -26,23 +26,38 @@
 
     <p>
     <h4>Richtung:</h4>
-    <ons-select id="choose-sel3" onchange="editSelects(event)">
+    <ons-select id="choose-sel3" >
         <option value="direct1">Gemischt</option>
         <option value="direct2">Summenformel -> Name</option>
         <option value="direct3">Name -> Summenformel</option>
     </ons-select>
     </p>
     
-    <ons-button id="push-button">Platzhalter Testmodus starten</ons-button>
+    <ons-button id="push-button">
+        <v-ons-icon icon="md-face"></v-ons-icon>
+        Prüfung starten
+    </ons-button>
 
     <script>
-        //example of pushing pages
         document.addEventListener('init', function(event) {
+
+            //Push settings to local Storage
             const level = document.getElementById("choose-sel1");
-            const months = level.options;
-            var selectedMonth = months[level.selectedIndex].value;
-            localStorage.setItem('level', selectedMonth);
-            // alert( selectedMonth )
+            const lvList = level.options;
+            var selectedLevel = lvList[level.selectedIndex].value;
+            localStorage.setItem('level', selectedLevel);
+
+            const typ = document.getElementById("choose-sel2");
+            const typList = typ.options;
+            var selectedTyp = typList[typ.selectedIndex].value;
+            localStorage.setItem('typ', selectedTyp);
+            
+            const direction = document.getElementById("choose-sel3");
+            const dirList = direction.options;
+            var selectedDirection = dirList[direction.selectedIndex].value;
+            localStorage.setItem('direction', selectedDirection);
+
+
             var page = event.target;
 
             if (page.id === 'test') {
