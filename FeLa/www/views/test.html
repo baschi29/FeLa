@@ -1,9 +1,5 @@
 <ons-page id="test">
-    <!-- <p>Wähle deinen Prüfungsmodus:</p> -->
-    
-    <!-- <ons-toolbar>
-        <div class="center">Select input</div>
-    </ons-toolbar> -->
+
     <p>
     <h3>Wähle deinen Prüfungsmodus:</h3>
     <h4>Schwierigkeit:</h4>
@@ -34,39 +30,8 @@
     </p>
     
     <ons-button id="push-button">
+        
         <v-ons-icon icon="md-face"></v-ons-icon>
         Prüfung starten
     </ons-button>
-
-    <script>
-        document.addEventListener('init', function(event) {
-
-            //Push settings to local Storage
-            const level = document.getElementById("choose-sel1");
-            const lvList = level.options;
-            var selectedLevel = lvList[level.selectedIndex].value;
-            localStorage.setItem('level', selectedLevel);
-
-            const typ = document.getElementById("choose-sel2");
-            const typList = typ.options;
-            var selectedTyp = typList[typ.selectedIndex].value;
-            localStorage.setItem('typ', selectedTyp);
-            
-            const direction = document.getElementById("choose-sel3");
-            const dirList = direction.options;
-            var selectedDirection = dirList[direction.selectedIndex].value;
-            localStorage.setItem('direction', selectedDirection);
-
-
-            var page = event.target;
-
-            if (page.id === 'test') {
-                page.querySelector('#push-button').onclick = function() { 
-                document.querySelector('#mainNavigator').pushPage('views/q_test.html', {data: {title: 'Fragen Testmodus'}});
-                };
-            } else if (page.id === 'q_test') {
-                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-            }
-        });
-    </script>
 </ons-page>
