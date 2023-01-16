@@ -9,10 +9,19 @@ function addCategory(tx, catName) {
 }
 
 // adds a Compound with ranking 0, needs a transaction tx as an argument
-// searches for id of category by name in own subtransaction
-function addCompound(tx, compName, formula, compSplit, catName) {
-    tx.executeSql('INSERT INTO Compounds (name, formula, split, category_id, ranking) VALUES (?, ?, ?, (SELECT category_id FROM Categories WHERE name = ?), ?)', [compName, formula, compSplit, catName, 0.0], function(tx, resultSet) {
+function addCompound(tx, compName, formula, compSplit, difficulty) {
+    tx.executeSql('INSERT INTO Compounds (name, formula, split, ranking, difficulty) VALUES (?, ?, ?, ?, ?)', [compName, formula, compSplit, 0.0, difficulty], function(tx, resultSet) {
         console.log('Added compound ' + compName);
+    }, function(tx, error) {
+        throw error;
+    });
+}
+
+// adds a Category to Compound mapping, both need to exist, needs a transaction tx as an argument
+// searches for ids in own subtransaction
+function mapCategoryCompound(tx, catName, compName) {
+    tx.executeSql('INSERT INTO CCMapping (category_id, compound_id) VALUES ((SELECT category_id FROM Categories WHERE name = ?),(SELECT compound_id FROM Compounds WHERE name = ?))', [catName, compName], function(tx, resultSet) {
+        console.log("Mapped category " + catName + " and compound " + compName);
     }, function(tx, error) {
         throw error;
     });
@@ -61,13 +70,23 @@ export async function populateData(db, version, fromversion) {
 for scheme version 0*/
 async function populateVersion0(db) {
     return new Promise(function(resolve, reject) {
-        //TODO: version sanity check
+        // TODO: version sanity check
+        // helpful (maybe lol) Links:
+        // https://www.geeksforgeeks.org/how-to-remove-a-character-from-string-in-javascript/
+        // https://www.javascripttutorial.net/javascript-string-split/
+        // https://www.w3schools.blog/like-operator-sqlite
+        // https://www.w3schools.com/js/js_json.asp
+        // https://www.digitalocean.com/community/tutorials/how-to-work-with-json-in-javascript
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+
+        
 
         //transaction for actually adding stuff
         db.transaction(function(tx) {
             //TODO: read in and loop through categories from json file
             addCategory(tx, "Test");
-            addCompound(tx, "Juhu", "JH", "Ju-hu", "Test");
+            addCompound(tx, "Juhu", "JH", "Ju-hu", 3);
+            mapCategoryCompound(tx, "Test", "Juhu")
             setDataVersion(tx, 0);
         }, function(error) {
             reject(error);
