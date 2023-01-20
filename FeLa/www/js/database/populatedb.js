@@ -29,6 +29,7 @@ function mapCategoryCompound(tx, catName, compName) {
     });
 }
 
+// updates data version to value specified by <version>
 function updateDataVersion(tx, version) {
     
     tx.executeSql('UPDATE Versioning SET version = ? WHERE type = "data"', [version], function(tx, resultSet) {
