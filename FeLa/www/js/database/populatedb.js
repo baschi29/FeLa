@@ -1,8 +1,13 @@
+// variable for desired log level, >0 logs a lot
+var logLevel = 0;
+
 // adds a category with ranking 0, needs a transaction tx as an argument
 function addCategory(tx, catName) {
     
     tx.executeSql('INSERT INTO Categories (name, ranking) VALUES (?, ?)', [catName, 0.0], function(tx, resultSet) {
-        console.log('Added category ' + catName);
+        if (logLevel > 0) {
+            console.log('Added category ' + catName);
+        }
     }, function(tx, error) {
         throw error;
     });
@@ -12,7 +17,9 @@ function addCategory(tx, catName) {
 function addCompound(tx, compName, formula, compSplit, difficulty) {
 
     tx.executeSql('INSERT INTO Compounds (name, formula, split, ranking, difficulty) VALUES (?, ?, ?, ?, ?)', [compName, formula, compSplit, 0.0, difficulty], function(tx, resultSet) {
-        console.log('Added compound ' + compName);
+        if (logLevel > 0) {
+            console.log('Added compound ' + compName);
+        }
     }, function(tx, error) {
         throw error;
     });
@@ -23,7 +30,9 @@ function addCompound(tx, compName, formula, compSplit, difficulty) {
 function mapCategoryCompound(tx, catName, compName) {
 
     tx.executeSql('INSERT INTO CCMapping (category_id, compound_id) VALUES ((SELECT category_id FROM Categories WHERE name = ?),(SELECT compound_id FROM Compounds WHERE name = ?))', [catName, compName], function(tx, resultSet) {
-        console.log("Mapped category " + catName + " and compound " + compName);
+        if (logLevel > 0) {
+            console.log("Mapped category " + catName + " and compound " + compName);
+        }
     }, function(tx, error) {
         throw error;
     });
@@ -94,8 +103,8 @@ async function populateVersion0(db) {
                 db.transaction(function(tx) {
 
                     // loop through categories and add them to database
+                    console.log("Adding categories");
                     for (let category of data["categories"]) {
-
                         if (category["act"] == "new") {
                             addCategory(tx, category["name"]);
                         }
@@ -105,6 +114,7 @@ async function populateVersion0(db) {
                     }
 
                     // loop through compounds, add them to database and map to category
+                    console.log("Adding compounds and mapping to categories");
                     for (let compound of data["compounds"]) {
 
                         if (compound["act"] == "new") {

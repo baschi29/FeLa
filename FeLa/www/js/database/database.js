@@ -8,8 +8,8 @@ luckily all own functions wrap them in a promise, see https://www.freecodecamp.o
 */
 
 //imports nice utility functions from managescheme
-import {createScheme} from "./managescheme.js";
-import { populateData} from "./populatedb.js";
+import { createScheme } from "./managescheme.js";
+import { populateData } from "./populatedb.js";
 
 // variable "holding" the database
 var db = null;
@@ -29,7 +29,7 @@ function isDatabaseOpen() {
 }
 
 //helping function to indicate wheter database is ready for application operation
-function isDatabaseReady() {
+export function isDatabaseReady() {
     return isDatabaseOpen() && ready;
 }
 
