@@ -10,6 +10,7 @@ function addCategory(tx, catName) {
 
 // adds a Compound with ranking 0, needs a transaction tx as an argument
 function addCompound(tx, compName, formula, compSplit, difficulty) {
+
     tx.executeSql('INSERT INTO Compounds (name, formula, split, ranking, difficulty) VALUES (?, ?, ?, ?, ?)', [compName, formula, compSplit, 0.0, difficulty], function(tx, resultSet) {
         console.log('Added compound ' + compName);
     }, function(tx, error) {
@@ -20,6 +21,7 @@ function addCompound(tx, compName, formula, compSplit, difficulty) {
 // adds a Category to Compound mapping, both need to exist, needs a transaction tx as an argument
 // searches for ids in own subtransaction
 function mapCategoryCompound(tx, catName, compName) {
+
     tx.executeSql('INSERT INTO CCMapping (category_id, compound_id) VALUES ((SELECT category_id FROM Categories WHERE name = ?),(SELECT compound_id FROM Compounds WHERE name = ?))', [catName, compName], function(tx, resultSet) {
         console.log("Mapped category " + catName + " and compound " + compName);
     }, function(tx, error) {
@@ -79,20 +81,55 @@ async function populateVersion0(db) {
         // https://www.digitalocean.com/community/tutorials/how-to-work-with-json-in-javascript
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 
-        
+        // read data json and transform it to an js object
+        fetch("../../data/data0.json").then(
+            response  => {
+                return response.json();
+            }
+        ).then(
+            data => {
+                
+                //transaction for actually adding stuff
+                db.transaction(function(tx) {
 
-        //transaction for actually adding stuff
-        db.transaction(function(tx) {
-            //TODO: read in and loop through categories from json file
-            addCategory(tx, "Test");
-            addCompound(tx, "Juhu", "JH", "Ju-hu", 3);
-            mapCategoryCompound(tx, "Test", "Juhu")
-            setDataVersion(tx, 0);
-        }, function(error) {
-            reject(error);
-        }, function() {
-            resolve("Transaction successfull: populate database with data version 0");
-            //console.log('Transaction successfull: populate database with data version 0');
-        })
+                    // loop through categories and add them to database
+                    for (let category of data["categories"]) {
+
+                        if (category["act"] == "new") {
+                            addCategory(tx, category["name"]);
+                        }
+                        else {
+                            reject("Unknown action type " + category["act"]);
+                       }
+                    }
+
+                    // loop through compounds, add them to database and map to category
+                    for (let compound of data["compounds"]) {
+
+                        if (compound["act"] == "new") {
+
+                            // remove #s from compound name to save clearly in database
+                            let compName = compound["name"].replace(/#/g, "");
+                            addCompound(tx, compName, compound["formula"], compound["name"], compound["difficulty"]);
+                            
+                            // loop through associated categories and map them - they need to exist!
+                            for (let catName of compound["categories"]) {
+                                mapCategoryCompound(tx, catName, compName);
+                            }
+                        }
+                        else {
+                            reject("Unknown action type " + compound["act"]);
+                        }
+                    }
+
+                    setDataVersion(tx, 0);
+                }, function(error) {
+                    reject(error);
+                }, function() {
+                    resolve("Transaction successfull: populate database with data version 0");
+                    //console.log('Transaction successfull: populate database with data version 0');
+                });
+            }
+        );
     });
 }
