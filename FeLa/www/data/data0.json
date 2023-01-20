@@ -1,0 +1,32 @@
+{
+"categories":[
+    {"act":"new", "name":"Ionen"},
+    {"act":"new", "name":"Wasserstoff, Sauerstoff"},
+    {"act":"new", "name":"Natrium, Calcium"},
+    {"act":"new", "name":"Stickstoff"},
+    {"act":"new", "name":"Kohlenstoff"},
+    {"act":"new", "name":"Phosphor, Schwefel"},
+    {"act":"new", "name":"Halogene"},
+    {"act":"new", "name":"Kohlenwasserstoffe"}
+],
+"compounds":[
+    {"act":"new", "name":"Proton", "formula":"H^+", "difficulty":1, "categories":[
+        "Ionen", "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Hydrid#-#Ion", "formula":"H^-", "difficulty":2, "categories":[
+        "Ionen", "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Oxid#-#Ion", "formula":"O^2-", "difficulty":3, "categories":[
+        "Ionen", "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Peroxid#-#Ion", "formula":"O_2^2-", "difficulty":3, "categories":[
+        "Ionen", "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Hydroxid#-#Ion", "formula":"OH^-", "difficulty":1, "categories":[
+        "Ionen", "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Oxonium#-#Ion", "formula":"H_3O^+", "difficulty":1, "categories":[
+        "Ionen", "Wasserstoff, Sauerstoff" 
+    ]}
+]
+}
