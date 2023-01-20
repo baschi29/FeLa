@@ -29,7 +29,7 @@ function mapCategoryCompound(tx, catName, compName) {
     });
 }
 
-function setDataVersion(tx, version) {
+function updateDataVersion(tx, version) {
     
     tx.executeSql('UPDATE Versioning SET version = ? WHERE type = "data"', [version], function(tx, resultSet) {
         console.log('Set data version successfully to ' + version);
@@ -111,7 +111,7 @@ async function populateVersion0(db) {
                             // remove #s from compound name to save clearly in database
                             let compName = compound["name"].replace(/#/g, "");
                             addCompound(tx, compName, compound["formula"], compound["name"], compound["difficulty"]);
-                            
+
                             // loop through associated categories and map them - they need to exist!
                             for (let catName of compound["categories"]) {
                                 mapCategoryCompound(tx, catName, compName);
@@ -122,7 +122,7 @@ async function populateVersion0(db) {
                         }
                     }
 
-                    setDataVersion(tx, 0);
+                    updateDataVersion(tx, 0);
                 }, function(error) {
                     reject(error);
                 }, function() {
