@@ -1,3 +1,23 @@
+// inserts scheme version field into versioning table and sets it to <version>
+function insertSchemeVersion(tx, version) {
+
+    tx.executeSql('INSERT INTO Versioning (type, version) VALUES (?, ?)', ['scheme', 0], function(tx, resultSet) {
+        console.log('Set scheme version successfully to ' + version);
+    }, function(tx, error) {
+        throw error;
+    });
+}
+
+// inserts data version field into versioning table and sets it to -1
+function insertDataVersion(tx) {
+
+    tx.executeSql('INSERT INTO Versioning (type, version) VALUES (?, ?)', ['data', -1], function(tx, resultSet) {
+        console.log('Set data version successfully to -1');
+    }, function(tx, error) {
+        throw error;
+    });
+}
+
 // creates specified scheme version, updates from current version
 export async function createScheme(db, version, fromversion) {
     
@@ -79,19 +99,8 @@ async function createVersion0(db) {
             +-----------+-------------------+----------------+-----------------+-------------------------------+---------------------------------+
             */
             tx.executeSql('CREATE TABLE Questions (question_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, timestamp INTEGER NOT NULL, result INTEGER NOT NULL, difficulty REAL, round_id INTEGER NOT NULL, compound_id INTEGER NOT NULL, FOREIGN KEY(round_id) REFERENCES Rounds(round_id), FOREIGN KEY(compound_id) REFERENCES Compounds(compound_id))');
-            // sets scheme version to 0
-            tx.executeSql('INSERT INTO Versioning (type, version) VALUES (?, ?)', ['scheme', 0], function(tx, resultSet) {
-                console.log('set scheme version to 0');
-            }, function(tx, error) {
-                reject(error);
-            });
-            // sets data version to -1 (no data in database yet)
-            tx.executeSql('INSERT INTO Versioning (type, version) VALUES (?, ?)', ['data', -1], function(tx, resultSet) {
-                console.log('set data version to -1');
-            }, function(tx, error) {
-                reject(error);
-            });
-            // TODO: add tables from entity-relationship-diagram
+            insertSchemeVersion(tx, 0);
+            insertDataVersion(tx);
           }, function(error) {
               reject(error);
           }, function() {
