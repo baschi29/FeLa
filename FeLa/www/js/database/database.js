@@ -40,7 +40,7 @@ export function getDatabase() {
         return db;
     }
     else {
-        throw "Error: tried to get database that wasn't successfully opened (yet?)"
+        throw "Error: tried to get database that wasn't successfully opened"
     }
 }
 
@@ -58,7 +58,7 @@ export async function readSchemeVersion(tx) {
             });
         }
         else {
-            reject("Error: tried to get scheme version from database that wasn't successfully opened (yet?)");
+            reject("Error: tried to get scheme version from database that wasn't successfully opened");
         }   
     });
 }
@@ -77,7 +77,7 @@ export async function readDataVersion(tx) {
             });
         }
         else {
-            reject("Error: tried to get data version from database that wasn't successfully opened (yet?)");
+            reject("Error: tried to get data version from database that wasn't successfully opened");
         }
     });
 }
@@ -94,13 +94,31 @@ async function isDatabaseEmpty(tx) {
                 // evaluates to true if database is empty
                 resolve(rs.rows.item(0).tableCount == 0);
             }, function(tx, error) {
-                reject("Error: Error reading sqlite_master table" + JSON.stringify(error));
+                reject("Error: Error reading sqlite_master table " + JSON.stringify(error));
             });
         }
         else {
-            reject("Error: tried to get emptiness information from database that wasn't successfully opened (yet?)");
+            reject("Error: tried to get emptiness information from database that wasn't successfully opened");
         }
     });
+}
+
+// returns all categories in database in format {item(index), length}, tx can be read transaction
+export async function getCategories(tx) {
+
+    return new Promise(function(resolve, reject) {
+
+        if (isDatabaseReady()) {
+            tx.executeSql('SELECT category_id, name, ranking FROM Categories', [], function(tx, rs) {
+                resolve(rs.rows);
+            }, function(tx, error) {
+                reject("Error: Error reading categories from database " + JSON.stringify(error));
+            })
+        }
+        else {
+            reject("Error: tried to get Categories from database that wasn't successfully opened");
+        }
+    })
 }
 
 // Initialize dabase, has to be called only after deviceready event has been registered!
