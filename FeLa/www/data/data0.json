@@ -29,13 +29,13 @@
         "Ionen", "Wasserstoff, Sauerstoff" 
     ]},
     {"act":"new", "name":"Chrom#at#-#Ion", "formula":"CrO_4^2-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Di#chrom#at#-#Ion", "formula":"Cr_2O_7^2-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Per#mang#an#at#-#Ion", "formula":"MnO_4^-", "difficulty":2, "categories":[
-        "Ionen"
+        "Ionen", "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Nitr#at#-#Ion", "formula":"NO_3^-", "difficulty":2, "categories":[
         "Ionen"
@@ -123,6 +123,171 @@
     ]},
     {"act":"new", "name":"Iod#id#-#Ion", "formula":"I^-", "difficulty":1, "categories":[
         "Ionen"
+    ]},
+    {"act":"new", "name":"Wa#ss#er", "formula":"H_2O", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Am#moni#ak", "formula":"NH_3", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Chl#or#was#ser#st#off", "formula":"HCl", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Sau#er#sto#ff#gas", "formula":"O_2", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Oz#on", "formula":"O_3", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Li#th#ium#hydr#id", "formula":"LiH", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Na#tr#ium#hyd#rid", "formula":"NaH", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Ka#li#um#hydr#id", "formula":"KH", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Mag#nes#ium#hyd#rid", "formula":"MgH_2", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Cal#ci#um#hydr#id", "formula":"CaH_2", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Bar#ium#hy#dr#id", "formula":"BaH_2", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Lit#hium#alu#mini#um#hydrid", "formula":"LiAlH_4", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Na#trium#alu#mini#umhy#drid", "formula":"NaAlH_4", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Na#trium#bor#hydr#id", "formula":"NaBH_4", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Di#bor#hexa#hydr#id", "formula":"B_2H_6", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Dili#thium#ox#id", "formula":"Li_2O", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Di#na#trium#oxid", "formula":"Na_2O", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Ber#ylli#um#ox#id", "formula":"BeO", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Mag#nes#ium#oxid", "formula":"MgO", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Cal#cium#ox#id", "formula":"CaO", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Str#on#tium#ox#id", "formula":"SrO", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Bar#ium#oxid", "formula":"BaO", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Di#alu#mini#um#tri#oxid", "formula":"Al_2O_3", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Koh#len#stoff#mon#oxid", "formula":"CO", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Koh#len#stoff#di#oxid", "formula":"CO_2", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Sili#cium#di#oxid", "formula":"SiO_2", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Stick#stoff#mon#oxid", "formula":"NO", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Stick#stoff#di#oxid", "formula":"NO_2", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Di#stick#stoff#mon#oxid", "formula":"N_2O", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Schwe#fel#di#oxid", "formula":"SO_2", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Chrom#(II)#-#oxid", "formula":"CrO", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Chrom#(III)#-#oxid", "formula":"Cr_2O_3", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Chrom#(IV)#-#oxid", "formula":"CrO_2", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Chrom#(V)#-#oxid", "formula":"CrO_3", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Eisen#(II)#-#oxid", "formula":"FeO", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Eisen#(III)#-#oxid", "formula":"Fe_2O_3", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Kupfer#(I)#-#oxid", "formula":"Cu_2O", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Kupfer#(II)#-#oxid", "formula":"CuO", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Li#thium#per#ox#id", "formula":"Li_2O_2", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Na#trium#per#oxid", "formula":"Na_2O_2", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Cal#cium#per#oxid", "formula":"CaO_2", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Bar#ium#per#oxid", "formula":"BaO_2", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Wasser#stoff#per#oxid", "formula":"H_2O_2", "difficulty":2, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Lith#ium#chrom#at", "formula":"Li_2CrO_4", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Natr#ium#chrom#at", "formula":"Na_2CrO_4", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Kal#ium#chrom#at", "formula":"K_2CrO_4", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Mag#nes#ium#chrom#at", "formula":"MgCrO_4", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Cal#cium#chrom#at", "formula":"CaCrO_4", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Bar#ium#chrom#at", "formula":"BaCrO_4", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Blei#(II)#-#chrom#at", "formula":"PbCrO_4", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Ammon#ium#chrom#at", "formula":"(NH_4)_2CrO_4", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Zink#chrom#at", "formula":"ZnCrO_4", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Na#trium#di#chrom#at", "formula":"Na_2Cr_2O_7", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Kal#ium#di#chrom#at", "formula":"K_2Cr_2O_7", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Ammon#ium#di#chrom#at", "formula":"(NH_4)_2Cr_2O_7", "difficulty":3, "categories":[
+        "Wasserstoff, Sauerstoff"
     ]}
 ]
 }
