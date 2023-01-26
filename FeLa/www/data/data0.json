@@ -10,23 +10,119 @@
     {"act":"new", "name":"Kohlenwasserstoffe"}
 ],
 "compounds":[
-    {"act":"new", "name":"Proton", "formula":"H^+", "difficulty":1, "categories":[
+    {"act":"new", "name":"Pr#ot#on", "formula":"H^+", "difficulty":1, "categories":[
         "Ionen", "Wasserstoff, Sauerstoff"
     ]},
-    {"act":"new", "name":"Hydrid#-#Ion", "formula":"H^-", "difficulty":2, "categories":[
+    {"act":"new", "name":"Hydr#id#-#Ion", "formula":"H^-", "difficulty":2, "categories":[
         "Ionen", "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Oxid#-#Ion", "formula":"O^2-", "difficulty":3, "categories":[
         "Ionen", "Wasserstoff, Sauerstoff"
     ]},
-    {"act":"new", "name":"Peroxid#-#Ion", "formula":"O_2^2-", "difficulty":3, "categories":[
+    {"act":"new", "name":"Per#ox#id#-#Ion", "formula":"O_2^2-", "difficulty":3, "categories":[
         "Ionen", "Wasserstoff, Sauerstoff"
     ]},
-    {"act":"new", "name":"Hydroxid#-#Ion", "formula":"OH^-", "difficulty":1, "categories":[
+    {"act":"new", "name":"Hydr#ox#id#-#Ion", "formula":"OH^-", "difficulty":1, "categories":[
         "Ionen", "Wasserstoff, Sauerstoff"
     ]},
-    {"act":"new", "name":"Oxonium#-#Ion", "formula":"H_3O^+", "difficulty":1, "categories":[
+    {"act":"new", "name":"Ox#on#ium#-#Ion", "formula":"H_3O^+", "difficulty":1, "categories":[
         "Ionen", "Wasserstoff, Sauerstoff" 
+    ]},
+    {"act":"new", "name":"Chrom#at#-#Ion", "formula":"CrO_4^2-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Di#chrom#at#-#Ion", "formula":"Cr_2O_7^2-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Per#mang#an#at#-#Ion", "formula":"MnO_4^-", "difficulty":2, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Nitr#at#-#Ion", "formula":"NO_3^-", "difficulty":2, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Nitr#it#-#Ion", "formula":"NO_2^-", "difficulty":2, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Nitr#id#-#Ion", "formula":"N^3-", "difficulty":2, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Amm#on#ium#-#Ion", "formula":"NH_4^+", "difficulty":1, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Am#id#-#Ion", "formula":"NH_2^-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Car#bon#at#-#Ion", "formula":"CO_3^2-", "difficulty":2, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Hdyro#gen#carbon#at#-#Ion", "formula":"HCO_3^-", "difficulty":2, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Carb#id#-#Ion", "formula":"C_2^2-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Cy#an#id#-#Ion", "formula":"CN^-", "difficulty":2, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Th#io#cyan#at#-#Ion", "formula":"SCN^-", "difficulty":2, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Ac#et#at#-#Ion", "formula":"CH_3COO^-", "difficulty":2, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Sulf#id#-#Ion", "formula":"S^2-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Sulf#at#-#Ion", "formula":"SO_4^2-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Sulf#it#-#Ion", "formula":"SO_3^2-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Hydro#gen#sulf#it#-#Ion", "formula":"HSO_3^-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Hydro#gen#sulf#at#-#Ion", "formula":"HSO_4^-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Ph#os#ph#it#-#Ion", "formula":"PO_3^3-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Ph#os#ph#at#-#Ion", "formula":"PO_4^3-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Hydro#gen#phos#phat#-#Ion", "formula":"HPO_4^2-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Di#hydrogen#ph#osph#at#-Ion", "formula":"H_2PO_4^-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Fl#uor#id#-#Ion", "formula":"F^-", "difficulty":1, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Chl#or#id#-#Ion", "formula":"Cl^-", "difficulty":1, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Hy#po#chlor#it#-#Ion", "formula":"ClO^-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Chl#or#it#-#Ion", "formula":"ClO_2^-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Chl#or#at#-#Ion", "formula":"ClO_3^-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Per#chl#or#at#-#Ion", "formula":"ClO_4^-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Br#om#id#-#Ion", "formula":"Br^-", "difficulty":1, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Br#om#at#-#Ion", "formula":"BrO_3^-", "difficulty":3, "categories":[
+        "Ionen"
+    ]},
+    {"act":"new", "name":"Iod#id#-#Ion", "formula":"I^-", "difficulty":1, "categories":[
+        "Ionen"
     ]}
 ]
 }
