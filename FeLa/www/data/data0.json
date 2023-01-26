@@ -143,7 +143,7 @@
         "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Na#tr#ium#hyd#rid", "formula":"NaH", "difficulty":1, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Ka#li#um#hydr#id", "formula":"KH", "difficulty":1, "categories":[
         "Wasserstoff, Sauerstoff"
@@ -161,10 +161,10 @@
         "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Na#trium#alu#mini#umhy#drid", "formula":"NaAlH_4", "difficulty":2, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Na#trium#bor#hydr#id", "formula":"NaBH_4", "difficulty":2, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Di#bor#hexa#hydr#id", "formula":"B_2H_6", "difficulty":2, "categories":[
         "Wasserstoff, Sauerstoff"
@@ -173,7 +173,7 @@
         "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Di#na#trium#oxid", "formula":"Na_2O", "difficulty":1, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Ber#ylli#um#ox#id", "formula":"BeO", "difficulty":1, "categories":[
         "Wasserstoff, Sauerstoff"
@@ -257,7 +257,7 @@
         "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Natr#ium#chrom#at", "formula":"Na_2CrO_4", "difficulty":3, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Kal#ium#chrom#at", "formula":"K_2CrO_4", "difficulty":3, "categories":[
         "Wasserstoff, Sauerstoff"
@@ -281,13 +281,136 @@
         "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Na#trium#di#chrom#at", "formula":"Na_2Cr_2O_7", "difficulty":3, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Kal#ium#di#chrom#at", "formula":"K_2Cr_2O_7", "difficulty":3, "categories":[
         "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Ammon#ium#di#chrom#at", "formula":"(NH_4)_2Cr_2O_7", "difficulty":3, "categories":[
         "Wasserstoff, Sauerstoff"
+    ]},
+    {"act":"new", "name":"Cal#cium#hydr#id", "formula":"CaH_2", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#oxid", "formula":"CaO", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#hydr#oxid", "formula":"Ca(OH)_2", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#per#mangan#at", "formula":"Ca(MnO_4)_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#nitr#at", "formula":"Ca(NO_3)_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#nitr#id", "formula":"Ca_3N_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#nitr#it", "formula":"Ca(NO_2)_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#chrom#at", "formula":"CaCrO_4", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#car#bon#at", "formula":"CaCO_3", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Calcium#hy#drogen#carbon#at", "formula":"Ca(HCO_3)_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#car#bid", "formula":"CaC_2", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#cyan#id", "formula":"Ca(CN)_2", "difficulty":2, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#sulf#at", "formula":"CaSO_4", "difficulty":2, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#sulf#id", "formula":"CaS", "difficulty":2, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#sulf#it", "formula":"CaSO_3", "difficulty":2, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Calcium#hydro#gen#phos#phat", "formula":"CaHPO_4", "difficulty":2, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Calcium#di#hy#drogen#phos#phat", "formula":"Ca(H_2PO_4)_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#chlor#id", "formula":"CaCl_2", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#chlor#it", "formula":"Ca(ClO_2)_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#chlor#at", "formula":"Ca(ClO_3)_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#hypo#chlor#it", "formula":"Ca(OCl)_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#per#chlor#at", "formula":"Ca(ClO_4)_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#brom#id", "formula":"CaBr_2", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#fluor#id", "formula":"CaF_2", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Cal#cium#iod#id", "formula":"CaI_2", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Alu#minium#natrium#oxid", "formula":"NaAlO_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Na#trium#hydr#oxid", "formula":"NaOH", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natr#ium#car#bon#at", "formula":"Na_2CO_3", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Nat#rium#hydro#gen#carbon#at", "formula":"NaHCO_3", "difficulty":2, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natr#ium#carb#id", "formula":"Na_2C_2", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natr#ium#cyan#at", "formula":"NaOCN", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natr#ium#cyan#id", "formula":"NaCN", "difficulty":2, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natr#ium#acet#at", "formula":"CH_3COONa", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Nat#rium#phos#phat", "formula":"Na_3PO_4", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Di#natrium#hydrogen#phosph#at", "formula":"Na_2HPO_4", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natrium#di#hydrogen#phosph#at", "formula":"NaH_2PO_4", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natr#ium#chlor#id", "formula":"NaCl", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natr#ium#chlor#at", "formula":"NaClO_3", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natr#ium#hypo#chlor#it", "formula":"NaClO", "difficulty":3, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natr#ium#fluor#id", "formula":"NaF", "difficulty":1, "categories":[
+        "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Natr#ium#iod#id", "formula":"NaI", "difficulty":1, "categories":[
+        "Natrium, Calcium"
     ]}
 ]
 }
