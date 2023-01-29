@@ -92,7 +92,7 @@ async function populateVersion0(db) {
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 
         // read data json and transform it to an js object
-        fetch("./www/data/data0.json").then(
+        fetch("../../data/data0.json").then(
             response  => {
                 return response.json();
             }
