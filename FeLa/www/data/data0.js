@@ -1,4 +1,4 @@
-{
+export default {
 "categories":[
     {"act":"new", "name":"Ionen"},
     {"act":"new", "name":"Wasserstoff, Sauerstoff"},

@@ -1,5 +1,5 @@
 // variable for desired log level, >0 logs a lot
-var logLevel = 0;
+var logLevel = 1;
 
 // adds a category with ranking 0, needs a transaction tx as an argument
 function addCategory(tx, catName) {
@@ -81,7 +81,7 @@ export async function populateData(db, version, fromversion) {
 /* populates database with data version 0 from scratch
 for scheme version 0*/
 async function populateVersion0(db) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(async function(resolve, reject) {
         // TODO: version sanity check
         // helpful (maybe lol) Links:
         // https://www.geeksforgeeks.org/how-to-remove-a-character-from-string-in-javascript/
@@ -92,55 +92,47 @@ async function populateVersion0(db) {
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 
         // read data json and transform it to an js object
-        fetch("../../data/data0.json").then(
-            response  => {
-                return response.json();
+        let js0 = await import("/data/data0.js");
+        let data = js0.default;
+        //transaction for actually adding stuff
+        db.transaction(function(tx) {
+
+            // loop through categories and add them to database
+            console.log("Adding categories");
+            for (let category of data["categories"]) {
+                if (category["act"] == "new") {
+                    addCategory(tx, category["name"]);
+                }
+                else {
+                    reject("Unknown action type " + category["act"]);
+                }
             }
-        ).then(
-            data => {
-                
-                //transaction for actually adding stuff
-                db.transaction(function(tx) {
 
-                    // loop through categories and add them to database
-                    console.log("Adding categories");
-                    for (let category of data["categories"]) {
-                        if (category["act"] == "new") {
-                            addCategory(tx, category["name"]);
-                        }
-                        else {
-                            reject("Unknown action type " + category["act"]);
-                       }
+            // loop through compounds, add them to database and map to category
+            console.log("Adding compounds and mapping to categories");
+            for (let compound of data["compounds"]) {
+
+                if (compound["act"] == "new") {
+
+                    // remove #s from compound name to save clearly in database
+                    let compName = compound["name"].replace(/#/g, "");
+                    addCompound(tx, compName, compound["formula"], compound["name"], compound["difficulty"]);
+
+                    // loop through associated categories and map them - they need to exist!
+                    for (let catName of compound["categories"]) {
+                        mapCategoryCompound(tx, catName, compName);
                     }
-
-                    // loop through compounds, add them to database and map to category
-                    console.log("Adding compounds and mapping to categories");
-                    for (let compound of data["compounds"]) {
-
-                        if (compound["act"] == "new") {
-
-                            // remove #s from compound name to save clearly in database
-                            let compName = compound["name"].replace(/#/g, "");
-                            addCompound(tx, compName, compound["formula"], compound["name"], compound["difficulty"]);
-
-                            // loop through associated categories and map them - they need to exist!
-                            for (let catName of compound["categories"]) {
-                                mapCategoryCompound(tx, catName, compName);
-                            }
-                        }
-                        else {
-                            reject("Unknown action type " + compound["act"]);
-                        }
-                    }
-
-                    updateDataVersion(tx, 0);
-                }, function(error) {
-                    reject(error);
-                }, function() {
-                    resolve("Transaction successfull: populate database with data version 0");
-                    //console.log('Transaction successfull: populate database with data version 0');
-                });
+                }
+                else {
+                    reject("Unknown action type " + compound["act"]);
+                }
             }
-        );
+
+            updateDataVersion(tx, 0);
+        }, function(error) {
+            reject(error);
+        }, function() {
+            resolve("Transaction successfull: populate database with data version 0");
+        });
     });
 }
