@@ -38,16 +38,16 @@
         "Ionen", "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Nitr#at#-#Ion", "formula":"NO_3^-", "difficulty":2, "categories":[
-        "Ionen"
+        "Ionen", "Stickstoff"
     ]},
     {"act":"new", "name":"Nitr#it#-#Ion", "formula":"NO_2^-", "difficulty":2, "categories":[
-        "Ionen"
+        "Ionen", "Stickstoff"
     ]},
     {"act":"new", "name":"Nitr#id#-#Ion", "formula":"N^3-", "difficulty":2, "categories":[
-        "Ionen"
+        "Ionen", "Stickstoff"
     ]},
     {"act":"new", "name":"Amm#on#ium#-#Ion", "formula":"NH_4^+", "difficulty":1, "categories":[
-        "Ionen"
+        "Ionen", "Stickstoff"
     ]},
     {"act":"new", "name":"Am#id#-#Ion", "formula":"NH_2^-", "difficulty":3, "categories":[
         "Ionen"
@@ -128,7 +128,7 @@
         "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Am#moni#ak", "formula":"NH_3", "difficulty":1, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Stickstoff"
     ]},
     {"act":"new", "name":"Chl#or#was#ser#st#off", "formula":"HCl", "difficulty":1, "categories":[
         "Wasserstoff, Sauerstoff"
@@ -203,13 +203,13 @@
         "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Stick#stoff#mon#oxid", "formula":"NO", "difficulty":1, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Stickstoff"
     ]},
     {"act":"new", "name":"Stick#stoff#di#oxid", "formula":"NO_2", "difficulty":1, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Stickstoff"
     ]},
     {"act":"new", "name":"Di#stick#stoff#mon#oxid", "formula":"N_2O", "difficulty":2, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Stickstoff"
     ]},
     {"act":"new", "name":"Schwe#fel#di#oxid", "formula":"SO_2", "difficulty":1, "categories":[
         "Wasserstoff, Sauerstoff"
@@ -302,13 +302,13 @@
         "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Cal#cium#nitr#at", "formula":"Ca(NO_3)_2", "difficulty":3, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Stickstoff"
     ]},
     {"act":"new", "name":"Cal#cium#nitr#id", "formula":"Ca_3N_2", "difficulty":3, "categories":[
         "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Cal#cium#nitr#it", "formula":"Ca(NO_2)_2", "difficulty":3, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Stickstoff"
     ]},
     {"act":"new", "name":"Cal#cium#chrom#at", "formula":"CaCrO_4", "difficulty":3, "categories":[
         "Natrium, Calcium"
@@ -411,6 +411,78 @@
     ]},
     {"act":"new", "name":"Natr#ium#iod#id", "formula":"NaI", "difficulty":1, "categories":[
         "Natrium, Calcium"
+    ]},
+    {"act":"new", "name":"Stick#stoff#gas", "formula":"N_2", "difficulty":1, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Sal#pet#rige #Säure", "formula":"HNO_2", "difficulty":2, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Sal#peter#säure", "formula":"HNO_3", "difficulty":2, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Sili#cium#nitr#at", "formula":"SiNO_3", "difficulty":1, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Lith#ium#nitr#at", "formula":"LiNO_3", "difficulty":1, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Natr#ium#nitr#at", "formula":"NaNO_3", "difficulty":1, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Cäs#ium#nitr#at", "formula":"CsNO_3", "difficulty":1, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Sil#ber#nitr#at", "formula":"AgNO_3", "difficulty":1, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Alu#minium#nitr#at", "formula":"Al(NO_3)_3", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Am#monium#nitr#at", "formula":"NH_4NO_3", "difficulty":2, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Bar#ium#nitr#at", "formula":"Ba(NO_3)_2", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Ber#yll#ium#nitr#at", "formula":"Be(NO_3)_2", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Blei#nitr#at", "formula":"Pb(NO_3)_2", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Chlor#nitr#at", "formula":"ClNO_3", "difficulty":2, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Eisen#(III)#-#nitr#at", "formula":"Fe(NO_3)_3", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Kal#ium#nitr#at", "formula":"KNO_3", "difficulty":2, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Kupfer#(II)#-#nitr#at", "formula":"Cu(NO_3)_2", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Mag#nes#ium#nitr#at", "formula":"Mg(NO_3)_2", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Zink#nitr#at", "formula":"Zn(NO_3)_2", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Cäs#ium#nitr#it", "formula":"CsNO_2", "difficulty":2, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Am#monium#nitr#it", "formula":"NH_4NO_2", "difficulty":2, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Kal#ium#nitr#it", "formula":"KNO_2", "difficulty":2, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Natr#ium#nitr#it", "formula":"NaNO_2", "difficulty":2, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Sil#ber#nitr#it", "formula":"AgNO_2", "difficulty":2, "categories":[
+        "Stickstoff"
     ]}
 ]
 }
