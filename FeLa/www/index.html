@@ -54,7 +54,10 @@
 
         <!--script part for handling onsenui for now in html file for clarity-->
         <script>
-            
+            // example on how to listen for ready event
+            document.addEventListener("feladbready", (e) => {
+                console.log("Received feladbready event");
+            })
         </script>
     </body>
 </html>

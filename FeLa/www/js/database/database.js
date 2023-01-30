@@ -5,6 +5,8 @@ https://github.com/storesafe/cordova-sqlite-storage
 Important: the plugin does not allow persistent storage when using the browser as a platform
 sadly the sqlite plugin does not use proper promises but classical callback functions, which makes this a mess
 luckily all own functions wrap them in a promise, see https://www.freecodecamp.org/news/how-to-make-a-promise-out-of-a-callback-function-in-javascript-d8ec35d1f981/
+When the database is ready to accept requests, a custom event feladbready is fired - applications must wait for this event
+see: https://developer.mozilla.org/en-US/docs/Web/Events/Creating_and_triggering_events
 */
 
 //imports nice utility functions from managescheme
@@ -15,7 +17,6 @@ import { populateData } from "./populatedb.js";
 var db = null;
 // do not queue operations on unopened database
 var opened = false;
-var ready = false;
 // database version our app intends to use
 var intendedSchemeVersion = 0;
 var intendedDataVersion = 0;
@@ -23,25 +24,18 @@ var intendedDataVersion = 0;
 // Open and initialize database after deviceready event has fired
 document.addEventListener('deviceready', initializeDatabase);
 
-// helping function to indicate wheter database is open
-function isDatabaseOpen() {
-    return opened && db != null;
-}
-
-//helping function to indicate wheter database is ready for application operation
-export function isDatabaseReady() {
-    return isDatabaseOpen() && ready;
-}
-
-// return database only (to modules) when it was opened succesfully
-export function getDatabase() {
-    
-    if (isDatabaseOpen()) {
-        return db;
-    }
-    else {
-        throw "Error: tried to get database that wasn't successfully opened"
-    }
+// dispatching event to indicate that fela database is ready to use
+function dispatchReadyEvent() {
+    const event = new Event(
+        "feladbready", 
+        {
+            detail: {
+                time: new Date()
+            },
+            bubbles: true,
+            cancelable: true
+        });
+    document.dispatchEvent(event);
 }
 
 /* reads the scheme version from the database
@@ -50,16 +44,11 @@ export async function readSchemeVersion(tx) {
     
     return new Promise(function(resolve, reject) {
 
-        if (isDatabaseOpen()) {
-            tx.executeSql('SELECT version FROM Versioning WHERE type = "scheme"', [], function(tx, rs) {
-                resolve(rs.rows.item(0).version);         
-            }, function(tx, error) {
-                reject("Error: Failed opening version table" + JSON.stringify(error));
-            });
-        }
-        else {
-            reject("Error: tried to get scheme version from database that wasn't successfully opened");
-        }   
+        tx.executeSql('SELECT version FROM Versioning WHERE type = "scheme"', [], function(tx, rs) {
+            resolve(rs.rows.item(0).version);         
+        }, function(tx, error) {
+            reject("Error: Failed opening version table" + JSON.stringify(error));
+        });
     });
 }
 
@@ -69,16 +58,11 @@ export async function readDataVersion(tx) {
     
     return new Promise(function(resolve, reject) {
 
-        if (isDatabaseOpen()) {
-            tx.executeSql('SELECT version FROM Versioning WHERE type = "data"', [], function(tx, rs) {
-                resolve(rs.rows.item(0).version);         
-            }, function(tx, error) {
-                reject("Error: Failed opening version table" + JSON.stringify(error));
-            });
-        }
-        else {
-            reject("Error: tried to get data version from database that wasn't successfully opened");
-        }
+        tx.executeSql('SELECT version FROM Versioning WHERE type = "data"', [], function(tx, rs) {
+            resolve(rs.rows.item(0).version);         
+        }, function(tx, error) {
+            reject("Error: Failed opening version table" + JSON.stringify(error));
+        });
     });
 }
 
@@ -89,17 +73,12 @@ async function isDatabaseEmpty(tx) {
     
     return new Promise(function(resolve, reject) {
 
-        if (opened && db != null) {
-            tx.executeSql('SELECT count(*) AS tableCount FROM sqlite_master WHERE type = "table"', [], function(tx, rs) {
-                // evaluates to true if database is empty
-                resolve(rs.rows.item(0).tableCount == 0);
-            }, function(tx, error) {
-                reject("Error: Error reading sqlite_master table " + JSON.stringify(error));
-            });
-        }
-        else {
-            reject("Error: tried to get emptiness information from database that wasn't successfully opened");
-        }
+        tx.executeSql('SELECT count(*) AS tableCount FROM sqlite_master WHERE type = "table"', [], function(tx, rs) {
+            // evaluates to true if database is empty
+            resolve(rs.rows.item(0).tableCount == 0);
+        }, function(tx, error) {
+            reject("Error: Error reading sqlite_master table " + JSON.stringify(error));
+        });
     });
 }
 
@@ -108,16 +87,11 @@ export async function getCategories(tx) {
 
     return new Promise(function(resolve, reject) {
 
-        if (isDatabaseReady()) {
-            tx.executeSql('SELECT category_id, name, ranking FROM Categories', [], function(tx, rs) {
-                resolve(rs.rows);
-            }, function(tx, error) {
-                reject("Error: Error reading categories from database " + JSON.stringify(error));
-            })
-        }
-        else {
-            reject("Error: tried to get Categories from database that wasn't successfully opened");
-        }
+        tx.executeSql('SELECT category_id, name, ranking FROM Categories', [], function(tx, rs) {
+            resolve(rs.rows);
+        }, function(tx, error) {
+            reject("Error: Error reading categories from database " + JSON.stringify(error));
+        })
     })
 }
 
@@ -208,7 +182,7 @@ async function initializeDatabase() {
                     populateDatabase().then(
                         function(msg) {
                             console.log(msg);
-                            ready = true;
+                            dispatchReadyEvent();
                         }, function(error) {
                             throw error;
                         }
@@ -223,6 +197,6 @@ async function initializeDatabase() {
         });
     } catch (error) {
         console.log(JSON.stringify(error));
-        //TODO indicate to user that program is useless piece of shit
+        //TODO indicate to user that program is useless piece of shit - maybe with own event?
     }
 }
