@@ -53,22 +53,22 @@ export default {
         "Ionen"
     ]},
     {"act":"new", "name":"Car#bon#at#-#Ion", "formula":"CO_3^2-", "difficulty":2, "categories":[
-        "Ionen"
+        "Ionen", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Hdyro#gen#carbon#at#-#Ion", "formula":"HCO_3^-", "difficulty":2, "categories":[
-        "Ionen"
+        "Ionen", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Carb#id#-#Ion", "formula":"C_2^2-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Cy#an#id#-#Ion", "formula":"CN^-", "difficulty":2, "categories":[
-        "Ionen"
+        "Ionen", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Th#io#cyan#at#-#Ion", "formula":"SCN^-", "difficulty":2, "categories":[
-        "Ionen"
+        "Ionen", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Ac#et#at#-#Ion", "formula":"CH_3COO^-", "difficulty":2, "categories":[
-        "Ionen"
+        "Ionen", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Sulf#id#-#Ion", "formula":"S^2-", "difficulty":3, "categories":[
         "Ionen"
@@ -194,10 +194,10 @@ export default {
         "Wasserstoff, Sauerstoff"
     ]},
     {"act":"new", "name":"Koh#len#stoff#mon#oxid", "formula":"CO", "difficulty":1, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Koh#len#stoff#di#oxid", "formula":"CO_2", "difficulty":1, "categories":[
-        "Wasserstoff, Sauerstoff"
+        "Wasserstoff, Sauerstoff", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Sili#cium#di#oxid", "formula":"SiO_2", "difficulty":1, "categories":[
         "Wasserstoff, Sauerstoff"
@@ -305,7 +305,7 @@ export default {
         "Natrium, Calcium", "Stickstoff"
     ]},
     {"act":"new", "name":"Cal#cium#nitr#id", "formula":"Ca_3N_2", "difficulty":3, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Stickstoff"
     ]},
     {"act":"new", "name":"Cal#cium#nitr#it", "formula":"Ca(NO_2)_2", "difficulty":3, "categories":[
         "Natrium, Calcium", "Stickstoff"
@@ -313,14 +313,14 @@ export default {
     {"act":"new", "name":"Cal#cium#chrom#at", "formula":"CaCrO_4", "difficulty":3, "categories":[
         "Natrium, Calcium"
     ]},
-    {"act":"new", "name":"Cal#cium#car#bon#at", "formula":"CaCO_3", "difficulty":1, "categories":[
-        "Natrium, Calcium"
+    {"act":"new", "name":"Cal#cium#car#bon#at", "formula":"CaCO_3", "difficulty":2, "categories":[
+        "Natrium, Calcium", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Calcium#hy#drogen#carbon#at", "formula":"Ca(HCO_3)_2", "difficulty":3, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Cal#cium#car#bid", "formula":"CaC_2", "difficulty":1, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Cal#cium#cyan#id", "formula":"Ca(CN)_2", "difficulty":2, "categories":[
         "Natrium, Calcium"
@@ -370,23 +370,23 @@ export default {
     {"act":"new", "name":"Na#trium#hydr#oxid", "formula":"NaOH", "difficulty":1, "categories":[
         "Natrium, Calcium"
     ]},
-    {"act":"new", "name":"Natr#ium#car#bon#at", "formula":"Na_2CO_3", "difficulty":3, "categories":[
-        "Natrium, Calcium"
+    {"act":"new", "name":"Natr#ium#car#bon#at", "formula":"Na_2CO_3", "difficulty":2, "categories":[
+        "Natrium, Calcium", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Nat#rium#hydro#gen#carbon#at", "formula":"NaHCO_3", "difficulty":2, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Natr#ium#carb#id", "formula":"Na_2C_2", "difficulty":3, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Natr#ium#cyan#at", "formula":"NaOCN", "difficulty":3, "categories":[
         "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Natr#ium#cyan#id", "formula":"NaCN", "difficulty":2, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Natr#ium#acet#at", "formula":"CH_3COONa", "difficulty":3, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Nat#rium#phos#phat", "formula":"Na_3PO_4", "difficulty":3, "categories":[
         "Natrium, Calcium"
@@ -483,6 +483,126 @@ export default {
     ]},
     {"act":"new", "name":"Sil#ber#nitr#it", "formula":"AgNO_2", "difficulty":2, "categories":[
         "Stickstoff"
+    ]},
+    {"act":"new", "name":"Alu#minium#nitr#id", "formula":"AlN", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Ber#yll#ium#nitr#id", "formula":"Be_3N_2", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Bor#nitr#id", "formula":"BN", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Di#eisen#nitr#id", "formula":"Fe_2N", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Tri#eisen#nitr#id", "formula":"Fe_3N", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Tetra#eisen#nitr#id", "formula":"Fe_4N", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Lith#ium#nitr#id", "formula":"Li_3N", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Mag#nesium#nitr#id", "formula":"Mg_3N_2", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Natr#ium#nitr#id", "formula":"Na_3N", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Sil#ber#nitr#id", "formula":"Ag_3N", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Silic#ium#nitr#id", "formula":"Si_3N_4", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Zink#nitr#id", "formula":"Zn_3N_2", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Ammon#ium#hydrogen#phosph#at", "formula":"(NH_4)_2HPO_4", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Ammon#ium#chlor#at", "formula":"NH_4ClO_3", "difficulty":3, "categories":[
+        "Stickstoff"
+    ]},
+    {"act":"new", "name":"Di#ama#nt", "formula":"C", "difficulty":1, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Gra#ph#it", "formula":"C", "difficulty":1, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Di#lithium#carbon#at", "formula":"Li_2CO_3", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Di#kal#ium#carbon#at", "formula":"K_2CO_3", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Beryll#ium#carbon#at", "formula":"BeCO_3", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Magnes#ium#carbon#at", "formula":"MgCO_3", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Stront#ium#carbon#at", "formula":"SrCO_3", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Bar#ium#carbon#at", "formula":"BaCO_3", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Zink#carbon#at", "formula":"ZnCO_3", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Di#hydro#gen#carbon#at", "formula":"H_2CO_3", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Ammon#ium#hydro#gen#carbon#at", "formula":"NH_4HCO_3", "difficulty":3, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Lith#ium#carb#id", "formula":"Li_2C_2", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Beryll#ium#carb#id", "formula":"Be_2C", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Magnes#ium#carb#id", "formula":"Mg_2C_3", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Alu#min#ium#carb#id", "formula":"Al_4C_3", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Silic#ium#carb#id", "formula":"SiC", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Bor#carb#id", "formula":"B_4C", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Cyan#wasser#stoff", "formula":"HCN", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Kal#ium#cyan#id", "formula":"KCN", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Eisen#thio#cyan#at", "formula":"Fe(SCN)_3", "difficulty":3, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Kalium#thio#cyan#at", "formula":"KSCN", "difficulty":2, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Lith#ium#acet#at", "formula":"CH_3COOLi", "difficulty":3, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Kal#ium#acet#at", "formula":"CH_3COOK", "difficulty":3, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Ammon#ium#acet#at", "formula":"CH_3COONH_4", "difficulty":3, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Calc#ium#acet#at", "formula":"(CH_3COO)_2Ca", "difficulty":3, "categories":[
+        "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Blei#(II)#-#acet#at", "formula":"(CH_3COO)_2Pb", "difficulty":3, "categories":[
+        "Kohlenstoff"
     ]}
 ]
 }
