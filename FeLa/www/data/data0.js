@@ -71,31 +71,31 @@ export default {
         "Ionen", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Sulf#id#-#Ion", "formula":"S^2-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Sulf#at#-#Ion", "formula":"SO_4^2-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Sulf#it#-#Ion", "formula":"SO_3^2-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Hydro#gen#sulf#it#-#Ion", "formula":"HSO_3^-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Hydro#gen#sulf#at#-#Ion", "formula":"HSO_4^-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Ph#os#ph#it#-#Ion", "formula":"PO_3^3-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Ph#os#ph#at#-#Ion", "formula":"PO_4^3-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Hydro#gen#phos#phat#-#Ion", "formula":"HPO_4^2-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Di#hydrogen#ph#osph#at#-Ion", "formula":"H_2PO_4^-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Fl#uor#id#-#Ion", "formula":"F^-", "difficulty":1, "categories":[
         "Ionen"
@@ -325,11 +325,11 @@ export default {
     {"act":"new", "name":"Cal#cium#cyan#id", "formula":"Ca(CN)_2", "difficulty":2, "categories":[
         "Natrium, Calcium"
     ]},
-    {"act":"new", "name":"Cal#cium#sulf#at", "formula":"CaSO_4", "difficulty":2, "categories":[
-        "Natrium, Calcium"
+    {"act":"new", "name":"Cal#cium#sulf#at", "formula":"CaSO_4", "difficulty":3, "categories":[
+        "Natrium, Calcium", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Cal#cium#sulf#id", "formula":"CaS", "difficulty":2, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Cal#cium#sulf#it", "formula":"CaSO_3", "difficulty":2, "categories":[
         "Natrium, Calcium"
@@ -389,13 +389,13 @@ export default {
         "Natrium, Calcium", "Kohlenstoff"
     ]},
     {"act":"new", "name":"Nat#rium#phos#phat", "formula":"Na_3PO_4", "difficulty":3, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Phosphor, Schwefel"
     ]},
-    {"act":"new", "name":"Di#natrium#hydrogen#phosph#at", "formula":"Na_2HPO_4", "difficulty":3, "categories":[
-        "Natrium, Calcium"
+    {"act":"new", "name":"Di#natrium#hydrogen#phosph#at", "formula":"Na_2HPO_4", "difficulty":2, "categories":[
+        "Natrium, Calcium", "Phosphor, Schwefel"
     ]},
-    {"act":"new", "name":"Natrium#di#hydrogen#phosph#at", "formula":"NaH_2PO_4", "difficulty":3, "categories":[
-        "Natrium, Calcium"
+    {"act":"new", "name":"Natrium#di#hydrogen#phosph#at", "formula":"NaH_2PO_4", "difficulty":2, "categories":[
+        "Natrium, Calcium", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Natr#ium#chlor#id", "formula":"NaCl", "difficulty":1, "categories":[
         "Natrium, Calcium"
@@ -521,7 +521,7 @@ export default {
         "Stickstoff"
     ]},
     {"act":"new", "name":"Ammon#ium#hydrogen#phosph#at", "formula":"(NH_4)_2HPO_4", "difficulty":3, "categories":[
-        "Stickstoff"
+        "Stickstoff", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Ammon#ium#chlor#at", "formula":"NH_4ClO_3", "difficulty":3, "categories":[
         "Stickstoff"
@@ -603,6 +603,96 @@ export default {
     ]},
     {"act":"new", "name":"Blei#(II)#-#acet#at", "formula":"(CH_3COO)_2Pb", "difficulty":3, "categories":[
         "Kohlenstoff"
+    ]},
+    {"act":"new", "name":"Schwe#fel#wasser#stoff", "formula":"H_2S", "difficulty":1, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Schwe#fel#säure", "formula":"H_2SO_4", "difficulty":1, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Schwef#lige# #Säure", "formula":"H_2SO_3", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Di#lith#ium#sulf#id", "formula":"Li_2S", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Di#natr#ium#sulf#id", "formula":"Na_2S", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Di#cäs#ium#sulf#id", "formula":"Cs_2S", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Beryll#ium#sulf#id", "formula":"BeS", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Magnes#ium#sulf#id", "formula":"MgS", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Stront#ium#sulf#id", "formula":"SrS", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Bar#ium#sulf#id", "formula":"BaS", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Chrom#sulf#id", "formula":"CrS", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Zink#sulf#id", "formula":"ZnS", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Queck#silber#sulf#id", "formula":"HgS", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Di#lith#ium#sulf#at", "formula":"Li_2SO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Di#natr#ium#sulf#at", "formula":"Na_2SO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Di#kal#ium#sulf#at", "formula":"K_2SO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Di#rub#id#ium#sulf#at", "formula":"Rb_2SO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Di#cäs#ium#sulf#at", "formula":"Cs_2SO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Beryll#ium#sulf#at", "formula":"BeSO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Magnes#ium#sulf#at", "formula":"MgSO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Stront#ium#sulf#at", "formula":"SrSO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Kupfer#sulf#at", "formula":"CuSO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Zink#sulf#at", "formula":"ZnSO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Cadm#ium#sulf#at", "formula":"CdSO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Silic#ium#sulf#at", "formula":"SiSO_4", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Natr#ium#hydro#gen#sulf#it", "formula":"NaHSO_3", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Phos#phor#säure", "formula":"H_3PO_4", "difficulty":1, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Phos#phor#ige# #Säure", "formula":"H_3PO_3", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Pho#sph#an", "formula":"PH_3", "difficulty":3, "categories":[
+        "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Weißer# #Phos#phor", "formula":"P_4", "difficulty":2, "categories":[
+        "Phosphor, Schwefel"
     ]}
 ]
 }
