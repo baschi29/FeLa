@@ -82,13 +82,18 @@ async function isDatabaseEmpty(tx) {
     });
 }
 
-// returns all categories in database in format {item(index), length}, tx can be read transaction
+/* returns all categories in database tx can be read transaction
+categories are returned in an array as an object consisting of id, name and ranking*/
 export async function getCategories(tx) {
 
     return new Promise(function(resolve, reject) {
 
         tx.executeSql('SELECT category_id, name, ranking FROM Categories', [], function(tx, rs) {
-            resolve(rs.rows);
+            let result = [];
+            for (let i = 0; i < rs.rows.length; i++) {
+                result.push(rs.rows.item(i));
+                resolve(result);
+            }
         }, function(tx, error) {
             reject("Error: Error reading categories from database " + JSON.stringify(error));
         })
@@ -183,6 +188,9 @@ async function initializeDatabase() {
                         function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
+                            db.readTransaction(async function(tx) {
+                                console.log(await getCategories(tx));
+                            });
                         }, function(error) {
                             throw error;
                         }
