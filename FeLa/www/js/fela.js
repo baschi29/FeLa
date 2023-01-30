@@ -1,47 +1,46 @@
-function addMCItem() {
+function addMCItem(radioNumber) {
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
-    //console.log(questCar);
     
     const carouselItem = ons.createElement(`
             <ons-carousel-item>
                 <ons-list>
                     <ons-list-item tappable>
                         <label class="left">
-                                <ons-radio name="color" input-id="radio-1" ></ons-radio>
+                                <ons-radio id=rd1${radioNumber} name="questions" input-id="radio-1" ></ons-radio>
                         </label>
 
-                        <label for="radio-1" class="center">
-                            Antwort A
+                        <label id=label1${radioNumber} for="radio-1" class="center">
+                            Aufgabe ${radioNumber}                    
                         </label>
                      </ons-list-item>
 
                      <ons-list-item tappable>
                         <label class="left">
-                                <ons-radio name="color" input-id="radio-2" ></ons-radio>
+                                <ons-radio id=rd2${radioNumber} name="questions" input-id="radio-2" ></ons-radio>
                         </label>
 
-                        <label for="radio-2" class="center">
+                        <label id=label2${radioNumber} for="radio-2" class="center">
                             Antwort B
                         </label>
                      </ons-list-item>
 
                      <ons-list-item tappable>
                         <label class="left">
-                                <ons-radio name="color" input-id="radio-3" ></ons-radio>
+                                <ons-radio id=rd3${radioNumber} name="questions" input-id="radio-3" ></ons-radio>
                         </label>
 
-                        <label for="radio-3" class="center">
+                        <label id=label3${radioNumber} for="radio-3" class="center">
                             Antwort C
                         </label>
                      </ons-list-item>
 
                      <ons-list-item tappable>
                         <label class="left">
-                                <ons-radio name="color" input-id="radio-4" ></ons-radio>
+                                <ons-radio id=rd4${radioNumber} name="questions" input-id="radio-4" ></ons-radio>
                         </label>
 
-                        <label for="radio-4" class="center">
+                        <label id=label4${radioNumber} for="radio-4" class="center">
                             Antwort D 
                         </label>
                      </ons-list-item>
@@ -55,13 +54,64 @@ function addMCItem() {
         </ons-carousel-item>
         `);
 
-
     //console.log(carouselItem);
     questCar.appendChild(carouselItem);
-    
 
-   
+    var checkButton = document.getElementById('confirm');
+    checkButton.addEventListener('click', check);   
 }
+
+function addDaDItem(radioNumber) {
+    // carussel item hinzufügen für multiple chooice
+    const questCar = document.querySelector('#questCar');
+    
+    const carouselItem = ons.createElement(`
+        <ons-carousel-item>
+            <p id="demo" onmousedown="mouseDown()">Click me.</p>
+
+            <p>
+                <ons-input id="answer" input-id="answertest" modifier="underbar" placeholder="Antwort" float></ons-input>
+            </p>
+
+            <ons-button id='confirm' modifier="large">
+                Antwort auswählen
+            </ons-button>
+            
+        </ons-carausel-item>
+    `);
+
+    
+    questCar.appendChild(carouselItem);
+    
+    document.getElementById('answer').disabled;
+    
+}  
+
+function addFTEItem(radioNumber) {
+    // carussel item hinzufügen für multiple chooice
+    const questCar = document.querySelector('#questCar');
+    
+    const carouselItem = ons.createElement(`
+        <ons-carausel-item>    
+            <h1>
+                Placeholder Frage
+            </h1>
+            <br></br>
+            <p>
+                <ons-input id="answer" input-id="answertest" modifier="underbar" placeholder="Antwort" float></ons-input>
+            </p>
+
+            <ons-button id='confirm' modifier="large">
+                Antwort überprüfen
+            </ons-button>
+        </ons-carausel-item>  
+    `);
+
+    questCar.appendChild(carouselItem);
+    
+    var checkButton = document.getElementById('confirm');
+    checkButton.addEventListener('click', check); 
+}  
 
 // https://onsen.io/v2/guide/tutorial.html#carousels
 async function learnMode() {
@@ -84,8 +134,14 @@ async function learnMode() {
     
     await document.querySelector('#mainNavigator').pushPage('views/carousel.html', {data: {title: 'Fragen Testmodus'}});
     
-
-    addMCItem();
+    var i = 1;
+    if (selectedLevel === 'level1') {
+        addMCItem(i);
+    } else if (selectedLevel === 'level2') {
+        addDaDItem(i);     
+    } else if (selectedLevel === 'level3') {
+        addFTEItem(i);
+    }
 
     //questCar.next();
 
@@ -96,26 +152,46 @@ async function learnMode() {
 // checks if answer is correct
 function check() {
     console.log('Hey'); 
-    let testradiovalue =  document.querySelector('color').value;
-    console.log(testradiovalue);
+
+    //checken ob die Lösung richtig ist
+    if (document.getElementById('rd11').checked) {
+        let ans1 = document.getElementById('label11').textContent;
+        console.log(ans1);
+        console.log(ans1 === 'Aufgabe 1');
+        
+    } else {
+        console.log('Falsch');
+    }
+
 
 }
+
 
 document.addEventListener('init', function(event) {
     // var testknopf = document.getElementById("push-button");
     // console.log(testknopf);
     var page = event.target;
 
-    console.log(page);
+    //console.log(page);
     if (page.id === 'test') {
         page.querySelector('#push-button').onclick = learnMode;
 
     } else if (page.id === 'q_test') {
         page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
     
-    } else if (page.id === 'carousel') {
-        let baum = page.querySelector('#questCar');
-        let baum2 = baum.querySelector('#confirm');
-        console.log(baum2);
     } 
 });
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function drag(event) {
+    event.dataTransfer.setData("Text", event.target.id);
+}
+
+function drop(event) {
+    var data = event.dataTransfer.getData("Text");
+    event.target.appendChild(document.getElementById(data));
+    event.preventDefault();
+}
