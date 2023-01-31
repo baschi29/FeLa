@@ -861,6 +861,108 @@ export default {
     ]},
     {"act":"new", "name":"Zink#di#iod#id", "formula":"ZnI_2", "difficulty":1, "categories":[
         "Halogene"
+    ]},
+    {"act":"new", "name":"Me#th#an", "formula":"CH_4", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Eth#an", "formula":"C_2H_6", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Pr#op#an", "formula":"C_3H_8", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"But#an", "formula":"C_4H_10", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Pe#nt#an", "formula":"C_5H_12", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Hex#an", "formula":"C_6H_14", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"He#pt#an", "formula":"C_7H_16", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Oct#an", "formula":"C_8H_18", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Non#an", "formula":"C_9H_20", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Dec#an", "formula":"C_10H_22", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Un#dec#an", "formula":"C_11H_24", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Do#dec#an", "formula":"C_12H_26", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Tri#dec#an", "formula":"C_13H_28", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Tetra#dec#an", "formula":"C_14H_30", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Hexa#dec#an", "formula":"C_16H_34", "difficulty":1, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Ic#os#an", "formula":"C_20H_42", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Eth#en", "formula":"C_2H_4", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Pr#op#en", "formula":"C_3H_6", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"But#en", "formula":"C_4H_8", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Pe#nt#en", "formula":"C_5H_10", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Hex#en", "formula":"C_6H_12", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"He#pt#en", "formula":"C_7H_14", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Oct#en", "formula":"C_8H_16", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Non#en", "formula":"C_9H_18", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Dec#en", "formula":"C_10H_20", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Eth#in", "formula":"C_2H_2", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Pr#op#in", "formula":"C_3H_4", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"But#in", "formula":"C_4H_6", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Pe#nt#in", "formula":"C_5H_8", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Hex#in", "formula":"C_6H_10", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"He#pt#in", "formula":"C_7H_12", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Oct#in", "formula":"C_8H_14", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Non#in", "formula":"C_9H_16", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
+    ]},
+    {"act":"new", "name":"Dec#in", "formula":"C_10H_18", "difficulty":2, "categories":[
+        "Kohlenwasserstoffe"
     ]}
 ]
 }
