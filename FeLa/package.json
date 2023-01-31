@@ -15,6 +15,7 @@
   "devDependencies": {
     "cordova-android": "^10.1.2",
     "cordova-browser": "^6.0.0",
+    "cordova-plugin-android-dark-mode-support": "^1.0.0",
     "cordova-plugin-browsersync-gen2": "^1.1.7"
   },
   "cordova": {
@@ -23,7 +24,8 @@
       "android"
     ],
     "plugins": {
-      "cordova-plugin-browsersync-gen2": {}
+      "cordova-plugin-browsersync-gen2": {},
+      "cordova-plugin-android-dark-mode-support": {}
     }
   },
   "dependencies": {
