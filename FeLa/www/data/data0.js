@@ -98,31 +98,31 @@ export default {
         "Ionen", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Fl#uor#id#-#Ion", "formula":"F^-", "difficulty":1, "categories":[
-        "Ionen"
+        "Ionen", "Halogene"
     ]},
     {"act":"new", "name":"Chl#or#id#-#Ion", "formula":"Cl^-", "difficulty":1, "categories":[
-        "Ionen"
+        "Ionen", "Halogene"
     ]},
-    {"act":"new", "name":"Hy#po#chlor#it#-#Ion", "formula":"ClO^-", "difficulty":3, "categories":[
-        "Ionen"
+    {"act":"new", "name":"Hypo#chlor#it#-#Ion", "formula":"ClO^-", "difficulty":3, "categories":[
+        "Ionen", "Halogene"
     ]},
-    {"act":"new", "name":"Chl#or#it#-#Ion", "formula":"ClO_2^-", "difficulty":3, "categories":[
-        "Ionen"
+    {"act":"new", "name":"Chlor#it#-#Ion", "formula":"ClO_2^-", "difficulty":3, "categories":[
+        "Ionen", "Halogene"
     ]},
-    {"act":"new", "name":"Chl#or#at#-#Ion", "formula":"ClO_3^-", "difficulty":3, "categories":[
-        "Ionen"
+    {"act":"new", "name":"Chlor#at#-#Ion", "formula":"ClO_3^-", "difficulty":3, "categories":[
+        "Ionen", "Halogene"
     ]},
-    {"act":"new", "name":"Per#chl#or#at#-#Ion", "formula":"ClO_4^-", "difficulty":3, "categories":[
-        "Ionen"
+    {"act":"new", "name":"Per#chlor#at#-#Ion", "formula":"ClO_4^-", "difficulty":3, "categories":[
+        "Ionen", "Halogene"
     ]},
     {"act":"new", "name":"Br#om#id#-#Ion", "formula":"Br^-", "difficulty":1, "categories":[
-        "Ionen"
+        "Ionen", "Halogene"
     ]},
     {"act":"new", "name":"Br#om#at#-#Ion", "formula":"BrO_3^-", "difficulty":3, "categories":[
-        "Ionen"
+        "Ionen", "Halogene"
     ]},
     {"act":"new", "name":"Iod#id#-#Ion", "formula":"I^-", "difficulty":1, "categories":[
-        "Ionen"
+        "Ionen", "Halogene"
     ]},
     {"act":"new", "name":"Wa#ss#er", "formula":"H_2O", "difficulty":1, "categories":[
         "Wasserstoff, Sauerstoff"
@@ -130,8 +130,8 @@ export default {
     {"act":"new", "name":"Am#moni#ak", "formula":"NH_3", "difficulty":1, "categories":[
         "Wasserstoff, Sauerstoff", "Stickstoff"
     ]},
-    {"act":"new", "name":"Chl#or#was#ser#st#off", "formula":"HCl", "difficulty":1, "categories":[
-        "Wasserstoff, Sauerstoff"
+    {"act":"new", "name":"Chlor#was#ser#st#off", "formula":"HCl", "difficulty":1, "categories":[
+        "Wasserstoff, Sauerstoff", "Halogene"
     ]},
     {"act":"new", "name":"Sau#er#sto#ff#gas", "formula":"O_2", "difficulty":1, "categories":[
         "Wasserstoff, Sauerstoff"
@@ -340,8 +340,8 @@ export default {
     {"act":"new", "name":"Calcium#di#hy#drogen#phos#phat", "formula":"Ca(H_2PO_4)_2", "difficulty":3, "categories":[
         "Natrium, Calcium"
     ]},
-    {"act":"new", "name":"Cal#cium#chlor#id", "formula":"CaCl_2", "difficulty":1, "categories":[
-        "Natrium, Calcium"
+    {"act":"new", "name":"Cal#cium#di#chlor#id", "formula":"CaCl_2", "difficulty":1, "categories":[
+        "Natrium, Calcium", "Halogene"
     ]},
     {"act":"new", "name":"Cal#cium#chlor#it", "formula":"Ca(ClO_2)_2", "difficulty":3, "categories":[
         "Natrium, Calcium"
@@ -355,14 +355,14 @@ export default {
     {"act":"new", "name":"Cal#cium#per#chlor#at", "formula":"Ca(ClO_4)_2", "difficulty":3, "categories":[
         "Natrium, Calcium"
     ]},
-    {"act":"new", "name":"Cal#cium#brom#id", "formula":"CaBr_2", "difficulty":1, "categories":[
-        "Natrium, Calcium"
+    {"act":"new", "name":"Cal#cium#di#brom#id", "formula":"CaBr_2", "difficulty":1, "categories":[
+        "Natrium, Calcium", "Halogene"
     ]},
     {"act":"new", "name":"Cal#cium#fluor#id", "formula":"CaF_2", "difficulty":1, "categories":[
         "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Cal#cium#iod#id", "formula":"CaI_2", "difficulty":1, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Halogene"
     ]},
     {"act":"new", "name":"Alu#minium#natrium#oxid", "formula":"NaAlO_2", "difficulty":3, "categories":[
         "Natrium, Calcium"
@@ -398,7 +398,7 @@ export default {
         "Natrium, Calcium", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Natr#ium#chlor#id", "formula":"NaCl", "difficulty":1, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Halogene"
     ]},
     {"act":"new", "name":"Natr#ium#chlor#at", "formula":"NaClO_3", "difficulty":3, "categories":[
         "Natrium, Calcium"
@@ -407,10 +407,10 @@ export default {
         "Natrium, Calcium"
     ]},
     {"act":"new", "name":"Natr#ium#fluor#id", "formula":"NaF", "difficulty":1, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Halogene"
     ]},
     {"act":"new", "name":"Natr#ium#iod#id", "formula":"NaI", "difficulty":1, "categories":[
-        "Natrium, Calcium"
+        "Natrium, Calcium", "Halogene"
     ]},
     {"act":"new", "name":"Stick#stoff#gas", "formula":"N_2", "difficulty":1, "categories":[
         "Stickstoff"
@@ -524,7 +524,7 @@ export default {
         "Stickstoff", "Phosphor, Schwefel"
     ]},
     {"act":"new", "name":"Ammon#ium#chlor#at", "formula":"NH_4ClO_3", "difficulty":3, "categories":[
-        "Stickstoff"
+        "Stickstoff", "Halogene"
     ]},
     {"act":"new", "name":"Di#ama#nt", "formula":"C", "difficulty":1, "categories":[
         "Kohlenstoff"
@@ -693,6 +693,174 @@ export default {
     ]},
     {"act":"new", "name":"Weißer# #Phos#phor", "formula":"P_4", "difficulty":2, "categories":[
         "Phosphor, Schwefel"
+    ]},
+    {"act":"new", "name":"Hypo#fluor#ige# #Säure", "formula":"HOF", "difficulty":2, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Fluor#wasser#stoff", "formula":"HF", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Lith#ium#fluor#id", "formula":"LiF", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Kal#ium#fluor#id", "formula":"KF", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Rubid#ium#fluor#id", "formula":"RbF", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Cäs#ium#fluor#id", "formula":"CsF", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Bar#ium#di#fluor#id", "formula":"BaF_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Bor#fluor#id", "formula":"BF", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Zink#di#fluor#id", "formula":"ZnF_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Chrom#tri#fluor#id", "formula":"CrF_3", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Silic#ium#tetra#fluor#id", "formula":"SiF_4", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Alu#minium#tri#fluor#id", "formula":"AlF_3", "difficulty":2, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Chlor#gas", "formula":"Cl_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Hypo#chlor#ige# #Säure", "formula":"HClO", "difficulty":3, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Chlor#ige# #Säure", "formula":"HClO_2", "difficulty":3, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Chlor#säure", "formula":"HClO_3", "difficulty":3, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Per#chlor#säure", "formula":"HClO_4", "difficulty":3, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Lith#ium#chlor#id", "formula":"LiCl", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Rubid#ium#chlor#id", "formula":"RbCl", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Cäs#ium#chlor#id", "formula":"CsCl", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Beryll#ium#di#chlor#id", "formula":"BeCl_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Magnes#ium#di#chlor#id", "formula":"MgCl_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Stront#ium#di#chlor#id", "formula":"SrCl_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Bar#ium#di#chlor#id", "formula":"BaCl_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Eisen#(II)#-#chlor#id", "formula":"FeCl_2", "difficulty":2, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Kupfer#(I)#-#chlor#id", "formula":"CuCl", "difficulty":2, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Chrom#tri#chlor#id", "formula":"CrCl_3", "difficulty":2, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Cob#alt#di#chlor#id", "formula":"CoCl_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Cad#mium#di#chlor#id", "formula":"CdCl_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Queck#silber#(I)#-#chlor#id", "formula":"HgCl_2", "difficulty":2, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Queck#silber#(II)#-#chlor#id", "formula":"Hg_2Cl_2", "difficulty":2, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Natr#ium#hypo#chlor#it", "formula":"NaOCl", "difficulty":3, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Kal#ium#chlor#at", "formula":"KClO_3", "difficulty":3, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Lith#ium#per#chlor#at", "formula":"LiClO_4", "difficulty":3, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Brom#wasser#stoff", "formula":"HBr", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Lith#ium#brom#id", "formula":"LiBr", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Natr#ium#brom#id", "formula":"NaBr", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Kal#ium#brom#id", "formula":"KBr", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Rubid#ium#brom#id", "formula":"RbBr", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Cäs#ium#brom#id", "formula":"CsBr", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Magnes#ium#di#brom#id", "formula":"MgBr_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Bar#ium#di#brom#id", "formula":"BaBr_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Cadm#ium#di#brom#id", "formula":"CdBr_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Chrom#tri#brom#id", "formula":"CrBr_3", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Alu#minium#tri#brom#id", "formula":"AlBr_3", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Kal#ium#brom#at", "formula":"KBrO_3", "difficulty":3, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Iod#wasser#stoff", "formula":"HI", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Lith#ium#iod#id", "formula":"LiI", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Kal#ium#iod#id", "formula":"KI", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Rubid#ium#iod#id", "formula":"RbI", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Cäs#ium#iod#id", "formula":"CsI", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Beryll#ium#di#iod#id", "formula":"BeI_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Magnes#ium#di#iod#id", "formula":"MgI_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Stront#ium#di#iod#id", "formula":"SrI_2", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Silic#ium#tetra#iod#id", "formula":"SiI_4", "difficulty":1, "categories":[
+        "Halogene"
+    ]},
+    {"act":"new", "name":"Zink#di#iod#id", "formula":"ZnI_2", "difficulty":1, "categories":[
+        "Halogene"
     ]}
 ]
 }
