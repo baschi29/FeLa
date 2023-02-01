@@ -40,7 +40,7 @@ function dispatchReadyEvent() {
 
 /* reads the scheme version from the database
 tx can be a readTransaction*/
-export async function readSchemeVersion(tx) {
+async function readSchemeVersion(tx) {
     
     return new Promise(function(resolve, reject) {
 
@@ -54,7 +54,7 @@ export async function readSchemeVersion(tx) {
 
 /* reads the data version from the database
 tx can be a readTransaction*/
-export async function readDataVersion(tx) {
+async function readDataVersion(tx) {
     
     return new Promise(function(resolve, reject) {
 
