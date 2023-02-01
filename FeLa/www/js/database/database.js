@@ -82,21 +82,23 @@ async function isDatabaseEmpty(tx) {
     });
 }
 
-/* returns all categories in database tx can be read transaction
+/* returns all categories in database
 categories are returned in an array as an object consisting of id, name and ranking*/
-export async function getCategories(tx) {
+export async function getCategories() {
 
     return new Promise(function(resolve, reject) {
-
-        tx.executeSql('SELECT category_id, name, ranking FROM Categories', [], function(tx, rs) {
-            let result = [];
-            for (let i = 0; i < rs.rows.length; i++) {
-                result.push(rs.rows.item(i));
-                resolve(result);
-            }
-        }, function(tx, error) {
-            reject("Error: Error reading categories from database " + JSON.stringify(error));
-        })
+        
+        db.readTransaction(function(tx) {
+            tx.executeSql('SELECT category_id, name, ranking FROM Categories', [], function(tx, rs) {
+                let result = [];
+                for (let i = 0; i < rs.rows.length; i++) {
+                    result.push(rs.rows.item(i));
+                    resolve(result);
+                }
+            }, function(tx, error) {
+                reject("Error: Error reading categories from database " + JSON.stringify(error));
+            })
+        });
     })
 }
 
@@ -185,12 +187,10 @@ async function initializeDatabase() {
                 function(msg) {
                     console.log(msg);
                     populateDatabase().then(
-                        function(msg) {
+                        async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            db.readTransaction(async function(tx) {
-                                console.log(await getCategories(tx));
-                            });
+                            console.log(await getCategories());
                         }, function(error) {
                             throw error;
                         }
