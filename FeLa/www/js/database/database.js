@@ -38,6 +38,15 @@ function dispatchReadyEvent() {
     document.dispatchEvent(event);
 }
 
+// helper function to change db plugin results to array
+function convertResultToArray(rs) {
+    let result = [];
+    for (let i = 0; i < rs.rows.length; i++) {
+        result.push(rs.rows.item(i));
+    }
+    return result;
+}
+
 /* reads the scheme version from the database
 tx can be a readTransaction*/
 async function readSchemeVersion(tx) {
@@ -90,11 +99,7 @@ export async function getCategories() {
         
         db.readTransaction(function(tx) {
             tx.executeSql('SELECT category_id, name, ranking FROM Categories', [], function(tx, rs) {
-                let result = [];
-                for (let i = 0; i < rs.rows.length; i++) {
-                    result.push(rs.rows.item(i));
-                    resolve(result);
-                }
+                resolve(convertResultToArray(rs));
             }, function(tx, error) {
                 reject("Error: Error reading categories from database " + JSON.stringify(error));
             })
