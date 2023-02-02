@@ -49,7 +49,7 @@ export async function createScheme(db, version, fromversion) {
 
 /* create scheme version 0 from scratch
 ables created with https://ozh.github.io/ascii-tables/
-USES INTEGER type to store UNIX timestamps in sqlite https://www.sqlitetutorial.net/sqlite-date/
+USES INTEGER type to store timestamps in sqlite https://www.sqlitetutorial.net/sqlite-date/
 TODO: better logging, selftest */
 async function createVersion0(db) {
     
@@ -91,7 +91,7 @@ async function createVersion0(db) {
             |           |                   |              |
             +-----------+-------------------+--------------+ */
             tx.executeSql('CREATE TABLE Rounds (round_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, timestamp INTEGER NOT NULL, ranking REAL)');
-            /* TODO: creates Questions table for storing what compounds where asked in which round
+            /*creates Questions table for storing what compounds where asked in which round
             +-----------+-------------------+----------------+-----------------+-------------------------------+---------------------------------+
             | type TEXT | timestamp INTEGER | result INTEGER | difficulty REAL | round_id INTEGER FOREIGN KEY  | compound_id INTEGER FOREIGN KEY |
             +-----------+-------------------+----------------+-----------------+-------------------------------+---------------------------------+

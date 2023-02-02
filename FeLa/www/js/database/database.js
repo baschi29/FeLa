@@ -47,6 +47,16 @@ function convertResultToArray(rs) {
     return result;
 }
 
+// helper function, returns current datetime in epoch (seconds)
+function NowInEpoch() {
+    return Math.floor(Date.now() / 1000);
+}
+
+// helper function to get Date object from epoch (seconds)
+export function epochToDate(epoch) {
+    return new Date(epoch * 1000);
+}
+
 /* reads the scheme version from the database
 tx can be a readTransaction*/
 async function readSchemeVersion(tx) {
@@ -92,7 +102,7 @@ async function isDatabaseEmpty(tx) {
 }
 
 /* returns all categories in database
-categories are returned in an array as an object consisting of id, name and ranking*/
+categories are returned in an array as an object consisting of id, name and ranking - see managescheme comments*/
 export async function getCategories() {
 
     return new Promise(function(resolve, reject) {
@@ -104,6 +114,96 @@ export async function getCategories() {
                 reject("Error: Error reading categories from database " + JSON.stringify(error));
             })
         });
+    })
+}
+
+/* creates a question */
+function createQuestion(tx, round_id, compound_id) {
+
+    tx.executeSql('INSERT INTO Questions (round_id, compound_id) VALUES (?, ?)', [round_id, compound_id], function(tx, rs) {
+        console.log("Added question to round: " + round_id);
+    }, function(tx, error) {
+        throw error;
+    })
+}
+
+/* generates Question Set to be used in a round
+returns array of compound_ids
+https://www.sqlitetutorial.net/sqlite-limit/
+https://www.sqlitetutorial.net/sqlite-in/
+*/
+async function getQuestionSet(category_list, amount) {
+    
+    return new Promise(function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+            // generate query to match category_list
+            var query = 'SELECT DISTINCT compound_id FROM Compounds JOIN CCMapping USING (compound_id)';
+            if (category_list.length > 0) {
+
+                query = query + ' WHERE category_id = ' + category_list[0];
+
+                for (let i = 1; i < category_list.length; i++) {
+                    query = query + ' OR category_id = ' + category_list[i];
+                }
+            }
+            query = query + ' ORDER BY RANDOM() LIMIT ?'
+            console.log(query);
+            tx.executeSql(query, [amount], function(tx, rs) {
+                resolve(convertResultToArray(rs));
+            }, function(tx, error) {
+                reject(error);
+            })
+        }, function(error) {
+            reject(error);
+        })
+    })
+}
+
+/* writes results of a question in question table
+type is either mc, free or d&d
+result is 0 for false, 1 for true
+difficulty can be calculated by app, needs to be integer
+*/
+export async function writeQuestionResults(question_id, type, result, difficulty) {
+
+    return new Promise(function(resolve, reject) {
+
+        db.transaction(function(tx) {
+            tx.executeSql('UPDATE Questions SET type = ?, result = ?, difficulty = ?, timestamp = ? WHERE question_id = ?', [type, result, difficulty, NowInEpoch(), question_id], function(tx, rs) {}, function(tx, error) {
+                throw error;
+            })
+        }, function(error) {
+            reject(error);
+        }, function() {
+            resolve("Write Question Results transaction successful");
+        })
+    })
+}
+
+/* creates a new Round, writes everything to the database
+returns nothing
+type should  be learning or exam
+categoryList should be an array containing one or more category ids or an empty array for all categories
+amount should be the desired amount of questions
+*/
+export async function createRound(type, categoryList, amount) {
+
+    return new Promise(function(resolve, reject) {
+
+        db.transaction(function(tx) {
+            
+            tx.executeSql('INSERT INTO Rounds (type, timestamp, ranking) VALUES (?, ?, ?)', [type , NowInEpoch(), 0.0], function(tx, rs) {
+                console.log("Created new empty Round");
+            }, function(tx, error) {
+                reject(error);
+            })
+            // TODO: query stuff from database, write to
+        }, function(error) {
+            reject(error);
+        }, function() {
+            resolve("Create Round transaction successful");
+        })
     })
 }
 
@@ -195,7 +295,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            console.log(await getCategories());
+                            console.log(await getQuestionSet([1,2], 10));
                         }, function(error) {
                             throw error;
                         }
