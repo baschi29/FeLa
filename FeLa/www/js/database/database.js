@@ -21,6 +21,9 @@ var opened = false;
 var intendedSchemeVersion = 0;
 var intendedDataVersion = 0;
 
+
+// ---- Event related stuff ----
+
 // Open and initialize database after deviceready event has fired
 document.addEventListener('deviceready', initializeDatabase);
 
@@ -37,6 +40,9 @@ function dispatchReadyEvent() {
         });
     document.dispatchEvent(event);
 }
+
+
+// ---- Helping functions for database contents ----
 
 // helper function to change db plugin results to array
 function convertResultToArray(rs) {
@@ -56,6 +62,9 @@ function NowInEpoch() {
 export function epochToDate(epoch) {
     return new Date(epoch * 1000);
 }
+
+
+// --- functions to obtain information about status of database ----
 
 /* reads the scheme version from the database
 tx can be a readTransaction*/
@@ -101,6 +110,9 @@ async function isDatabaseEmpty(tx) {
     });
 }
 
+
+// ---- Categories & Compounds----
+
 /* returns all categories in database
 categories are returned in an array as an object consisting of id, name and ranking - see managescheme comments*/
 export async function getCategories() {
@@ -117,8 +129,12 @@ export async function getCategories() {
     })
 }
 
-/* creates a question */
-function createQuestion(tx, round_id, compound_id) {
+
+// ---- Rounds & Questions ----
+
+/* creates a question
+should only be use manually to add questions that are asked again in the same round*/
+export function addQuestionToRound(tx, round_id, compound_id) {
 
     tx.executeSql('INSERT INTO Questions (round_id, compound_id) VALUES (?, ?)', [round_id, compound_id], function(tx, rs) {
         console.log("Added question to round: " + round_id);
@@ -131,7 +147,7 @@ function createQuestion(tx, round_id, compound_id) {
 returns array of compound_ids
 https://www.sqlitetutorial.net/sqlite-limit/
 */
-function getQuestionSet(round_id, category_list, amount) {
+function createQuestionSet(round_id, category_list, amount) {
     
     return new Promise(function(resolve, reject) {
 
@@ -154,7 +170,7 @@ function getQuestionSet(round_id, category_list, amount) {
             let insert_query = 'INSERT INTO Questions (round_id, compound_id) ' + select_query;
             
             tx.executeSql(insert_query, [round_id, amount], function(tx, rs) {
-                tx.executeSql('SELECT compound_id, c.name, c.formula, c.split, c.ranking, c.difficulty FROM Questions as q JOIN Compounds as c USING (compound_id) WHERE round_id = ?', [round_id], function(tx, res) {
+                tx.executeSql('SELECT question_id, compound_id, c.name, c.formula, c.split, c.ranking, c.difficulty FROM Questions as q JOIN Compounds as c USING (compound_id) WHERE round_id = ?', [round_id], function(tx, res) {
                     resolve(convertResultToArray(res));
                 }, function(tx, error) {
                     reject(error);
@@ -191,7 +207,7 @@ export async function writeQuestionResults(question_id, type, result, difficulty
 
 /* writes a new Round into database round table returns the id of the Round
 */
-async function newRound(type) {
+async function writeRound(type) {
 
     return new Promise(function(resolve, reject) {
 
@@ -222,13 +238,17 @@ export async function createRound(type, category_list, amount) {
     return new Promise(async function(resolve, reject) {
 
         // creates a new round in round table, returns id of round
-        let round_id = await newRound(type);
+        let round_id = await writeRound(type);
 
         // creates a question set in the questions table, returns ready to use question set
-        let question_set = await getQuestionSet(round_id, category_list, amount);
-        console.log(question_set);
+        let question_set = await createQuestionSet(round_id, category_list, amount);
+        
+        resolve({"id": round_id, "questions": question_set});
     })
 }
+
+
+// ---- Initialization ----
 
 // Initialize dabase, has to be called only after deviceready event has been registered!
 async function initializeDatabase() {
