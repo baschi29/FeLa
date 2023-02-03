@@ -130,24 +130,25 @@ function createQuestion(tx, round_id, compound_id) {
 /* generates Question Set to be used in a round
 returns array of compound_ids
 https://www.sqlitetutorial.net/sqlite-limit/
-https://www.sqlitetutorial.net/sqlite-in/
 */
 async function getQuestionSet(category_list, amount) {
     
     return new Promise(function(resolve, reject) {
 
         db.readTransaction(function(tx) {
+
             // generate query to match category_list
-            var query = 'SELECT DISTINCT compound_id FROM Compounds JOIN CCMapping USING (compound_id)';
+            var query = 'SELECT * FROM (SELECT compound_id FROM Compounds JOIN CCMapping USING (compound_id)';
             if (category_list.length > 0) {
 
-                query = query + ' WHERE category_id = ' + category_list[0];
+                query = query + ' WHERE (category_id = ' + category_list[0];
 
                 for (let i = 1; i < category_list.length; i++) {
                     query = query + ' OR category_id = ' + category_list[i];
                 }
+                query = query + ")";
             }
-            query = query + ' ORDER BY RANDOM() LIMIT ?'
+            query = query + ' GROUP BY compound_id ORDER BY RANDOM() LIMIT ?) ORDER BY difficulty ASC, ranking ASC'
             console.log(query);
             tx.executeSql(query, [amount], function(tx, rs) {
                 resolve(convertResultToArray(rs));
