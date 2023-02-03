@@ -98,7 +98,7 @@ async function createVersion0(db) {
             |           |                   |                |                 |                               |                                 |
             +-----------+-------------------+----------------+-----------------+-------------------------------+---------------------------------+
             */
-            tx.executeSql('CREATE TABLE Questions (question_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, timestamp INTEGER NOT NULL, result INTEGER NOT NULL, difficulty REAL, round_id INTEGER NOT NULL, compound_id INTEGER NOT NULL, FOREIGN KEY(round_id) REFERENCES Rounds(round_id), FOREIGN KEY(compound_id) REFERENCES Compounds(compound_id))');
+            tx.executeSql('CREATE TABLE Questions (question_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, timestamp INTEGER, result INTEGER, difficulty REAL, round_id INTEGER NOT NULL, compound_id INTEGER NOT NULL, FOREIGN KEY(round_id) REFERENCES Rounds(round_id), FOREIGN KEY(compound_id) REFERENCES Compounds(compound_id))');
             insertSchemeVersion(tx, 0);
             insertDataVersion(tx);
           }, function(error) {

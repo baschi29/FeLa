@@ -131,26 +131,34 @@ function createQuestion(tx, round_id, compound_id) {
 returns array of compound_ids
 https://www.sqlitetutorial.net/sqlite-limit/
 */
-async function getQuestionSet(category_list, amount) {
+function getQuestionSet(round_id, category_list, amount) {
     
     return new Promise(function(resolve, reject) {
 
-        db.readTransaction(function(tx) {
+        db.transaction(function(tx) {
 
-            // generate query to match category_list
-            var query = 'SELECT compound_id FROM (SELECT * FROM Compounds JOIN CCMapping USING (compound_id)';
+            // generate query to select compound_ids according given categories, sorted by descending ranking first, then ascending difficulty 
+            var select_query = 'SELECT ? as round_id, compound_id FROM (SELECT * FROM Compounds JOIN CCMapping USING (compound_id)';
+            
             if (category_list.length > 0) {
 
-                query = query + ' WHERE (category_id = ' + category_list[0];
+                select_query = select_query + ' WHERE (category_id = ' + category_list[0];
 
                 for (let i = 1; i < category_list.length; i++) {
-                    query = query + ' OR category_id = ' + category_list[i];
+                    select_query = select_query + ' OR category_id = ' + category_list[i];
                 }
-                query = query + ")";
+                select_query = select_query + ")";
             }
-            query = query + ' GROUP BY compound_id ORDER BY RANDOM() LIMIT ?) ORDER BY difficulty ASC, ranking ASC';
-            tx.executeSql(query, [amount], function(tx, rs) {
-                resolve(convertResultToArray(rs));
+
+            select_query = select_query + ' GROUP BY compound_id ORDER BY RANDOM() LIMIT ?) ORDER BY ranking DESC, difficulty ASC';
+            let insert_query = 'INSERT INTO Questions (round_id, compound_id) ' + select_query;
+            
+            tx.executeSql(insert_query, [round_id, amount], function(tx, rs) {
+                tx.executeSql('SELECT compound_id, c.name, c.formula, c.split, c.ranking, c.difficulty FROM Questions as q JOIN Compounds as c USING (compound_id) WHERE round_id = ?', [round_id], function(tx, res) {
+                    resolve(convertResultToArray(res));
+                }, function(tx, error) {
+                    reject(error);
+                })
             }, function(tx, error) {
                 reject(error);
             })
@@ -181,29 +189,44 @@ export async function writeQuestionResults(question_id, type, result, difficulty
     })
 }
 
+/* writes a new Round into database round table returns the id of the Round
+*/
+async function newRound(type) {
+
+    return new Promise(function(resolve, reject) {
+
+        db.transaction(function(tx) {
+            let time = NowInEpoch();
+
+            tx.executeSql('INSERT INTO Rounds (type, timestamp, ranking) VALUES (?, ?, ?)', [type , time, 0.0], function(tx, rs) {
+                tx.executeSql('SELECT round_id FROM Rounds WHERE timestamp = ?', [time], function(tx, rs) {
+                    resolve(rs.rows.item(0).round_id);
+                });
+            }, function(tx, error) {
+                reject(error);
+            })
+        }, function(error) {
+            reject(error);
+        })
+    })
+}
+
 /* creates a new Round, writes everything to the database
 returns nothing
 type should  be learning or exam
 categoryList should be an array containing one or more category ids or an empty array for all categories
 amount should be the desired amount of questions
 */
-export async function createRound(type, categoryList, amount) {
+export async function createRound(type, category_list, amount) {
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(async function(resolve, reject) {
 
-        db.transaction(function(tx) {
-            
-            tx.executeSql('INSERT INTO Rounds (type, timestamp, ranking) VALUES (?, ?, ?)', [type , NowInEpoch(), 0.0], function(tx, rs) {
-                console.log("Created new empty Round");
-            }, function(tx, error) {
-                reject(error);
-            })
-            // TODO: query stuff from database, write to
-        }, function(error) {
-            reject(error);
-        }, function() {
-            resolve("Create Round transaction successful");
-        })
+        // creates a new round in round table, returns id of round
+        let round_id = await newRound(type);
+
+        // creates a question set in the questions table, returns ready to use question set
+        let question_set = await getQuestionSet(round_id, category_list, amount);
+        console.log(question_set);
     })
 }
 
@@ -295,7 +318,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            console.log(await getQuestionSet([1,2], 10));
+                            console.log(await createRound("test", [1,2], 10));
                         }, function(error) {
                             throw error;
                         }
