@@ -1,19 +1,39 @@
 <ons-page id="learn">
-    <p>Platzhalte Lernen mit Pushtest</p>
-    <ons-button id="push-button">Platzhalter Lernmodus starten</ons-button>
 
-    <script>
-        //example of pushing pages
-        document.addEventListener('init', function(event) {
-            var page = event.target;
+    <p>
+    <h3 align="center">Wähle deinen Lernmodus:</h3>
+    <h4>Schwierigkeit:</h4>
+    <ons-select id="choose-sel1learn" >
+        <div class="center"></div>
+        <option value="level1">Multiple Choice</option>
+        <option value="level2">Drag and Drop</option>
+        <option value="level3">Freitext</option>
+    </ons-select>
+    </p>
+    
+    <p>
+    <h4>Verbindungsart:</h4>
+    <ons-select id="choose-sel2learn" >
+        <option value="typ1">Alle</option>
+        <option value="typ2">Schwefelverbindungen</option>
+        <option value="typ3">Wasserstoffverbindungen</option>
+    </ons-select>
+    </p>
 
-            if (page.id === 'learn') {
-                page.querySelector('#push-button').onclick = function() {
-                document.querySelector('#mainNavigator').pushPage('views/q_learn.html', {data: {title: 'Fragen Lernmodus'}});
-                };
-            } else if (page.id === 'q_learn') {
-                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-            }
-        });
-    </script>
+    <p>
+    <h4>Richtung:</h4>
+    <ons-select id="choose-sel3learn" >
+        <option value="direct1">Gemischt</option>
+        <option value="direct2">Summenformel -> Name</option>
+        <option value="direct3">Name -> Summenformel</option>
+    </ons-select>
+    </p>
+    
+    <p style="text-align: center;">
+    <ons-button id="push-button">
+        
+        <v-ons-icon icon="md-face"></v-ons-icon>
+        Übung starten
+    </ons-button>
+    </p>
 </ons-page>

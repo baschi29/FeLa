@@ -1,4 +1,4 @@
-function addMCItem(questNumber) {
+function addMCItem(questNumber, modeString) {
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
     
@@ -49,7 +49,7 @@ function addMCItem(questNumber) {
                      </ons-list-item>
                 </ons-list>
 
-            <ons-button modifier="large" onclick="check('level1', ${questNumber}, '${answer}')">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check('level1', ${questNumber}, '${answer}', '${modeString}')">Antwort überprüfen</ons-button>
             
 
 
@@ -62,7 +62,7 @@ function addMCItem(questNumber) {
     
 }
 
-function addDaDItem(questNumber) {
+function addDaDItem(questNumber, modeString) {
     // carussel item hinzufügen für drag and drop mit tabelle und Buttons
     const questCar = document.querySelector('#questCar');
 
@@ -79,7 +79,7 @@ function addDaDItem(questNumber) {
 
             <p style="text-align: center;">
                 <ons-button id=DaD4${questNumber} modifier="quiet" onclick="mark(this, 'DaD4${questNumber}')"> P </ons-button>
-                <ons-button id=DaD5${questNumber} modifier="quiet" onclick="mark(this, 'DaD5${questNumber}')"> Li </ons-button>
+                <ons-button id=DaD5${questNumber} modifier="quiet" onclick="mark(this, 'DaD5${questNumber}')"> HalloHallo </ons-button>
                 <ons-button id=DaD6${questNumber} modifier="quiet" onclick="mark(this, 'DaD6${questNumber}')"> ${questNumber} </ons-button>
             </p>
 
@@ -91,23 +91,24 @@ function addDaDItem(questNumber) {
                     border-collapse: collapse;
                     text-align: center;
                     padding: 5px;
-                    width:42px; 
+                    width: 42px; 
                     height:42px; 
+                     
                 }    
             </style>
             <table align="center"> 
                 <tr>
-                    <td id=tab1${questNumber} onclick="pushInTable(this)"></td>   
-                    <td id=tab2${questNumber} onclick="pushInTable(this)"></td> 
-                    <td id=tab3${questNumber} onclick="pushInTable(this)"></td> 
-                    <td id=tab4${questNumber} onclick="pushInTable(this)"></td> 
-                    <td id=tab5${questNumber} onclick="pushInTable(this)"></td> 
-                    <td id=tab6${questNumber} onclick="pushInTable(this)"></td> 
+                    <td id=tab1${questNumber} onclick="pushInTable(this, 'tab1${questNumber}')"></td>   
+                    <td id=tab2${questNumber} onclick="pushInTable(this, 'tab2${questNumber}')"></td> 
+                    <td id=tab3${questNumber} onclick="pushInTable(this, 'tab3${questNumber}')"></td> 
+                    <td id=tab4${questNumber} onclick="pushInTable(this, 'tab4${questNumber}')"></td> 
+                    <td id=tab5${questNumber} onclick="pushInTable(this, 'tab5${questNumber}')"></td> 
+                    <td id=tab6${questNumber} onclick="pushInTable(this, 'tab6${questNumber})"></td> 
                 </tr>
             </table>
             <p></p>
 
-            <ons-button modifier="large" onclick="check('level2', ${questNumber}, '${answer}')">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check('level2', ${questNumber}, '${answer}', '${modeString}')">Antwort überprüfen</ons-button>
             
         </ons-carausel-item>
     `);
@@ -115,10 +116,11 @@ function addDaDItem(questNumber) {
     questCar.appendChild(carouselItem);   
 }  
 
-function addFTEItem(questNumber) {
+function addFTEItem(questNumber, modeString) {
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
-    
+    let answer = "H2O";
+
     const carouselItem = ons.createElement(`
         <ons-carausel-item>    
             <h1>
@@ -129,7 +131,7 @@ function addFTEItem(questNumber) {
                 <ons-input id="answer" input-id="answertest" modifier="underbar" placeholder="Antwort" float></ons-input>
             </p>
             
-            <ons-button modifier="large" onclick="check('level3', ${questNumber})">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check('level3', ${questNumber}, '${answer}' , '${modeString}')">Antwort überprüfen</ons-button>
             
         </ons-carausel-item>  
     `);
@@ -141,17 +143,18 @@ function addFTEItem(questNumber) {
 }  
 
 // https://onsen.io/v2/guide/tutorial.html#carousels
-async function learnMode() {
+async function testMode(modeString) {
+    console.log(modeString);
     // carussel sseite pushen
-    const level = document.getElementById("choose-sel1");
+    const level = document.getElementById("choose-sel1" + modeString);
     const lvList = level.options;
     var selectedLevel = lvList[level.selectedIndex].value;
 
-    const typ = document.getElementById("choose-sel2");
+    const typ = document.getElementById("choose-sel2" + modeString);
     const typList = typ.options;
     var selectedTyp = typList[typ.selectedIndex].value;
     
-    const direction = document.getElementById("choose-sel3");
+    const direction = document.getElementById("choose-sel3" + modeString);
     const dirList = direction.options;
     var selectedDirection = dirList[direction.selectedIndex].value;
     
@@ -162,20 +165,22 @@ async function learnMode() {
     var i = 1;
     if (selectedLevel === 'level1') {
         for (let index = 0; index < 9; index++) {
-            addMCItem(index);     
+            addMCItem(index, modeString);     
         }
     } else if (selectedLevel === 'level2') {
         for (let index = 0; index < 9; index++) {
-            addDaDItem(index);     
+            addDaDItem(index, modeString);     
         }
     } else if (selectedLevel === 'level3') {
             
-        addFTEItem(i);
+        addFTEItem(i, modeString);
     }
 
     questCar.next();
 
 }
+
+
 
 //Functions for Drag end Drop
 function mark(pushedButton, buttonID) {
@@ -189,6 +194,7 @@ function pushInTable(tableField) {
         var markedButton = document.getElementById(localStorage.getItem("markedButton"));
         var buttonText = localStorage.getItem("buttonText");
         markedButton.style.backgroundColor = "transparent";
+        //console.log(tableField.style.width);  
         tableField.innerText = buttonText;
     
         localStorage.clear();
@@ -199,28 +205,54 @@ function pushInTable(tableField) {
 }
 
 // checks if answer is correct
-function check(level, index, answer) {
+function check(level, index, answer, modeString) {
     console.log(level); 
     console.log(index);
+    console.log(modeString);
     var carausel = document.getElementById('questCar');
     var questAnswer;
     // Multiple Choice
     if (level === 'level1') {
+        var x;
         if (document.getElementById('rd1'+index).checked) {
-            questAnswer = document.getElementById('label1'+index).innerText;       
+            questAnswer = document.getElementById('label1'+index).innerText;  
+            x=1;     
         } else if (document.getElementById('rd2'+index).checked) {
             questAnswer = document.getElementById('label2'+index).innerText;
+            x=2;
         } else if (document.getElementById('rd3'+index).checked) {
             questAnswer = document.getElementById('label3'+index).innerText;
+            x=3;
         } else if (document.getElementById('rd4'+index).checked) {
             questAnswer = document.getElementById('label3'+index).innerText;
+            x=4;
         }
 
-        if (questAnswer === answer) {
-            alert('Richtig');
-            carausel.next();
-        } else {
-            alert('Falsh');
+        if (modeString === 'learn') {
+            if (questAnswer === answer){
+                // ergebniss speichern
+                alert('Richtig');
+                carausel.next();
+            } else {
+                // Zeile rot machen
+                for (var i = 1; i <= 4; i++) {
+                    if ((document.getElementById('rd'+ i +index).checked)) {
+                        document.getElementById('label'+ i + index).style.color = 'red';
+                    }
+                }
+                alert('Falsch');
+            }
+        } else if (modeString === 'test'){
+            if (questAnswer === answer){
+                // ergebniss speichern
+                alert('Richtig: später nicht mehr angezeigt');
+                carausel.next();               
+            } else {
+                // Zeile rot machen
+                // ergebnis speichern
+                alert('Falsch: später nicht mehr anzeigen');
+                carausel.next();
+            }
         }
        
     //Drag and Drop    
@@ -229,18 +261,33 @@ function check(level, index, answer) {
                       document.getElementById('tab3'+index).innerText + document.getElementById('tab4'+index).innerText +
                       document.getElementById('tab5'+index).innerText + document.getElementById('tab6'+index).innerText;
         
-        if (questAnswer === answer) {
-            alert('Jeei');
-            carausel.next();
-        } else {
-            document.getElementById('tab1'+index).style.color = 'red';
-            document.getElementById('tab2'+index).style.color = 'red';
-            document.getElementById('tab3'+index).style.color = 'red'; 
-            document.getElementById('tab4'+index).style.color = 'red';
-            document.getElementById('tab5'+index).style.color = 'red';
-            document.getElementById('tab6'+index).style.color = 'red';
+        if (modeString === 'learn') {
+            if (questAnswer === answer){
+                // ergebniss speichern
+                alert('Richtig');
+                carausel.next();
+            } else {
+                document.getElementById('tab1'+index).style.color = 'red';
+                document.getElementById('tab2'+index).style.color = 'red';
+                document.getElementById('tab3'+index).style.color = 'red'; 
+                document.getElementById('tab4'+index).style.color = 'red';
+                document.getElementById('tab5'+index).style.color = 'red';
+                document.getElementById('tab6'+index).style.color = 'red';
+                alert('Falsch');
+            }
+        } else if (modeString === 'test'){
+            if (questAnswer === answer){
+                // ergebniss speichern
+                alert('Richtig: später nicht mehr angezeigt');
+                carausel.next();               
+            } else {
+                // Zeile rot machen
+                // ergebnis speichern
+                alert('Falsch: später nicht mehr anzeigen');
+                carausel.next();
+            }
         }
-        
+            
     // Freitext
     } else if (level === 'level3') {
     }   
@@ -257,8 +304,11 @@ document.addEventListener('init', function(event) {
 
     //console.log(page);
     if (page.id === 'test') {
-        page.querySelector('#push-button').onclick = learnMode;
+        page.querySelector('#push-button').onclick = function() {testMode('test')};
 
+    } else if (page.id === 'learn') {
+        page.querySelector('#push-button').onclick = function() {testMode('learn')};
+    
     } else if (page.id === 'q_test') {
         page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
     
