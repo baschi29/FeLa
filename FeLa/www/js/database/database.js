@@ -53,6 +53,19 @@ function convertResultToArray(rs) {
     return result;
 }
 
+// helper function to construct sqlite OR condidition from given category_list
+function categoryCondition(category_list) {
+
+    let condition = ' (category_id = ' + category_list[0];
+
+    for (let i = 1; i < category_list.length; i++) {
+        condition = condition + ' OR category_id = ' + category_list[i];
+    }
+    
+    condition = condition + ")";
+    return condition;
+}
+
 // helper function, returns current datetime in epoch (seconds)
 function NowInEpoch() {
     return Math.floor(Date.now() / 1000);
@@ -129,6 +142,43 @@ export async function getCategories() {
     })
 }
 
+// returns count of categories in database
+export async function getCategoryCount(){
+
+    return new Promise(function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+            tx.executeSql('SELECT count(*) as c FROM CATEGORIES', [], function(tx, rs) {
+                resolve(rs.rows.item(0).c);
+            })
+        }, function(tx, error) {
+            reject(error);
+        })
+    })
+}
+
+// returns count of compounds in category_list - if list is empty all categories
+export async function getCompoundCount(category_list) {
+
+    return new Promise(function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+
+            let query = 'SELECT DISTINCT count(*) as c FROM Compounds JOIN CCMapping USING (compound_id)';
+
+            if (category_list.length > 0) {
+                query = query + ' WHERE' + categoryCondition(category_list);
+            }
+        
+            tx.executeSql(query, [], function(tx, rs) {
+                resolve(rs.rows.item(0).c);
+            })
+        }, function(tx, error) {
+            reject(error);
+        })
+    })
+}
+
 
 // ---- Rounds & Questions ----
 
@@ -157,13 +207,7 @@ function createQuestionSet(round_id, category_list, amount) {
             var select_query = 'SELECT ? as round_id, compound_id FROM (SELECT * FROM Compounds JOIN CCMapping USING (compound_id)';
             
             if (category_list.length > 0) {
-
-                select_query = select_query + ' WHERE (category_id = ' + category_list[0];
-
-                for (let i = 1; i < category_list.length; i++) {
-                    select_query = select_query + ' OR category_id = ' + category_list[i];
-                }
-                select_query = select_query + ")";
+                select_query = select_query + ' WHERE' + categoryCondition(category_list);
             }
 
             select_query = select_query + ' GROUP BY compound_id ORDER BY RANDOM() LIMIT ?) ORDER BY ranking DESC, difficulty ASC';
@@ -338,7 +382,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            console.log(await createRound("test", [1,2], 10));
+                            console.log(await getCompoundCount([]));
                         }, function(error) {
                             throw error;
                         }
