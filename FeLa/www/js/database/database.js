@@ -138,7 +138,7 @@ async function getQuestionSet(category_list, amount) {
         db.readTransaction(function(tx) {
 
             // generate query to match category_list
-            var query = 'SELECT * FROM (SELECT compound_id FROM Compounds JOIN CCMapping USING (compound_id)';
+            var query = 'SELECT compound_id FROM (SELECT * FROM Compounds JOIN CCMapping USING (compound_id)';
             if (category_list.length > 0) {
 
                 query = query + ' WHERE (category_id = ' + category_list[0];
@@ -148,8 +148,7 @@ async function getQuestionSet(category_list, amount) {
                 }
                 query = query + ")";
             }
-            query = query + ' GROUP BY compound_id ORDER BY RANDOM() LIMIT ?) ORDER BY difficulty ASC, ranking ASC'
-            console.log(query);
+            query = query + ' GROUP BY compound_id ORDER BY RANDOM() LIMIT ?) ORDER BY difficulty ASC, ranking ASC';
             tx.executeSql(query, [amount], function(tx, rs) {
                 resolve(convertResultToArray(rs));
             }, function(tx, error) {
