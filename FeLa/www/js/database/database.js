@@ -82,6 +82,13 @@ export function epochToDate(epoch) {
     return new Date(epoch * 1000);
 }
 
+// helper function to split split information of name in multiple parts
+export function convertNameSplitToArray(namesplit) {
+
+    const res = namesplit.split('#');
+    return res;
+}
+
 
 // --- functions to obtain information about status of database ----
 
@@ -148,22 +155,92 @@ export async function getCategories() {
     })
 }
 
-// returns 3 random compounds that are not the given compound and optionally from a specific category
-export async function getMcAlternatives(category_list, excluded_id) {
+// returns a compound entry of the compounds_table by compound_id
+async function getCompound(compound_id) {
+
+    return new Promise(function(resolve, reject) {
+        db.readTransaction(function(tx) {
+            tx.executeSql('SELECT * FROM Compounds WHERE compound_id = ?', [compound_id], function(tx, rs) {
+                resolve(convertResultToArray(rs));
+            }, function(tx, error) {
+                reject(error);
+            })
+        }, function(error) {
+            reject(error);
+        })
+    })
+}
+
+// returns all categories of compound as an array: usable as category_list!
+async function getCategoriesOfCompound(compound_id) {
 
     return new Promise(function(resolve, reject) {
 
         db.readTransaction(function(tx) {
             
-            let query = 'SELECT DISTINCT name, formula FROM Compounds JOIN CCMapping USING (compound_id) WHERE compound_id != ?';
-
-            query = query + categoryCondition(category_list, 'AND') + ' ORDER BY Random() LIMIT 3';
-
-            tx.executeSql(query, [excluded_id], function(tx, rs) {
-                resolve(convertResultToArray(rs));
-            }, function(error) {
+            tx.executeSql('SELECT category_id FROM Compounds JOIN CCMapping USING (compound_id) WHERE compound_id = ? GROUP BY category_id', [compound_id], function(tx, rs) {
+                let result = [];
+                for (let i = 0; i < rs.rows.length; i++) {
+                    let item = rs.rows.item(i);
+                    result.push(item.category_id);
+                }
+                resolve(result);
+            }, function(tx, error) {
                 reject(error);
             })
+        })
+    })
+}
+
+/* returns 3 random compounds that are not the given compound and optionally from a specific category
+sameness 0 means random alternatives
+sameness 1 means alternatives from same category
+sameness 2 means (in addition) alternatives that sound similar*/
+export async function getMcAlternatives(root_id, sameness) {
+
+    return new Promise(async function(resolve, reject) {
+
+        var query;
+        var subquery = ' Compounds JOIN CCMapping USING (compound_id)';
+        var query_condition =  ' WHERE compound_id != ?';
+
+        if (sameness == 1) {
+            query_condition = query_condition + categoryCondition(await getCategoriesOfCompound(root_id), 'AND');
+            console.log(query_condition);
+        }
+        else if (sameness == 2) {
+            // TODO: switch from sameness by name to sameness by formula and cleanup
+            let compound = await getCompound(root_id);
+            let name = compound[0].name;
+            const namesplit = convertNameSplitToArray(compound[0].split);
+
+            let subquery_condition = query_condition + ' AND (name LIKE "%' + namesplit[0] + '%"';
+            let subquery_from = subquery;
+            query_condition = '';
+
+            for (let i = 1; i < namesplit.length; i++) {
+                subquery_condition = subquery_condition + ' OR name LIKE "%' + namesplit[i] + '%"';
+            }
+
+            subquery_condition = subquery_condition + ')';
+
+            subquery = ' (SELECT DISTINCT name, formula, ABS(length(name) - length("' + name + '")) as similarity FROM' + subquery_from + subquery_condition + ' ORDER BY similarity LIMIT 15)';
+        }
+
+        query = 'SELECT DISTINCT name, formula FROM' + subquery + query_condition + ' ORDER BY Random() LIMIT 3';
+        console.log(query); 
+
+        db.readTransaction(function(tx) {
+            
+            tx.executeSql(query, [root_id], function(tx, rs) {
+                resolve(convertResultToArray(rs));
+            }, function(error) {
+                console.log(error);
+                reject(error);
+            })
+        }, function(error) {
+            console.log(error);
+            reject(error)
         })
     })
 }
@@ -405,7 +482,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            console.log(await createRound('learn', [4,5], 10));
+                            console.log(await getMcAlternatives(13, 2));
                         }, function(error) {
                             throw error;
                         }
