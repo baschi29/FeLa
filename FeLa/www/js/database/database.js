@@ -54,15 +54,21 @@ function convertResultToArray(rs) {
 }
 
 // helper function to construct sqlite OR condidition from given category_list
-function categoryCondition(category_list) {
+function categoryCondition(category_list, prefix) {
+    
+    let condition = '';
 
-    let condition = ' (category_id = ' + category_list[0];
+    if (category_list.length > 0) {
+        condition = condition + ' ' + prefix;
+        condition = condition + ' (category_id = ' + category_list[0];
 
-    for (let i = 1; i < category_list.length; i++) {
-        condition = condition + ' OR category_id = ' + category_list[i];
+        for (let i = 1; i < category_list.length; i++) {
+            condition = condition + ' OR category_id = ' + category_list[i];
+        }
+
+        condition = condition + ")";
     }
     
-    condition = condition + ")";
     return condition;
 }
 
@@ -143,7 +149,7 @@ export async function getCategories() {
 }
 
 // returns 3 random compounds that are not the given compound and optionally from a specific category
-export async function getMCAlternatives(category_list, excluded_id) {
+export async function getMcAlternatives(category_list, excluded_id) {
 
     return new Promise(function(resolve, reject) {
 
@@ -151,12 +157,7 @@ export async function getMCAlternatives(category_list, excluded_id) {
             
             let query = 'SELECT DISTINCT name, formula FROM Compounds JOIN CCMapping USING (compound_id) WHERE compound_id != ?';
 
-            if (category_list.length > 0) {
-                query = query + ' AND';
-                query = query + categoryCondition(category_list);
-            }
-
-            query = query + 'ORDER BY Random() LIMIT 3';
+            query = query + categoryCondition(category_list, 'AND') + ' ORDER BY Random() LIMIT 3';
 
             tx.executeSql(query, [excluded_id], function(tx, rs) {
                 resolve(convertResultToArray(rs));
@@ -191,9 +192,7 @@ export async function getCompoundCount(category_list) {
 
             let query = 'SELECT DISTINCT count(*) as c FROM Compounds JOIN CCMapping USING (compound_id)';
 
-            if (category_list.length > 0) {
-                query = query + ' WHERE' + categoryCondition(category_list);
-            }
+            query = query + categoryCondition(category_list, ' WHERE');
         
             tx.executeSql(query, [], function(tx, rs) {
                 resolve(rs.rows.item(0).c);
@@ -232,9 +231,7 @@ function createQuestionSet(round_id, category_list, amount) {
             // generate query to select compound_ids according given categories, sorted by descending ranking first, then ascending difficulty 
             var select_query = 'SELECT ? as round_id, compound_id FROM (SELECT * FROM Compounds JOIN CCMapping USING (compound_id)';
             
-            if (category_list.length > 0) {
-                select_query = select_query + ' WHERE' + categoryCondition(category_list);
-            }
+            select_query = select_query + categoryCondition(category_list, ' WHERE');
 
             select_query = select_query + ' GROUP BY compound_id ORDER BY RANDOM() LIMIT ?) ORDER BY ranking DESC, difficulty ASC';
             let insert_query = 'INSERT INTO Questions (round_id, compound_id) ' + select_query;
@@ -408,7 +405,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            console.log(await getAlternatives([], 5));
+                            console.log(await createRound('learn', [4,5], 10));
                         }, function(error) {
                             throw error;
                         }
