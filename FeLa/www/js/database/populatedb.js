@@ -1,5 +1,5 @@
 // variable for desired log level, >0 logs a lot
-var logLevel = 1;
+var logLevel = 0;
 
 // adds a category with ranking 0, needs a transaction tx as an argument
 function addCategory(tx, catName) {
