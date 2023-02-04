@@ -1,8 +1,21 @@
 import * as feladb from './database/database.js';
+
 function addMCItem(questNumber, modeString, question, answer) {
+    function shuffle(a) {
+        var j, x, i;
+        for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+        }
+        return a;
+    }
+
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
-    
+    const formulars = [answer, 'test1', 'test2', 'test3'];
+    shuffle(formulars);
     
 
     const carouselItem = ons.createElement(`
@@ -15,7 +28,7 @@ function addMCItem(questNumber, modeString, question, answer) {
                         </label>
 
                         <label id=label1${questNumber} for="radio-1${questNumber}" class="center">
-                            ${answer}                   
+                            ${formulars[0]}                   
                         </label>
                      </ons-list-item>
 
@@ -25,7 +38,7 @@ function addMCItem(questNumber, modeString, question, answer) {
                         </label>
 
                         <label id=label2${questNumber} for="radio-2${questNumber}" class="center">
-                            Antwort B
+                            ${formulars[1]}                             
                         </label>
                      </ons-list-item>
 
@@ -35,7 +48,7 @@ function addMCItem(questNumber, modeString, question, answer) {
                         </label>
 
                         <label id=label3${questNumber} for="radio-3${questNumber}" class="center">
-                            Antwort C
+                            ${formulars[2]}     
                         </label>
                      </ons-list-item>
 
@@ -45,7 +58,7 @@ function addMCItem(questNumber, modeString, question, answer) {
                         </label>
 
                         <label id=label4${questNumber} for="radio-4${questNumber}" class="center">
-                            Antwort D 
+                            ${formulars[3]}     
                         </label>
                      </ons-list-item>
                 </ons-list>
@@ -63,25 +76,60 @@ function addMCItem(questNumber, modeString, question, answer) {
     
 }
 
-function addDaDItem(questNumber, modeString) {
+function addDaDItem(questNumber, modeString, directString, question, answer, split) {
+    function shuffle(a) {
+        var j, x, i;
+        for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+        }
+        return a;
+    }
+
     // carussel item hinzufügen für drag and drop mit tabelle und Buttons
     const questCar = document.querySelector('#questCar');
+    let splitted;
+    if (directString === 'direct3') { //Summenformel -> Name
+        splitted = answer.split(/(?=[A-Z])/);
+        console.log(splitted);
+        let i = 0;
+        while (splitted.length < 10) {
+            splitted.push('test'+i);
+            i++;
+        }
+    } else if (directString === 'direct2') { //Name -> Summenformel
+        splitted = split.split('#'); 
+        console.log(splitted);
+        let i = 0;
+        while (splitted.length <= 10) {
+            splitted.push('test'+i);
+            i++;
+        }
+    }
+    shuffle(splitted);
 
-    let answer = "H2O";
+    //let answer = "H2O";
     
     const carouselItem = ons.createElement(`
         <ons-carousel-item>
-            <h1 align="center">Wasser</h1>
+            <h1 align="center">${question}</h1>
             <p style="text-align: center;">
-                <ons-button id=DaD1${questNumber} modifier="quiet" onclick="mark(this, 'DaD1${questNumber}')"> H </ons-button>
-                <ons-button id=DaD2${questNumber} modifier="quiet" onclick="mark(this, 'DaD2${questNumber}')"> 2 </ons-button>
-                <ons-button id=DaD3${questNumber} modifier="quiet" onclick="mark(this, 'DaD3${questNumber}')"> O </ons-button>
-            </p>
-
+                <ons-button id=DaD1${questNumber} modifier="quiet" onclick="mark(this, 'DaD1${questNumber}')"> ${splitted[0]} </ons-button>
+                <ons-button id=DaD2${questNumber} modifier="quiet" onclick="mark(this, 'DaD2${questNumber}')"> ${splitted[1]}  </ons-button>
+                <ons-button id=DaD3${questNumber} modifier="quiet" onclick="mark(this, 'DaD3${questNumber}')"> ${splitted[2]}  </ons-button>
+                <ons-button id=DaD4${questNumber} modifier="quiet" onclick="mark(this, 'DaD4${questNumber}')"> ${splitted[3]}  </ons-button>
+                <ons-button id=DaD5${questNumber} modifier="quiet" onclick="mark(this, 'DaD5${questNumber}')"> ${splitted[4]}  </ons-button>
+                </p>
+                
             <p style="text-align: center;">
-                <ons-button id=DaD4${questNumber} modifier="quiet" onclick="mark(this, 'DaD4${questNumber}')"> P </ons-button>
-                <ons-button id=DaD5${questNumber} modifier="quiet" onclick="mark(this, 'DaD5${questNumber}')"> HalloHallo </ons-button>
-                <ons-button id=DaD6${questNumber} modifier="quiet" onclick="mark(this, 'DaD6${questNumber}')"> ${questNumber} </ons-button>
+                <ons-button id=DaD6${questNumber} modifier="quiet" onclick="mark(this, 'DaD6${questNumber}')"> ${splitted[5]}  </ons-button>
+                <ons-button id=DaD7${questNumber} modifier="quiet" onclick="mark(this, 'DaD7${questNumber}')"> ${splitted[6]}  </ons-button>
+                <ons-button id=DaD8${questNumber} modifier="quiet" onclick="mark(this, 'DaD8${questNumber}')"> ${splitted[7]}  </ons-button>
+                <ons-button id=DaD9${questNumber} modifier="quiet" onclick="mark(this, 'DaD9${questNumber}')"> ${splitted[8]}  </ons-button>
+                <ons-button id=DaD10${questNumber} modifier="quiet" onclick="mark(this, 'DaD10${questNumber}')"> ${splitted[9]}  </ons-button>
+               
             </p>
 
             <style>
@@ -117,19 +165,19 @@ function addDaDItem(questNumber, modeString) {
     questCar.appendChild(carouselItem);   
 }  
 
-function addFTEItem(questNumber, modeString) {
+function addFTEItem(questNumber, modeString, question, answer) {
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
-    let answer = "H2O";
+    console.log(answer)
 
     const carouselItem = ons.createElement(`
         <ons-carausel-item>    
-            <h1>
-                Placeholder Frage
+            <h1 align='center'>
+                ${question}
             </h1>
             <br></br>
-            <p>
-                <ons-input id="answer" input-id="answertest" modifier="underbar" placeholder="Antwort" float></ons-input>
+            <p align='center'>
+                <ons-input id="answer${questNumber}" input-id="answertest${questNumber}" modifier="underbar" placeholder="Antwort" float></ons-input>
             </p>
             
             <ons-button modifier="large" onclick="check('level3', ${questNumber}, '${answer}' , '${modeString}')">Antwort überprüfen</ons-button>
@@ -137,15 +185,11 @@ function addFTEItem(questNumber, modeString) {
         </ons-carausel-item>  
     `);
 
-    questCar.appendChild(carouselItem);
-    
-    var checkButton = document.getElementById('confirm');
-    checkButton.addEventListener('click', check); 
+    questCar.appendChild(carouselItem); 
 }  
 
 // https://onsen.io/v2/guide/tutorial.html#carousels
 async function testMode(modeString) {
-    console.log(modeString);
     // carussel sseite pushen
     const level = document.getElementById("choose-sel1" + modeString);
     const lvList = level.options;
@@ -161,21 +205,66 @@ async function testMode(modeString) {
     
     await document.querySelector('#mainNavigator').pushPage('views/carousel.html', {data: {title: 'Fragen Testmodus'}});
     
-    const round = await feladb.createRound(modeString, [], 10);
+    console.log(selectedTyp);
+    let round;
+    if (selectedTyp === 'Alle') {
+        round = await feladb.createRound(modeString, [], 10);
+    } else {
+        round = await feladb.createRound(modeString, selectedTyp, 10);
+    }
     //Carousel items anhängen
-    let questTyp;
-
+    const directions = ['direct2', 'direct3'];
+    var dir;
     if (selectedLevel === 'level1') {
-        questTyp = addMCItem;
+        for (let i = 0; i < round.questions.length; i++) {
+            let question = round.questions[i];
+            if (selectedDirection === 'direct3') {
+                addMCItem(question.question_id, modeString, question.name, question.formula);    
+            } else if (selectedDirection === 'direct2') {
+                addMCItem(question.question_id, modeString, question.formula, question.name); 
+            } else {
+                dir = directions[Math.floor(Math.random() * directions.length)];
+                if (dir === 'direct3') {
+                    addMCItem(question.question_id, modeString, question.name, question.formula);    
+                } else if (dir === 'direct2') {
+                    addMCItem(question.question_id, modeString, question.formula, question.name); 
+                }
+            }
+        }
+        
     } else if (selectedLevel === 'level2') {
-        questTyp = addDaDItem;
+        for (let i = 0; i < round.questions.length; i++) {
+            let question = round.questions[i];
+            if (selectedDirection === 'direct3') {
+                addDaDItem(question.question_id, modeString, selectedDirection, question.name, question.formula, question.split);       
+            } else if (selectedDirection === 'direct2') {
+                addDaDItem(question.question_id, modeString, selectedDirection, question.formula, question.name, question.split);
+            } else {
+                dir = directions[Math.floor(Math.random() * directions.length)]
+                if (dir === 'direct3') {
+                    addDaDItem(question.question_id, modeString, dir, question.name, question.formula, question.split);       
+                } else if (dir === 'direct2') {
+                    addDaDItem(question.question_id, modeString, dir, question.formula, question.name, question.split);
+                }
+            }
+        }
 
     } else if (selectedLevel === 'level3') {
-        questTyp = addFTEItem;
-    }
-    for (let i = 0; i < round.questions.length; i++) {
-        let question = round.questions[i];
-        questTyp(question.question_id, modeString, question.name, question.formula);    
+        for (let i = 0; i < round.questions.length; i++) {
+            let question = round.questions[i];
+            if (selectedDirection === 'direct3') {
+                addFTEItem(question.question_id, modeString, question.name, question.formula);                      
+            } else if (selectedDirection === 'direct2') {
+                addFTEItem(question.question_id, modeString, question.formula, question.name);                      
+            } else {
+                dir = directions[Math.floor(Math.random() * directions.length)];
+                if (dir === 'direct3') {
+                    addFTEItem(question.question_id, modeString, question.name, question.formula);                      
+                } else if (dir === 'direct2') {
+                    addFTEItem(question.question_id, modeString, question.formula, question.name);                      
+                }
+            }
+        }
     }
     questCar.next();
 
@@ -184,13 +273,13 @@ async function testMode(modeString) {
 
 
 //Functions for Drag end Drop
-function mark(pushedButton, buttonID) {
+export function mark(pushedButton, buttonID) {
     pushedButton.style.backgroundColor = 'lightblue';
     localStorage.setItem("markedButton", buttonID);
     localStorage.setItem("buttonText", pushedButton.innerText);
     
 }
-function pushInTable(tableField) {
+export function pushInTable(tableField) {
     if (tableField.innerText === '') {
         var markedButton = document.getElementById(localStorage.getItem("markedButton"));
         var buttonText = localStorage.getItem("buttonText");
@@ -206,7 +295,7 @@ function pushInTable(tableField) {
 }
 
 // checks if answer is correct
-function check(level, index, answer, modeString) {
+export function check(level, index, answer, modeString) {
     console.log(level); 
     console.log(index);
     console.log(modeString);
@@ -225,7 +314,7 @@ function check(level, index, answer, modeString) {
             questAnswer = document.getElementById('label3'+index).innerText;
             x=3;
         } else if (document.getElementById('rd4'+index).checked) {
-            questAnswer = document.getElementById('label3'+index).innerText;
+            questAnswer = document.getElementById('label4'+index).innerText;
             x=4;
         }
 
@@ -291,7 +380,30 @@ function check(level, index, answer, modeString) {
             
     // Freitext
     } else if (level === 'level3') {
-    }   
+        questAnswer = document.getElementById('answer' + index).value;
+        if (modeString === 'learn') {
+            if (questAnswer === answer){
+                // ergebniss speichern
+                alert('Richtig');
+                carausel.next();
+            } else {
+                // Zeile rot machen
+                console.log(document.getElementById("answertest" + index));
+                document.getElementById("answertest" + index).style.color = 'red';
+                alert('Falsch');
+            }
+        } else if (modeString === 'test'){
+            if (questAnswer === answer){
+                // ergebniss speichern
+                alert('Richtig: später nicht mehr angezeigt');
+                carausel.next();               
+            } else {
+                // ergebnis speichern
+                alert('Falsch: später nicht mehr anzeigen');
+                carausel.next();
+            }
+        }   
+    }
     //checken ob die Lösung richtig ist
 
 
@@ -316,4 +428,6 @@ document.addEventListener('init', function(event) {
     } 
 });
 
-
+window.check = check;
+window.pushInTable = pushInTable;
+window.mark = mark;
