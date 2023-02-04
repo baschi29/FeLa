@@ -183,7 +183,8 @@ export async function getCompoundCount(category_list) {
 // ---- Rounds & Questions ----
 
 /* creates a question
-should only be use manually to add questions that are asked again in the same round*/
+should only be use manually to add questions that are asked again in the same round
+TODO: own db transaction!!!!!!!!!!!!!*/
 export function addQuestionToRound(tx, round_id, compound_id) {
 
     tx.executeSql('INSERT INTO Questions (round_id, compound_id) VALUES (?, ?)', [round_id, compound_id], function(tx, rs) {
@@ -231,7 +232,7 @@ function createQuestionSet(round_id, category_list, amount) {
 /* writes results of a question in question table
 type is either mc, free or d&d
 result is 0 for false, 1 for true
-difficulty can be calculated by app, needs to be integer
+difficulty can be calculated by app, needs to be real
 */
 export async function writeQuestionResults(question_id, type, result, difficulty) {
 
@@ -272,9 +273,9 @@ async function writeRound(type) {
 }
 
 /* creates a new Round, writes everything to the database
-returns nothing
-type should  be learning or exam
-categoryList should be an array containing one or more category ids or an empty array for all categories
+returns {"id": round_id, "questions": question_set}
+type should  be learn or test
+categoryList should be an array containing one or more category ids or an empty array for all categories [id1, id2] or []
 amount should be the desired amount of questions
 */
 export async function createRound(type, category_list, amount) {
@@ -382,7 +383,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            console.log(await getCompoundCount([]));
+                            console.log(await createRound("learn", [2,3,4], 15));
                         }, function(error) {
                             throw error;
                         }
