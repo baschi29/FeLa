@@ -284,15 +284,17 @@ export async function getCompoundCount(category_list) {
 // ---- Rounds & Questions ----
 
 /* creates a question
-should only be use manually to add questions that are asked again in the same round
-TODO: own db transaction!!!!!!!!!!!!!*/
-export function addQuestionToRound(tx, round_id, compound_id) {
+should only be use manually to add questions that are asked again in the same round*/
+export function addQuestionToRound(round_id, compound_id) {
 
-    tx.executeSql('INSERT INTO Questions (round_id, compound_id) VALUES (?, ?)', [round_id, compound_id], function(tx, rs) {
-        console.log("Added question to round: " + round_id);
-    }, function(tx, error) {
-        throw error;
+    db.transaction(function(tx) {
+        tx.executeSql('INSERT INTO Questions (round_id, compound_id) VALUES (?, ?)', [round_id, compound_id], function(tx, rs) {
+            console.log("Added question to round: " + round_id);
+        }, function(tx, error) {
+            throw error;
+        })
     })
+
 }
 
 /* generates Question Set to be used in a round
