@@ -1,12 +1,13 @@
-function addMCItem(questNumber, modeString) {
+import * as feladb from './database/database.js';
+function addMCItem(questNumber, modeString, question, answer) {
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
     
-    var answer = 'Antwort B';
+    
 
     const carouselItem = ons.createElement(`
             <ons-carousel-item>
-                <h1 align="center">Placeholder Frage</h1>
+                <h1 align="center">${question}</h1>
                 <ons-list>
                     <ons-list-item tappable>
                         <label class="left">
@@ -14,7 +15,7 @@ function addMCItem(questNumber, modeString) {
                         </label>
 
                         <label id=label1${questNumber} for="radio-1${questNumber}" class="center">
-                            Aufgabe ${questNumber}                    
+                            ${answer}                   
                         </label>
                      </ons-list-item>
 
@@ -158,24 +159,24 @@ async function testMode(modeString) {
     const dirList = direction.options;
     var selectedDirection = dirList[direction.selectedIndex].value;
     
-    
     await document.querySelector('#mainNavigator').pushPage('views/carousel.html', {data: {title: 'Fragen Testmodus'}});
     
+    const round = await feladb.createRound(modeString, [], 10);
     //Carousel items anhängen
-    var i = 1;
-    if (selectedLevel === 'level1') {
-        for (let index = 0; index < 9; index++) {
-            addMCItem(index, modeString);     
-        }
-    } else if (selectedLevel === 'level2') {
-        for (let index = 0; index < 9; index++) {
-            addDaDItem(index, modeString);     
-        }
-    } else if (selectedLevel === 'level3') {
-            
-        addFTEItem(i, modeString);
-    }
+    let questTyp;
 
+    if (selectedLevel === 'level1') {
+        questTyp = addMCItem;
+    } else if (selectedLevel === 'level2') {
+        questTyp = addDaDItem;
+
+    } else if (selectedLevel === 'level3') {
+        questTyp = addFTEItem;
+    }
+    for (let i = 0; i < round.questions.length; i++) {
+        let question = round.questions[i];
+        questTyp(question.question_id, modeString, question.name, question.formula);    
+    }
     questCar.next();
 
 }
