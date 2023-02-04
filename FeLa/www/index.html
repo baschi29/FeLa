@@ -53,7 +53,15 @@
         <!--JavaScript at end of body for optimized loading-->
         <script type="text/javascript" src="cordova.js"></script>
         <script src="js/jquery.min.js"></script>
+        <script type="module" src="js/database/database.js"></script>
+
         <!--script part for handling onsenui for now in html file for clarity-->
+        <script>
+            // example on how to listen for ready event
+            document.addEventListener("feladbready", (e) => {
+                console.log("Received feladbready event");
+            })
+        </script>
         <script src="js/fela.js"></script>
     </body>
     
