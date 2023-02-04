@@ -142,6 +142,31 @@ export async function getCategories() {
     })
 }
 
+// returns 3 random compounds that are not the given compound and optionally from a specific category
+export async function getMCAlternatives(category_list, excluded_id) {
+
+    return new Promise(function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+            
+            let query = 'SELECT DISTINCT name, formula FROM Compounds JOIN CCMapping USING (compound_id) WHERE compound_id != ?';
+
+            if (category_list.length > 0) {
+                query = query + ' AND';
+                query = query + categoryCondition(category_list);
+            }
+
+            query = query + 'ORDER BY Random() LIMIT 3';
+
+            tx.executeSql(query, [excluded_id], function(tx, rs) {
+                resolve(convertResultToArray(rs));
+            }, function(error) {
+                reject(error);
+            })
+        })
+    })
+}
+
 // returns count of categories in database
 export async function getCategoryCount(){
 
@@ -383,7 +408,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            console.log(await createRound("learn", [2,3,4], 15));
+                            console.log(await getAlternatives([], 5));
                         }, function(error) {
                             throw error;
                         }
