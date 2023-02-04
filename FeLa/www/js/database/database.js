@@ -54,15 +54,21 @@ function convertResultToArray(rs) {
 }
 
 // helper function to construct sqlite OR condidition from given category_list
-function categoryCondition(category_list) {
+function categoryCondition(category_list, prefix) {
+    
+    let condition = '';
 
-    let condition = ' (category_id = ' + category_list[0];
+    if (category_list.length > 0) {
+        condition = condition + ' ' + prefix;
+        condition = condition + ' (category_id = ' + category_list[0];
 
-    for (let i = 1; i < category_list.length; i++) {
-        condition = condition + ' OR category_id = ' + category_list[i];
+        for (let i = 1; i < category_list.length; i++) {
+            condition = condition + ' OR category_id = ' + category_list[i];
+        }
+
+        condition = condition + ")";
     }
     
-    condition = condition + ")";
     return condition;
 }
 
@@ -74,6 +80,13 @@ function NowInEpoch() {
 // helper function to get Date object from epoch (seconds)
 export function epochToDate(epoch) {
     return new Date(epoch * 1000);
+}
+
+// helper function to split split information of name in multiple parts
+export function convertNameSplitToArray(namesplit) {
+
+    const res = namesplit.split('#');
+    return res;
 }
 
 
@@ -142,6 +155,96 @@ export async function getCategories() {
     })
 }
 
+// returns a compound entry of the compounds_table by compound_id
+async function getCompound(compound_id) {
+
+    return new Promise(function(resolve, reject) {
+        db.readTransaction(function(tx) {
+            tx.executeSql('SELECT * FROM Compounds WHERE compound_id = ?', [compound_id], function(tx, rs) {
+                resolve(convertResultToArray(rs));
+            }, function(tx, error) {
+                reject(error);
+            })
+        }, function(error) {
+            reject(error);
+        })
+    })
+}
+
+// returns all categories of compound as an array: usable as category_list!
+async function getCategoriesOfCompound(compound_id) {
+
+    return new Promise(function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+            
+            tx.executeSql('SELECT category_id FROM Compounds JOIN CCMapping USING (compound_id) WHERE compound_id = ? GROUP BY category_id', [compound_id], function(tx, rs) {
+                let result = [];
+                for (let i = 0; i < rs.rows.length; i++) {
+                    let item = rs.rows.item(i);
+                    result.push(item.category_id);
+                }
+                resolve(result);
+            }, function(tx, error) {
+                reject(error);
+            })
+        })
+    })
+}
+
+/* returns 3 random compounds that are not the given compound and optionally from a specific category
+sameness 0 means random alternatives
+sameness 1 means alternatives from same category
+sameness 2 means (in addition) alternatives that sound similar*/
+export async function getMcAlternatives(root_id, sameness) {
+
+    return new Promise(async function(resolve, reject) {
+
+        var query;
+        var subquery = ' Compounds JOIN CCMapping USING (compound_id)';
+        var query_condition =  ' WHERE compound_id != ?';
+
+        if (sameness == 1) {
+            query_condition = query_condition + categoryCondition(await getCategoriesOfCompound(root_id), 'AND');
+            console.log(query_condition);
+        }
+        else if (sameness == 2) {
+            // TODO: switch from sameness by name to sameness by formula and cleanup
+            let compound = await getCompound(root_id);
+            let name = compound[0].name;
+            const namesplit = convertNameSplitToArray(compound[0].split);
+
+            let subquery_condition = query_condition + ' AND (name LIKE "%' + namesplit[0] + '%"';
+            let subquery_from = subquery;
+            query_condition = '';
+
+            for (let i = 1; i < namesplit.length; i++) {
+                subquery_condition = subquery_condition + ' OR name LIKE "%' + namesplit[i] + '%"';
+            }
+
+            subquery_condition = subquery_condition + ')';
+
+            subquery = ' (SELECT DISTINCT name, formula, ABS(length(name) - length("' + name + '")) as similarity FROM' + subquery_from + subquery_condition + ' ORDER BY similarity LIMIT 15)';
+        }
+
+        query = 'SELECT DISTINCT name, formula FROM' + subquery + query_condition + ' ORDER BY Random() LIMIT 3';
+        console.log(query); 
+
+        db.readTransaction(function(tx) {
+            
+            tx.executeSql(query, [root_id], function(tx, rs) {
+                resolve(convertResultToArray(rs));
+            }, function(error) {
+                console.log(error);
+                reject(error);
+            })
+        }, function(error) {
+            console.log(error);
+            reject(error)
+        })
+    })
+}
+
 // returns count of categories in database
 export async function getCategoryCount(){
 
@@ -166,9 +269,7 @@ export async function getCompoundCount(category_list) {
 
             let query = 'SELECT DISTINCT count(*) as c FROM Compounds JOIN CCMapping USING (compound_id)';
 
-            if (category_list.length > 0) {
-                query = query + ' WHERE' + categoryCondition(category_list);
-            }
+            query = query + categoryCondition(category_list, ' WHERE');
         
             tx.executeSql(query, [], function(tx, rs) {
                 resolve(rs.rows.item(0).c);
@@ -183,15 +284,17 @@ export async function getCompoundCount(category_list) {
 // ---- Rounds & Questions ----
 
 /* creates a question
-should only be use manually to add questions that are asked again in the same round
-TODO: own db transaction!!!!!!!!!!!!!*/
-export function addQuestionToRound(tx, round_id, compound_id) {
+should only be use manually to add questions that are asked again in the same round*/
+export function addQuestionToRound(round_id, compound_id) {
 
-    tx.executeSql('INSERT INTO Questions (round_id, compound_id) VALUES (?, ?)', [round_id, compound_id], function(tx, rs) {
-        console.log("Added question to round: " + round_id);
-    }, function(tx, error) {
-        throw error;
+    db.transaction(function(tx) {
+        tx.executeSql('INSERT INTO Questions (round_id, compound_id) VALUES (?, ?)', [round_id, compound_id], function(tx, rs) {
+            console.log("Added question to round: " + round_id);
+        }, function(tx, error) {
+            throw error;
+        })
     })
+
 }
 
 /* generates Question Set to be used in a round
@@ -207,9 +310,7 @@ function createQuestionSet(round_id, category_list, amount) {
             // generate query to select compound_ids according given categories, sorted by descending ranking first, then ascending difficulty 
             var select_query = 'SELECT ? as round_id, compound_id FROM (SELECT * FROM Compounds JOIN CCMapping USING (compound_id)';
             
-            if (category_list.length > 0) {
-                select_query = select_query + ' WHERE' + categoryCondition(category_list);
-            }
+            select_query = select_query + categoryCondition(category_list, ' WHERE');
 
             select_query = select_query + ' GROUP BY compound_id ORDER BY RANDOM() LIMIT ?) ORDER BY ranking DESC, difficulty ASC';
             let insert_query = 'INSERT INTO Questions (round_id, compound_id) ' + select_query;
@@ -383,7 +484,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            console.log(await createRound("learn", [2,3,4], 15));
+                            console.log(await getMcAlternatives(13, 2));
                         }, function(error) {
                             throw error;
                         }
