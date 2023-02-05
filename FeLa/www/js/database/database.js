@@ -306,14 +306,20 @@ export async function getCompoundCount(category_list) {
 // ---- Rounds & Questions ----
 
 /* creates a question
-should only be use manually to add questions that are asked again in the same round*/
-export function addQuestionToRound(round_id, compound_id) {
+should only be use manually to add questions that are asked again in the same round
+returns new object of open questions for round*/
+export async function addQuestionToRound(round_id, compound_id) {
 
-    db.transaction(function(tx) {
-        tx.executeSql('INSERT INTO Questions (round_id, compound_id) VALUES (?, ?)', [round_id, compound_id], function(tx, rs) {
-            console.log("Added question to round: " + round_id);
-        }, function(tx, error) {
-            throw error;
+    return new Promise(function(resolve, reject) {
+        
+        db.transaction(function(tx) {
+            tx.executeSql('INSERT INTO Questions (round_id, compound_id) VALUES (?, ?)', [round_id, compound_id], async function(tx, rs) {
+                resolve(await getOpenQuestions(round_id));
+            }, function(tx, error) {
+                reject(error);
+            })
+        }, function(error) {
+            reject(error);
         })
     })
 
@@ -337,12 +343,8 @@ function createQuestionSet(round_id, category_list, amount) {
             select_query = select_query + ' GROUP BY compound_id ORDER BY RANDOM() LIMIT ?) ORDER BY ranking DESC, difficulty ASC';
             let insert_query = 'INSERT INTO Questions (round_id, compound_id) ' + select_query;
             
-            tx.executeSql(insert_query, [round_id, amount], function(tx, rs) {
-                tx.executeSql('SELECT question_id, compound_id, c.name, c.formula, c.split, c.ranking, c.difficulty FROM Questions as q JOIN Compounds as c USING (compound_id) WHERE round_id = ?', [round_id], function(tx, res) {
-                    resolve(convertResultToArray(res));
-                }, function(tx, error) {
-                    reject(error);
-                })
+            tx.executeSql(insert_query, [round_id, amount], async function(tx, rs) {
+                resolve(await getOpenQuestions(round_id));
             }, function(tx, error) {
                 reject(error);
             })
@@ -352,25 +354,105 @@ function createQuestionSet(round_id, category_list, amount) {
     })
 }
 
-/* writes results of a question in question table
+/* returns {"id": round_id, "questions": question_set} for round_id
+*/
+export async function getOpenQuestions(round_id) {
+    
+    return new Promise(function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+
+            tx.executeSql('SELECT question_id, result, compound_id, c.name, c.formula, c.split, c.ranking, c.difficulty FROM Questions as q JOIN Compounds as c USING (compound_id) WHERE round_id = ?', [round_id], function(tx, rs) {
+                resolve({"id": round_id, "questions": convertResultToArray(rs)});
+            }, function(tx, error) {
+                reject(error);
+            })
+        }, function(error) {
+            reject(error);
+        })
+    })
+}
+
+/* returns an array of all open rounds
+*/
+export async function getOpenRounds() {
+
+    return new Promise(function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+
+            tx.executeSql('SELECT * FROM Rounds WHERE ranking IS NULL', [], function(tx, rs) {
+                resolve(convertResultToArray(rs));
+            }, function(tx, error) {
+                reject(error);
+            })
+        }, function(error) {
+            reject(error);
+        })
+    })
+}
+
+/* returns true if there are no open questions left for a given round
+*/
+export async function isRoundFinished(round_id) {
+
+    return new Promise(function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+
+            tx.executeSql('SELECT count(*) as c FROM Questions WHERE round_id = ? AND result IS NULL', [round_id], function(tx, rs) {
+                let res = rs.rows.item(0).c == 0;
+                resolve(res);
+            }, function(tx, error) {
+                reject(error);
+            })
+        }, function(error) {
+            reject(error);
+        })
+    })
+}
+
+/* writes results of a question in question table -> closes question in that sense
 type is either mc, free or d&d
 result is 0 for false, 1 for true
 difficulty can be calculated by app, needs to be real
 */
-export async function writeQuestionResults(question_id, type, result, difficulty) {
+export async function closeQuestion(round_id, question_id, type, result, difficulty) {
 
     return new Promise(function(resolve, reject) {
 
         db.transaction(function(tx) {
-            tx.executeSql('UPDATE Questions SET type = ?, result = ?, difficulty = ?, timestamp = ? WHERE question_id = ?', [type, result, difficulty, NowInEpoch(), question_id], function(tx, rs) {}, function(tx, error) {
-                throw error;
+            tx.executeSql('UPDATE Questions SET type = ?, result = ?, difficulty = ?, timestamp = ? WHERE question_id = ?', [type, result, difficulty, NowInEpoch(), question_id], async function(tx, rs) {
+                if (await isRoundFinished(round_id)) {
+                    closeRound(round_id);
+                }
+                resolve();
+            }, function(tx, error) {
+                reject(error);
             })
         }, function(error) {
             reject(error);
-        }, function() {
-            resolve("Write Question Results transaction successful");
         })
     })
+}
+
+/* closes round - round counts as finished if ranking is set
+TODO: ranking related stuff*/
+async function closeRound(round_id) {
+
+        return new Promise(function(resolve, reject) {
+
+            db.transaction(function(tx) {
+
+                tx.executeSql('UPDATE Rounds SET ranking = ? WHERE round_id = ?', [0.0 ,round_id], function(tx, rs) {
+                    resolve();
+                }, function(tx, error) {
+                    reject(error);
+                })
+            }, function(error) {
+                reject(error);
+            })
+        })
 }
 
 /* writes a new Round into database round table returns the id of the Round
@@ -382,7 +464,7 @@ async function writeRound(type) {
         db.transaction(function(tx) {
             let time = NowInEpoch();
 
-            tx.executeSql('INSERT INTO Rounds (type, timestamp, ranking) VALUES (?, ?, ?)', [type , time, 0.0], function(tx, rs) {
+            tx.executeSql('INSERT INTO Rounds (type, timestamp) VALUES (?, ?)', [type , time], function(tx, rs) {
                 tx.executeSql('SELECT round_id FROM Rounds WHERE timestamp = ?', [time], function(tx, rs) {
                     resolve(rs.rows.item(0).round_id);
                 });
@@ -409,9 +491,9 @@ export async function createRound(type, category_list, amount) {
         let round_id = await writeRound(type);
 
         // creates a question set in the questions table, returns ready to use question set
-        let question_set = await createQuestionSet(round_id, category_list, amount);
+        let result = await createQuestionSet(round_id, category_list, amount);
         
-        resolve({"id": round_id, "questions": question_set});
+        resolve(result);
     })
 }
 
@@ -506,7 +588,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            console.log(await getAlternatives(200, 2, 1));
+                            window.getOpenQuestions = getOpenQuestions;
                         }, function(error) {
                             throw error;
                         }
