@@ -108,7 +108,7 @@ export function splitFormula(formula, fineness) {
 // helper function to replace all formula indices with %: 
 function likeFormulaIndices(formula) {
 
-    let res = formula.replace(/\d+|[-\+]/g);
+    let res = formula.replace(/\d+|[-\+]/g, "%");
     return res;
 }
 
@@ -116,6 +116,7 @@ function likeFormulaIndices(formula) {
 function likeFormulaElements(formula) {
 
     let res = formula.replace(/([()]|_\d+|\^(\d+)?[-\+])+/g, "%")
+    return res;
 }
 
 // --- functions to obtain information about status of database ----
@@ -220,17 +221,17 @@ async function getCategoriesOfCompound(compound_id) {
     })
 }
 
-/* returns 3 random compounds that are not the given compound and optionally from a specific category
+/* returns count random compounds that are not the given compound according to sameness
 sameness 0 means random alternatives
 sameness 1 means alternatives from same category
 sameness 2 means (in addition) alternatives that sound similar
-https://stackoverflow.com/questions/8636911/how-to-find-strings-which-are-similar-to-given-string-in-sql-server*/
-export async function getMcAlternatives(root_id, sameness) {
+Important: May return nothing on sameness level 2 - app needs to check for that!
+*/
+export async function getAlternatives(root_id, sameness, count) {
 
     return new Promise(async function(resolve, reject) {
 
-        var query;
-        var subquery = ' Compounds JOIN CCMapping USING (compound_id)';
+        var query = 'SELECT DISTINCT name, formula, split FROM Compounds JOIN CCMapping USING (compound_id)';
         var query_condition =  ' WHERE compound_id != ?';
 
         if (sameness == 1) {
@@ -240,28 +241,20 @@ export async function getMcAlternatives(root_id, sameness) {
         else if (sameness == 2) {
             // TODO: switch from sameness by name to sameness by formula and cleanup
             let compound = await getCompound(root_id);
-            let name = compound[0].name;
-            const namesplit = splitName(compound[0].split);
+            let formula = compound[0].formula;
+            let formulaIndices = likeFormulaIndices(formula);
+            let formulaElements = likeFormulaElements(formula);
 
-            let subquery_condition = query_condition + ' AND (name LIKE "%' + namesplit[0] + '%"';
-            let subquery_from = subquery;
-            query_condition = '';
+            query_condition = query_condition + ' AND (formula LIKE "%' + formulaIndices + '%" OR formula LIKE "%' + formulaElements + '%")';
 
-            for (let i = 1; i < namesplit.length; i++) {
-                subquery_condition = subquery_condition + ' OR name LIKE "%' + namesplit[i] + '%"';
-            }
-
-            subquery_condition = subquery_condition + ')';
-
-            subquery = ' (SELECT DISTINCT name, formula, ABS(length(name) - length("' + name + '")) as similarity FROM' + subquery_from + subquery_condition + ' ORDER BY similarity LIMIT 15)';
         }
 
-        query = 'SELECT DISTINCT name, formula FROM' + subquery + query_condition + ' ORDER BY Random() LIMIT 3';
+        query = query + query_condition + ' ORDER BY Random() LIMIT ?';
         console.log(query); 
 
         db.readTransaction(function(tx) {
             
-            tx.executeSql(query, [root_id], function(tx, rs) {
+            tx.executeSql(query, [root_id, count], function(tx, rs) {
                 resolve(convertResultToArray(rs));
             }, function(error) {
                 console.log(error);
@@ -513,7 +506,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            console.log(await getMcAlternatives(13, 2));
+                            console.log(await getAlternatives(200, 2, 1));
                         }, function(error) {
                             throw error;
                         }
