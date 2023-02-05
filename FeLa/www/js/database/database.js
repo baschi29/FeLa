@@ -113,9 +113,31 @@ function likeFormulaIndices(formula) {
 }
 
 // helper function to replace everything that is not an Element with %
-function likeFormulaElements(formula) {
+function likeFormula2(formula) {
 
-    let res = formula.replace(/([()]|_\d+|\^(\d+)?[-\+])+/g, "%")
+    const arr = formula.match(/[A-Z][a-z]+_?|[A-Z]+_?/g);
+
+    var res = '(formula LIKE "%' + arr[0] + '%"';
+
+    for (let i = 1; i < arr.length; i++) {
+        res = res + ' OR formula LIKE "%' + arr[i] + '%"';
+    }
+
+    res = res + ')'
+
+    return res
+}
+
+function likeFormula3(formula) {
+
+    const arr = formula.match(/[A-Z][a-z]+_?|[A-Z]+_?|\^/g);
+
+    var res = '%';
+
+    for (let elem of arr) {
+        res = res + elem + '%';
+    }
+
     return res;
 }
 
@@ -222,9 +244,11 @@ async function getCategoriesOfCompound(compound_id) {
 }
 
 /* returns count random compounds that are not the given compound according to sameness
+multiple function calls may return identical alternative compounds - possible TODO for future? 
 sameness 0 means random alternatives
-sameness 1 means alternatives from same category
-sameness 2 means (in addition) alternatives that sound similar
+sameness > 0 means alternatives from same category
+sameness == 2 means alternatives which formular contains at least one of the same formula elements with _ from the same category
+sameness == 3 means alternatives which formular contains all of the formula elements in their order with _ and ^
 Important: May return nothing on sameness level 2 - app needs to check for that!
 */
 export async function getAlternatives(root_id, sameness, count) {
@@ -234,18 +258,23 @@ export async function getAlternatives(root_id, sameness, count) {
         var query = 'SELECT DISTINCT name, formula, split FROM Compounds JOIN CCMapping USING (compound_id)';
         var query_condition =  ' WHERE compound_id != ?';
 
-        if (sameness == 1) {
+        if (sameness > 0) {
             query_condition = query_condition + categoryCondition(await getCategoriesOfCompound(root_id), 'AND');
             console.log(query_condition);
         }
-        else if (sameness == 2) {
-            // TODO: switch from sameness by name to sameness by formula and cleanup
+        if (sameness == 2) {
             let compound = await getCompound(root_id);
             let formula = compound[0].formula;
-            let formulaIndices = likeFormulaIndices(formula);
-            let formulaElements = likeFormulaElements(formula);
+            let formulaLike2 = likeFormula2(formula);
 
-            query_condition = query_condition + ' AND (formula LIKE "%' + formulaIndices + '%" OR formula LIKE "%' + formulaElements + '%")';
+            query_condition = query_condition + 'AND ' + formulaLike2;
+        }
+        else if (sameness == 3) {
+            let compound = await getCompound(root_id);
+            let formula = compound[0].formula;
+            let formulaLike3 = likeFormula3(formula);
+
+            query_condition = query_condition + ' AND formula LIKE "' + formulaLike3 + '"';
 
         }
 
@@ -588,7 +617,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            window.getOpenQuestions = getOpenQuestions;
+                            window.getAlternatives = getAlternatives;
                         }, function(error) {
                             throw error;
                         }
