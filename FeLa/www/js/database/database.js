@@ -83,12 +83,40 @@ export function epochToDate(epoch) {
 }
 
 // helper function to split split information of name in multiple parts
-export function convertNameSplitToArray(namesplit) {
+export function splitName(namesplit) {
 
     const res = namesplit.split('#');
     return res;
 }
 
+/* helper function to split formula in multiple parts
+fineness 0 splits H_2^3+ into H_2, ^3+ while 1 splits into all parts: H,_2,^3,+*/
+export function splitFormula(formula, fineness) {
+
+    var res;
+
+    if (fineness == 1) {
+        res = formula.match(/[A-Z|a-z]+|[()]|_\d+|\^\d+|[-\+]/g);
+    }
+    else if (fineness == 0) {
+        res = formula.match(/[A-Z|a-z]+(_\d+)?|\^(\d+)?[-\+]/g);
+    }
+    
+    return res;
+}
+
+// helper function to replace all formula indices with %: 
+function likeFormulaIndices(formula) {
+
+    let res = formula.replace(/\d+|[-\+]/g);
+    return res;
+}
+
+// helper function to replace everything that is not an Element with %
+function likeFormulaElements(formula) {
+
+    let res = formula.replace(/([()]|_\d+|\^(\d+)?[-\+])+/g, "%")
+}
 
 // --- functions to obtain information about status of database ----
 
@@ -195,7 +223,8 @@ async function getCategoriesOfCompound(compound_id) {
 /* returns 3 random compounds that are not the given compound and optionally from a specific category
 sameness 0 means random alternatives
 sameness 1 means alternatives from same category
-sameness 2 means (in addition) alternatives that sound similar*/
+sameness 2 means (in addition) alternatives that sound similar
+https://stackoverflow.com/questions/8636911/how-to-find-strings-which-are-similar-to-given-string-in-sql-server*/
 export async function getMcAlternatives(root_id, sameness) {
 
     return new Promise(async function(resolve, reject) {
@@ -212,7 +241,7 @@ export async function getMcAlternatives(root_id, sameness) {
             // TODO: switch from sameness by name to sameness by formula and cleanup
             let compound = await getCompound(root_id);
             let name = compound[0].name;
-            const namesplit = convertNameSplitToArray(compound[0].split);
+            const namesplit = splitName(compound[0].split);
 
             let subquery_condition = query_condition + ' AND (name LIKE "%' + namesplit[0] + '%"';
             let subquery_from = subquery;
