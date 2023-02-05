@@ -105,13 +105,6 @@ export function splitFormula(formula, fineness) {
     return res;
 }
 
-// helper function to replace all formula indices with %: 
-function likeFormulaIndices(formula) {
-
-    let res = formula.replace(/\d+|[-\+]/g, "%");
-    return res;
-}
-
 // helper function to replace everything that is not an Element with %
 function likeFormula2(formula) {
 
