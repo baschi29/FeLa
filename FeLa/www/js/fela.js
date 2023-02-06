@@ -1,6 +1,6 @@
 import * as feladb from './database/database.js';
 
-async function addMCItem(questNumber, direction, modeString, question, answer) {
+async function addMCItem(roundID, questNumber, direction, modeString, question, answer) {
     function shuffle(a) {
         var j, x, i;
         for (i = a.length - 1; i > 0; i--) {
@@ -70,7 +70,7 @@ async function addMCItem(questNumber, direction, modeString, question, answer) {
                      </ons-list-item>
                 </ons-list>
 
-            <ons-button modifier="large" onclick="check('level1', ${questNumber}, '${answer}', '${modeString}')">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check(${roundID}, 'level1', ${questNumber}, '${answer}', '${modeString}')">Antwort überprüfen</ons-button>
             
 
 
@@ -83,7 +83,7 @@ async function addMCItem(questNumber, direction, modeString, question, answer) {
     
 }
 
-async function addDaDItem(questNumber, modeString, directString, question, answer, split) {
+async function addDaDItem(roundID, questNumber, modeString, directString, question, answer, split) {
     function shuffle(a) {
         var j, x, i;
         for (i = a.length - 1; i > 0; i--) {
@@ -141,7 +141,6 @@ async function addDaDItem(questNumber, modeString, directString, question, answe
     
     
     shuffle(splitted);
-    console.log(splitted.length);
     
     const carouselItem = ons.createElement(`
         <ons-carousel-item>
@@ -171,24 +170,25 @@ async function addDaDItem(questNumber, modeString, directString, question, answe
                     border-collapse: collapse;
                     text-align: center;
                     padding: 5px;
-                    width: 42px; 
+                     
                     height:42px; 
+                    color: #ff000000;
                      
                 }    
             </style>
-            <table align="center"> 
+            <table id=table${questNumber} align="center"> 
                 <tr>
-                    <td id=tab1${questNumber} onclick="pushInTable(this, 'tab1${questNumber}')"></td>   
-                    <td id=tab2${questNumber} onclick="pushInTable(this, 'tab2${questNumber}')"></td> 
-                    <td id=tab3${questNumber} onclick="pushInTable(this, 'tab3${questNumber}')"></td> 
-                    <td id=tab4${questNumber} onclick="pushInTable(this, 'tab4${questNumber}')"></td> 
-                    <td id=tab5${questNumber} onclick="pushInTable(this, 'tab5${questNumber}')"></td> 
-                    <td id=tab6${questNumber} onclick="pushInTable(this, 'tab6${questNumber}')"></td> 
+                    <td id=tab1${questNumber} onclick="pushInTable(this, 'table${questNumber}')">Place</td>   
+                    <td id=tab2${questNumber} onclick="pushInTable(this, 'table${questNumber}')">Place</td> 
+                    <td id=tab3${questNumber} onclick="pushInTable(this, 'table${questNumber}')">Place</td> 
+                    <td id=tab4${questNumber} onclick="pushInTable(this, 'table${questNumber}')">Place</td> 
+                    <td id=tab5${questNumber} onclick="pushInTable(this, 'table${questNumber}')">Place</td> 
+                    <td id=tab6${questNumber} onclick="pushInTable(this, 'table${questNumber}')">Place</td> 
                 </tr>
             </table>
             <p></p>
 
-            <ons-button modifier="large" onclick="check('level2', ${questNumber}, '${answer}', '${modeString}')">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check(${roundID}, 'level2', ${questNumber}, '${answer}', '${modeString}')">Antwort überprüfen</ons-button>
             
         </ons-carausel-item>
     `);
@@ -196,7 +196,7 @@ async function addDaDItem(questNumber, modeString, directString, question, answe
     questCar.appendChild(carouselItem);   
 }  
 
-function addFTEItem(questNumber, modeString, question, answer) {
+function addFTEItem(roundID, questNumber, modeString, question, answer) {
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
     console.log(answer)
@@ -211,7 +211,7 @@ function addFTEItem(questNumber, modeString, question, answer) {
                 <ons-input id="answer${questNumber}" input-id="answertest${questNumber}" modifier="underbar" placeholder="Antwort" float></ons-input>
             </p>
             
-            <ons-button modifier="large" onclick="check('level3', ${questNumber}, '${answer}' , '${modeString}')">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check(${roundID}'level3', ${questNumber}, '${answer}' , '${modeString}')">Antwort überprüfen</ons-button>
             
         </ons-carausel-item>  
     `);
@@ -255,15 +255,15 @@ async function testMode(modeString) {
         for (let i = 0; i < round.questions.length; i++) {
             let question = round.questions[i];
             if (selectedDirection === 'direct3') {
-                await addMCItem(question.question_id, selectedDirection, modeString, question.name, question.formula);    
+                await addMCItem(round.id, question.question_id, selectedDirection, modeString, question.name, question.formula);    
             } else if (selectedDirection === 'direct2') {
-                await addMCItem(question.question_id, selectedDirection, modeString, question.formula, question.name); 
+                await addMCItem(round.id, question.question_id, selectedDirection, modeString, question.formula, question.name); 
             } else {
                 dir = directions[Math.floor(Math.random() * directions.length)];
                 if (dir === 'direct3') {
-                     await addMCItem(question.question_id, dir,  modeString, question.name, question.formula);    
+                     await addMCItem(round.id, question.question_id, dir,  modeString, question.name, question.formula);    
                 } else if (dir === 'direct2') {
-                    await addMCItem(question.question_id, dir,  modeString, question.formula, question.name); 
+                    await addMCItem(round.id, question.question_id, dir,  modeString, question.formula, question.name); 
                 }
             }
         }
@@ -272,15 +272,15 @@ async function testMode(modeString) {
         for (let i = 0; i < round.questions.length; i++) {
             let question = round.questions[i];
             if (selectedDirection === 'direct3') {
-                await addDaDItem(question.question_id, modeString, selectedDirection, question.name, question.formula, question.split);       
+                await addDaDItem(round.id, question.question_id, modeString, selectedDirection, question.name, question.formula, question.split);       
             } else if (selectedDirection === 'direct2') {
-                await addDaDItem(question.question_id, modeString, selectedDirection, question.formula, question.name, question.split);
+                await addDaDItem(round.id, question.question_id, modeString, selectedDirection, question.formula, question.name, question.split);
             } else {
                 dir = directions[Math.floor(Math.random() * directions.length)]
                 if (dir === 'direct3') {
-                    await addDaDItem(question.question_id, modeString, dir, question.name, question.formula, question.split);       
+                    await addDaDItem(round.id, question.question_id, modeString, dir, question.name, question.formula, question.split);       
                 } else if (dir === 'direct2') {
-                    await addDaDItem(question.question_id, modeString, dir, question.formula, question.name, question.split);
+                    await addDaDItem(round.id, question.question_id, modeString, dir, question.formula, question.name, question.split);
                 }
             }
         }
@@ -289,15 +289,15 @@ async function testMode(modeString) {
         for (let i = 0; i < round.questions.length; i++) {
             let question = round.questions[i];
             if (selectedDirection === 'direct3') {
-                addFTEItem(question.question_id, modeString, question.name, question.formula);                      
+                addFTEItem(round.id, question.question_id, modeString, question.name, question.formula);                      
             } else if (selectedDirection === 'direct2') {
-                addFTEItem(question.question_id, modeString, question.formula, question.name);                      
+                addFTEItem(round.id, question.question_id, modeString, question.formula, question.name);                      
             } else {
                 dir = directions[Math.floor(Math.random() * directions.length)];
                 if (dir === 'direct3') {
-                    addFTEItem(question.question_id, modeString, question.name, question.formula);                      
+                    addFTEItem(round.id, question.question_id, modeString, question.name, question.formula);                      
                 } else if (dir === 'direct2') {
-                    addFTEItem(question.question_id, modeString, question.formula, question.name);                      
+                    addFTEItem(round.id, question.question_id, modeString, question.formula, question.name);                      
                 }
             }
         }
@@ -310,28 +310,34 @@ async function testMode(modeString) {
 
 //Functions for Drag end Drop
 export function mark(pushedButton, buttonID) {
-    pushedButton.style.backgroundColor = 'lightblue';
-    localStorage.setItem("markedButton", buttonID);
-    localStorage.setItem("buttonText", pushedButton.innerText);
-    
+    let marked = localStorage.getItem("marked");
+    if ((marked === null) || (marked === "false") ) {
+        pushedButton.style.backgroundColor = 'lightblue';
+        localStorage.setItem("markedButton", buttonID);
+        localStorage.setItem("buttonText", pushedButton.innerText);
+        localStorage.setItem("marked", "true");     
+    } 
 }
+
 export function pushInTable(tableField) {
-    if (tableField.innerText === '') {
+    if (tableField.innerText === 'Place') {
         var markedButton = document.getElementById(localStorage.getItem("markedButton"));
         var buttonText = localStorage.getItem("buttonText");
         markedButton.style.backgroundColor = "transparent";
         //console.log(tableField.style.width);  
         tableField.innerText = buttonText;
-    
-        localStorage.clear();
-    } else {
-        tableField.innerText = '';
         tableField.style.color = 'black';
+        
+    
+        localStorage.setItem("marked", "false");
+    } else {
+        tableField.innerText = 'Place';
+        tableField.style.color = 'transparent';
     }
 }
 
 // checks if answer is correct
-export function check(level, index, answer, modeString) {
+export async function check(roundID, level, index, answer, modeString) {
     // console.log(level); 
     // console.log(index);
     // console.log(modeString);
@@ -357,6 +363,7 @@ export function check(level, index, answer, modeString) {
         if (modeString === 'learn') {
             if (questAnswer === answer){
                 // ergebniss speichern
+                await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
                 alert('Richtig');
                 carausel.next();
             } else {
@@ -370,12 +377,12 @@ export function check(level, index, answer, modeString) {
             }
         } else if (modeString === 'test'){
             if (questAnswer === answer){
-                // ergebniss speichern
+                await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
                 alert('Richtig: später nicht mehr angezeigt');
                 carausel.next();               
             } else {
-                // Zeile rot machen
                 // ergebnis speichern
+                await feladb.closeQuestion(roundID, index, 'mc', 0, 0);
                 alert('Falsch: später nicht mehr anzeigen');
                 carausel.next();
             }
@@ -390,6 +397,7 @@ export function check(level, index, answer, modeString) {
         if (modeString === 'learn') {
             if (questAnswer === answer){
                 // ergebniss speichern
+                await feladb.closeQuestion(roundID, index, 'd&d', 1, 0);
                 alert('Richtig');
                 carausel.next();
             } else {
@@ -404,11 +412,12 @@ export function check(level, index, answer, modeString) {
         } else if (modeString === 'test'){
             if (questAnswer === answer){
                 // ergebniss speichern
+                await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
                 alert('Richtig: später nicht mehr angezeigt');
                 carausel.next();               
             } else {
-                // Zeile rot machen
                 // ergebnis speichern
+                await feladb.closeQuestion(roundID, index, 'mc', 0, 0);
                 alert('Falsch: später nicht mehr anzeigen');
                 carausel.next();
             }
@@ -420,6 +429,7 @@ export function check(level, index, answer, modeString) {
         if (modeString === 'learn') {
             if (questAnswer === answer){
                 // ergebniss speichern
+                await feladb.closeQuestion(roundID, index, 'free', 1, 0);
                 alert('Richtig');
                 carausel.next();
             } else {
@@ -431,10 +441,12 @@ export function check(level, index, answer, modeString) {
         } else if (modeString === 'test'){
             if (questAnswer === answer){
                 // ergebniss speichern
+                await feladb.closeQuestion(roundID, index, 'free', 1, 0);
                 alert('Richtig: später nicht mehr angezeigt');
                 carausel.next();               
             } else {
                 // ergebnis speichern
+                await feladb.closeQuestion(roundID, index, 'free', 0, 0);
                 alert('Falsch: später nicht mehr anzeigen');
                 carausel.next();
             }
