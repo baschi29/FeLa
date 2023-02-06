@@ -1,6 +1,6 @@
 import * as feladb from './database/database.js';
 
-function addMCItem(questNumber, modeString, question, answer) {
+async function addMCItem(questNumber, direction, modeString, question, answer) {
     function shuffle(a) {
         var j, x, i;
         for (i = a.length - 1; i > 0; i--) {
@@ -14,7 +14,14 @@ function addMCItem(questNumber, modeString, question, answer) {
 
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
-    const formulars = [answer, 'test1', 'test2', 'test3'];
+    const alternativs = await feladb.getAlternatives(questNumber, 0, 3);
+    //console.log(alternativs);
+    const formulars = [answer];
+    if (direction === 'direct3') { // formel -> name
+        formulars.push(alternativs[0].formula, alternativs[1].formula, alternativs[2].formula);
+    } else {
+        formulars.push(alternativs[0].name, alternativs[1].name, alternativs[2].name);
+    }
     shuffle(formulars);
     
 
@@ -76,7 +83,7 @@ function addMCItem(questNumber, modeString, question, answer) {
     
 }
 
-function addDaDItem(questNumber, modeString, directString, question, answer, split) {
+async function addDaDItem(questNumber, modeString, directString, question, answer, split) {
     function shuffle(a) {
         var j, x, i;
         for (i = a.length - 1; i > 0; i--) {
@@ -91,26 +98,50 @@ function addDaDItem(questNumber, modeString, directString, question, answer, spl
     // carussel item hinzufügen für drag and drop mit tabelle und Buttons
     const questCar = document.querySelector('#questCar');
     let splitted;
+    const alternativs = await feladb.getAlternatives(questNumber, 0, 10);
     if (directString === 'direct3') { //Summenformel -> Name
         splitted = answer.split(/(?=[A-Z])/);
         console.log(splitted);
+        
+        const splitedAlternativs = [];
+        for (let i = 0; i < alternativs.length; i++) {
+            const temp = alternativs[i].formula.split(/(?=[A-Z])/);
+            for (let j = 0; j < temp.length; j++) {
+                splitedAlternativs.push(temp[j]);    
+            }    
+        }
+        shuffle(splitedAlternativs);
         let i = 0;
         while (splitted.length < 10) {
-            splitted.push('test'+i);
+            if (!(splitted.includes(splitedAlternativs[i]))){
+                splitted.push(splitedAlternativs[i]);  
+            }
             i++;
         }
     } else if (directString === 'direct2') { //Name -> Summenformel
         splitted = split.split('#'); 
         console.log(splitted);
+
+        const splitedAlternativs = [];
+        for (let i = 0; i < alternativs.length; i++) {
+            const temp = alternativs[i].split.split('#');
+            for (let j = 0; j < temp.length; j++) {
+                splitedAlternativs.push(temp[j]);    
+            }    
+        }
+        shuffle(splitedAlternativs);
         let i = 0;
-        while (splitted.length <= 10) {
-            splitted.push('test'+i);
+        while (splitted.length < 10) {
+            if (!(splitted.includes(splitedAlternativs[i]))){
+                splitted.push(splitedAlternativs[i]);  
+            }
             i++;
         }
     }
+    
+    
     shuffle(splitted);
-
-    //let answer = "H2O";
+    console.log(splitted.length);
     
     const carouselItem = ons.createElement(`
         <ons-carousel-item>
@@ -152,7 +183,7 @@ function addDaDItem(questNumber, modeString, directString, question, answer, spl
                     <td id=tab3${questNumber} onclick="pushInTable(this, 'tab3${questNumber}')"></td> 
                     <td id=tab4${questNumber} onclick="pushInTable(this, 'tab4${questNumber}')"></td> 
                     <td id=tab5${questNumber} onclick="pushInTable(this, 'tab5${questNumber}')"></td> 
-                    <td id=tab6${questNumber} onclick="pushInTable(this, 'tab6${questNumber})"></td> 
+                    <td id=tab6${questNumber} onclick="pushInTable(this, 'tab6${questNumber}')"></td> 
                 </tr>
             </table>
             <p></p>
@@ -190,11 +221,11 @@ function addFTEItem(questNumber, modeString, question, answer) {
 
 // https://onsen.io/v2/guide/tutorial.html#carousels
 async function testMode(modeString) {
-    // carussel sseite pushen
+    // Inhalte aus den ons-selector holen
     const level = document.getElementById("choose-sel1" + modeString);
     const lvList = level.options;
     var selectedLevel = lvList[level.selectedIndex].value;
-
+    
     const typ = document.getElementById("choose-sel2" + modeString);
     const typList = typ.options;
     var selectedTyp = typList[typ.selectedIndex].value;
@@ -203,6 +234,7 @@ async function testMode(modeString) {
     const dirList = direction.options;
     var selectedDirection = dirList[direction.selectedIndex].value;
     
+    // carussel Seite pushen
     await document.querySelector('#mainNavigator').pushPage('views/carousel.html', {data: {title: 'Fragen Testmodus'}});
     
     console.log(selectedTyp);
@@ -212,22 +244,26 @@ async function testMode(modeString) {
     } else {
         round = await feladb.createRound(modeString, selectedTyp, 10);
     }
-    //Carousel items anhängen
+   
+    /*
+    Carousel items anhängen.
+    Je nach ausgewähltem Level werden enstprechende fragen ausgewählt.
+    */
     const directions = ['direct2', 'direct3'];
     var dir;
     if (selectedLevel === 'level1') {
         for (let i = 0; i < round.questions.length; i++) {
             let question = round.questions[i];
             if (selectedDirection === 'direct3') {
-                addMCItem(question.question_id, modeString, question.name, question.formula);    
+                await addMCItem(question.question_id, selectedDirection, modeString, question.name, question.formula);    
             } else if (selectedDirection === 'direct2') {
-                addMCItem(question.question_id, modeString, question.formula, question.name); 
+                await addMCItem(question.question_id, selectedDirection, modeString, question.formula, question.name); 
             } else {
                 dir = directions[Math.floor(Math.random() * directions.length)];
                 if (dir === 'direct3') {
-                    addMCItem(question.question_id, modeString, question.name, question.formula);    
+                     await addMCItem(question.question_id, dir,  modeString, question.name, question.formula);    
                 } else if (dir === 'direct2') {
-                    addMCItem(question.question_id, modeString, question.formula, question.name); 
+                    await addMCItem(question.question_id, dir,  modeString, question.formula, question.name); 
                 }
             }
         }
@@ -236,15 +272,15 @@ async function testMode(modeString) {
         for (let i = 0; i < round.questions.length; i++) {
             let question = round.questions[i];
             if (selectedDirection === 'direct3') {
-                addDaDItem(question.question_id, modeString, selectedDirection, question.name, question.formula, question.split);       
+                await addDaDItem(question.question_id, modeString, selectedDirection, question.name, question.formula, question.split);       
             } else if (selectedDirection === 'direct2') {
-                addDaDItem(question.question_id, modeString, selectedDirection, question.formula, question.name, question.split);
+                await addDaDItem(question.question_id, modeString, selectedDirection, question.formula, question.name, question.split);
             } else {
                 dir = directions[Math.floor(Math.random() * directions.length)]
                 if (dir === 'direct3') {
-                    addDaDItem(question.question_id, modeString, dir, question.name, question.formula, question.split);       
+                    await addDaDItem(question.question_id, modeString, dir, question.name, question.formula, question.split);       
                 } else if (dir === 'direct2') {
-                    addDaDItem(question.question_id, modeString, dir, question.formula, question.name, question.split);
+                    await addDaDItem(question.question_id, modeString, dir, question.formula, question.name, question.split);
                 }
             }
         }
@@ -296,9 +332,9 @@ export function pushInTable(tableField) {
 
 // checks if answer is correct
 export function check(level, index, answer, modeString) {
-    console.log(level); 
-    console.log(index);
-    console.log(modeString);
+    // console.log(level); 
+    // console.log(index);
+    // console.log(modeString);
     var carausel = document.getElementById('questCar');
     var questAnswer;
     // Multiple Choice
