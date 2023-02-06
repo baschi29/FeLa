@@ -327,7 +327,13 @@ export function pushInTable(tableField) {
         markedButton.style.backgroundColor = "transparent";
         //console.log(tableField.style.width);  
         tableField.innerText = buttonText;
-        tableField.style.color = 'black';
+       
+        let isDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+        if (isDark) {
+            tableField.style.color = 'white';
+        } else {
+            tableField.style.color = 'black';
+        }
         
     
         localStorage.setItem("marked", "false");
@@ -402,12 +408,18 @@ export async function check(roundID, level, index, answer, modeString) {
                 alert('Richtig');
                 carausel.next();
             } else {
-                document.getElementById('tab1'+index).style.color = 'red';
-                document.getElementById('tab2'+index).style.color = 'red';
-                document.getElementById('tab3'+index).style.color = 'red'; 
-                document.getElementById('tab4'+index).style.color = 'red';
-                document.getElementById('tab5'+index).style.color = 'red';
-                document.getElementById('tab6'+index).style.color = 'red';
+                for (let i = 1; i <= 6; i++) {
+                    let field = document.getElementById('tab' + i + index);
+                    if (!(field.innerText === 'Place')) {
+                        field.style.color = 'red';
+                    }    
+                }
+                // document.getElementById('tab1'+index).style.color = 'red';
+                // document.getElementById('tab2'+index).style.color = 'red';
+                // document.getElementById('tab3'+index).style.color = 'red'; 
+                // document.getElementById('tab4'+index).style.color = 'red';
+                // document.getElementById('tab5'+index).style.color = 'red';
+                // document.getElementById('tab6'+index).style.color = 'red';
                 alert('Falsch');
             }
         } else if (modeString === 'test'){
