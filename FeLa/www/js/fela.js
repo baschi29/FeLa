@@ -385,12 +385,12 @@ export async function check(roundID, level, index, answer, modeString) {
         } else if (modeString === 'test'){
             if (questAnswer === answer){
                 await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
-                alert('Richtig: später nicht mehr angezeigt');
+                //alert('Richtig: später nicht mehr angezeigt');
                 carausel.next();               
             } else {
                 // ergebnis speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 0, 0);
-                alert('Falsch: später nicht mehr anzeigen');
+                //alert('Falsch: später nicht mehr anzeigen');
                 carausel.next();
             }
         }
@@ -414,24 +414,18 @@ export async function check(roundID, level, index, answer, modeString) {
                         field.style.color = 'red';
                     }    
                 }
-                // document.getElementById('tab1'+index).style.color = 'red';
-                // document.getElementById('tab2'+index).style.color = 'red';
-                // document.getElementById('tab3'+index).style.color = 'red'; 
-                // document.getElementById('tab4'+index).style.color = 'red';
-                // document.getElementById('tab5'+index).style.color = 'red';
-                // document.getElementById('tab6'+index).style.color = 'red';
                 alert('Falsch');
             }
         } else if (modeString === 'test'){
             if (questAnswer === answer){
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
-                alert('Richtig: später nicht mehr angezeigt');
+                //alert('Richtig: später nicht mehr angezeigt');
                 carausel.next();               
             } else {
                 // ergebnis speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 0, 0);
-                alert('Falsch: später nicht mehr anzeigen');
+                //alert('Falsch: später nicht mehr anzeigen');
                 carausel.next();
             }
         }
@@ -455,12 +449,12 @@ export async function check(roundID, level, index, answer, modeString) {
             if (questAnswer === answer){
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'free', 1, 0);
-                alert('Richtig: später nicht mehr angezeigt');
+                //alert('Richtig: später nicht mehr angezeigt');
                 carausel.next();               
             } else {
                 // ergebnis speichern
                 await feladb.closeQuestion(roundID, index, 'free', 0, 0);
-                alert('Falsch: später nicht mehr anzeigen');
+                //alert('Falsch: später nicht mehr anzeigen');
                 carausel.next();
             }
         }   
