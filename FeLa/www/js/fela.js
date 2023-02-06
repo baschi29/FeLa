@@ -237,6 +237,7 @@ async function testMode(modeString) {
     // carussel Seite pushen
     await document.querySelector('#mainNavigator').pushPage('views/carousel.html', {data: {title: 'Fragen Testmodus'}});
     
+    
     console.log(selectedTyp);
     let round;
     if (selectedTyp === 'Alle') {
