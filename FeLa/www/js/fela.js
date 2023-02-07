@@ -211,7 +211,7 @@ function addFTEItem(roundID, questNumber, modeString, question, answer) {
                 <ons-input id="answer${questNumber}" input-id="answertest${questNumber}" modifier="underbar" placeholder="Antwort" float></ons-input>
             </p>
             
-            <ons-button modifier="large" onclick="check(${roundID}'level3', ${questNumber}, '${answer}' , '${modeString}')">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check(${roundID}, 'level3', ${questNumber}, '${answer}' , '${modeString}')">Antwort überprüfen</ons-button>
             
         </ons-carausel-item>  
     `);
