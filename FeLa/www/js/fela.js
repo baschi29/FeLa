@@ -211,7 +211,7 @@ function addFTEItem(roundID, questNumber, modeString, question, answer) {
                 <ons-input id="answer${questNumber}" input-id="answertest${questNumber}" modifier="underbar" placeholder="Antwort" float></ons-input>
             </p>
             
-            <ons-button modifier="large" onclick="check(${roundID}'level3', ${questNumber}, '${answer}' , '${modeString}')">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check(${roundID}, 'level3', ${questNumber}, '${answer}' , '${modeString}')">Antwort überprüfen</ons-button>
             
         </ons-carausel-item>  
     `);
@@ -309,7 +309,7 @@ async function testMode(modeString) {
 
 
 
-//Functions for Drag end Drop
+//Functions for Drag and Drop
 export function mark(pushedButton, buttonID) {
     let marked = localStorage.getItem("marked");
     if ((marked === null) || (marked === "false") ) {
@@ -459,9 +459,6 @@ export async function check(roundID, level, index, answer, modeString) {
             }
         }   
     }
-    //checken ob die Lösung richtig ist
-
-
 }
 
 
