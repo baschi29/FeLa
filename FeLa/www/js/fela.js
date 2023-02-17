@@ -309,7 +309,7 @@ async function testMode(modeString) {
 
 
 
-//Functions for Drag end Drop
+//Functions for Drag and Drop
 export function mark(pushedButton, buttonID) {
     let marked = localStorage.getItem("marked");
     if ((marked === null) || (marked === "false") ) {
@@ -459,9 +459,6 @@ export async function check(roundID, level, index, answer, modeString) {
             }
         }   
     }
-    //checken ob die Lösung richtig ist
-
-
 }
 
 
