@@ -146,19 +146,19 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
         <ons-carousel-item>
             <h1 align="center">${question}</h1>
             <p style="text-align: center;">
-                <ons-button id=DaD1${questNumber} modifier="quiet" onclick="mark(this, 'DaD1${questNumber}')"> ${splitted[0]} </ons-button>
-                <ons-button id=DaD2${questNumber} modifier="quiet" onclick="mark(this, 'DaD2${questNumber}')"> ${splitted[1]}  </ons-button>
-                <ons-button id=DaD3${questNumber} modifier="quiet" onclick="mark(this, 'DaD3${questNumber}')"> ${splitted[2]}  </ons-button>
-                <ons-button id=DaD4${questNumber} modifier="quiet" onclick="mark(this, 'DaD4${questNumber}')"> ${splitted[3]}  </ons-button>
-                <ons-button id=DaD5${questNumber} modifier="quiet" onclick="mark(this, 'DaD5${questNumber}')"> ${splitted[4]}  </ons-button>
+                <ons-button id=DaD1${questNumber} modifier="quiet" onclick="mark(this, 'DaD1${questNumber}')" style="text-transform:none"> ${splitted[0]} </ons-button>
+                <ons-button id=DaD2${questNumber} modifier="quiet" onclick="mark(this, 'DaD2${questNumber}')" style="text-transform:none"> ${splitted[1]}  </ons-button>
+                <ons-button id=DaD3${questNumber} modifier="quiet" onclick="mark(this, 'DaD3${questNumber}')" style="text-transform:none"> ${splitted[2]}  </ons-button>
+                <ons-button id=DaD4${questNumber} modifier="quiet" onclick="mark(this, 'DaD4${questNumber}')" style="text-transform:none"> ${splitted[3]}  </ons-button>
+                <ons-button id=DaD5${questNumber} modifier="quiet" onclick="mark(this, 'DaD5${questNumber}')" style="text-transform:none"> ${splitted[4]}  </ons-button>
                 </p>
                 
             <p style="text-align: center;">
-                <ons-button id=DaD6${questNumber} modifier="quiet" onclick="mark(this, 'DaD6${questNumber}')"> ${splitted[5]}  </ons-button>
-                <ons-button id=DaD7${questNumber} modifier="quiet" onclick="mark(this, 'DaD7${questNumber}')"> ${splitted[6]}  </ons-button>
-                <ons-button id=DaD8${questNumber} modifier="quiet" onclick="mark(this, 'DaD8${questNumber}')"> ${splitted[7]}  </ons-button>
-                <ons-button id=DaD9${questNumber} modifier="quiet" onclick="mark(this, 'DaD9${questNumber}')"> ${splitted[8]}  </ons-button>
-                <ons-button id=DaD10${questNumber} modifier="quiet" onclick="mark(this, 'DaD10${questNumber}')"> ${splitted[9]}  </ons-button>
+                <ons-button id=DaD6${questNumber} modifier="quiet" onclick="mark(this, 'DaD6${questNumber}')" style="text-transform:none"> ${splitted[5]}  </ons-button>
+                <ons-button id=DaD7${questNumber} modifier="quiet" onclick="mark(this, 'DaD7${questNumber}')" style="text-transform:none"> ${splitted[6]}  </ons-button>
+                <ons-button id=DaD8${questNumber} modifier="quiet" onclick="mark(this, 'DaD8${questNumber}')" style="text-transform:none"> ${splitted[7]}  </ons-button>
+                <ons-button id=DaD9${questNumber} modifier="quiet" onclick="mark(this, 'DaD9${questNumber}')" style="text-transform:none"> ${splitted[8]}  </ons-button>
+                <ons-button id=DaD10${questNumber} modifier="quiet" onclick="mark(this, 'DaD10${questNumber}')" style="text-transform:none"> ${splitted[9]}  </ons-button>
                
             </p>
 
