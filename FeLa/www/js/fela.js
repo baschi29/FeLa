@@ -14,13 +14,12 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
 
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
-    const alternativs = await feladb.getAlternatives(questNumber, 0, 3);
-    //console.log(alternativs);
+    const alternatives = await feladb.getAlternatives(questNumber, 0, 3);
     const formulars = [answer];
     if (direction === 'direct3') { // formel -> name
-        formulars.push(alternativs[0].formula, alternativs[1].formula, alternativs[2].formula);
+        formulars.push(alternatives[0].formula, alternatives[1].formula, alternatives[2].formula);
     } else {
-        formulars.push(alternativs[0].name, alternativs[1].name, alternativs[2].name);
+        formulars.push(alternatives[0].name, alternatives[1].name, alternatives[2].name);
     }
     shuffle(formulars);
     
@@ -98,23 +97,23 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
     // carussel item hinzufügen für drag and drop mit tabelle und Buttons
     const questCar = document.querySelector('#questCar');
     let splitted;
-    const alternativs = await feladb.getAlternatives(questNumber, 0, 10);
+    const alternatives = await feladb.getAlternatives(questNumber, 0, 10);
     if (directString === 'direct3') { //Summenformel -> Name
         splitted = answer.split(/(?=[A-Z])/);
         console.log(splitted);
         
-        const splitedAlternativs = [];
-        for (let i = 0; i < alternativs.length; i++) {
-            const temp = alternativs[i].formula.split(/(?=[A-Z])/);
+        const splittedAlternatives = [];
+        for (let i = 0; i < alternatives.length; i++) {
+            const temp = alternatives[i].formula.split(/(?=[A-Z])/);
             for (let j = 0; j < temp.length; j++) {
-                splitedAlternativs.push(temp[j]);    
+                splittedAlternatives.push(temp[j]);    
             }    
         }
-        shuffle(splitedAlternativs);
+        shuffle(splittedAlternatives);
         let i = 0;
         while (splitted.length < 10) {
-            if (!(splitted.includes(splitedAlternativs[i]))){
-                splitted.push(splitedAlternativs[i]);  
+            if (!(splitted.includes(splittedAlternatives[i]))){
+                splitted.push(splittedAlternatives[i]);  
             }
             i++;
         }
@@ -122,18 +121,18 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
         splitted = split.split('#'); 
         console.log(splitted);
 
-        const splitedAlternativs = [];
-        for (let i = 0; i < alternativs.length; i++) {
-            const temp = alternativs[i].split.split('#');
+        const splittedAlternatives = [];
+        for (let i = 0; i < alternatives.length; i++) {
+            const temp = alternatives[i].split.split('#');
             for (let j = 0; j < temp.length; j++) {
-                splitedAlternativs.push(temp[j]);    
+                splittedAlternatives.push(temp[j]);    
             }    
         }
-        shuffle(splitedAlternativs);
+        shuffle(splittedAlternatives);
         let i = 0;
         while (splitted.length < 10) {
-            if (!(splitted.includes(splitedAlternativs[i]))){
-                splitted.push(splitedAlternativs[i]);  
+            if (!(splitted.includes(splittedAlternatives[i]))){
+                splitted.push(splittedAlternatives[i]);  
             }
             i++;
         }
