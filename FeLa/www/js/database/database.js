@@ -96,10 +96,10 @@ export function splitFormula(formula, fineness) {
     var res;
 
     if (fineness == 1) {
-        res = formula.match(/[A-Z|a-z]+|[()]|_\d+|\^\d+|[-\+]/g);
+        res = formula.match(/[A-Z][a-z]*|[()]|_\d+|\^\d+|[-\+]/g);
     }
     else if (fineness == 0) {
-        res = formula.match(/[A-Z|a-z]+(_\d+)?|\^(\d+)?[-\+]/g);
+        res = formula.match(/[A-Z][a-z]*(_\d+)?|\^(\d+)?[-\+]/g);
     }
     
     return res;
@@ -610,7 +610,8 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            window.getAlternatives = getAlternatives;
+                            //window.getAlternatives = getAlternatives;
+                            window.split = splitFormula;
                         }, function(error) {
                             throw error;
                         }
