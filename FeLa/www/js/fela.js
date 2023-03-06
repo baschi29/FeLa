@@ -98,13 +98,14 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
     const questCar = document.querySelector('#questCar');
     let splitted;
     const alternatives = await feladb.getAlternatives(questNumber, 0, 10);
-    if (directString === 'direct3') { //Summenformel -> Name
-        splitted = answer.split(/(?=[A-Z])/);
+    if (directString === 'direct3') { //Summenformel -> Name;
+        splitted = feladb.splitFormula(answer, 0);
         console.log(splitted);
         
         const splittedAlternatives = [];
         for (let i = 0; i < alternatives.length; i++) {
-            const temp = alternatives[i].formula.split(/(?=[A-Z])/);
+            //const temp = alternatives[i].formula.split(/(?=[A-Z])/);
+            const temp = feladb.splitFormula(alternatives[i].formula, 0);
             for (let j = 0; j < temp.length; j++) {
                 splittedAlternatives.push(temp[j]);    
             }    
@@ -118,12 +119,12 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
             i++;
         }
     } else if (directString === 'direct2') { //Name -> Summenformel
-        splitted = split.split('#'); 
+        splitted = feladb.splitName(split);
         console.log(splitted);
 
         const splittedAlternatives = [];
         for (let i = 0; i < alternatives.length; i++) {
-            const temp = alternatives[i].split.split('#');
+            const temp = feladb.splitName(alternatives[i].split);
             for (let j = 0; j < temp.length; j++) {
                 splittedAlternatives.push(temp[j]);    
             }    
