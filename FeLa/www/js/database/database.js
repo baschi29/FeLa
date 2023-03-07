@@ -238,7 +238,7 @@ async function getCategoriesOfCompound(compound_id) {
 if not enough results are found, the remaining alternatives get selected from the sameness -1
 multiple function calls may return identical alternative compounds - possible TODO for future? 
 sameness 0 means random alternatives
-sameness > 0 means alternatives from same category
+sameness == 1 means alternatives from same category
 sameness == 2 means alternatives which formular contains at least one of the same formula elements with _ from the same category
 sameness == 3 means alternatives which formular contains all of the formula elements in their order with _ and ^
 Important: May return nothing on sameness level 2 - app needs to check for that!
@@ -258,9 +258,8 @@ export async function getAlternatives(root_id, sameness, count) {
             var query = 'SELECT DISTINCT compound_id, name, formula, split FROM Compounds JOIN CCMapping USING (compound_id)';
             var query_condition =  ' WHERE compound_id != ?' + generateQueryCondition('AND NOT', 'OR', 'compound_id', excluded_ids);
 
-            if (sameness > 0) {
+            if (sameness == 1) {
                 query_condition = query_condition + generateQueryCondition('AND', 'OR', 'category_id', await(getCategoriesOfCompound(root_id)));
-                console.log(query_condition);
             }
             if (sameness == 2) {
                 let compound = await getCompound(root_id);
