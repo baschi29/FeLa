@@ -53,17 +53,18 @@ function convertResultToArray(rs) {
     return result;
 }
 
-// helper function to construct sqlite OR condidition from given category_list
-function categoryCondition(category_list, prefix) {
+// helper function to construct sqlite condidition from given value list
+// with custom prefix: AND/WHERE/OR, custom Operator and custom value field
+function generateQueryCondition(prefix, logical_operator, value_field, value_list) {
     
     let condition = '';
 
-    if (category_list.length > 0) {
-        condition = condition + ' ' + prefix;
-        condition = condition + ' (category_id = ' + category_list[0];
+    if (value_list.length > 0) {
+        condition = ' ' + prefix;
+        condition = condition + ' (' + value_field + ' = ' + value_list[0];
 
-        for (let i = 1; i < category_list.length; i++) {
-            condition = condition + ' OR category_id = ' + category_list[i];
+        for (let i = 1; i < value_list.length; i++) {
+            condition = condition + ' ' + logical_operator + ' ' + value_field + ' = ' + value_list[i];
         }
 
         condition = condition + ")";
@@ -109,7 +110,6 @@ export function splitFormula(formula, fineness) {
 function likeFormula2(formula) {
 
     const arr = formula.match(/[A-Z][a-z]+_?|[A-Z]+_?/g);
-
     var res = '(formula LIKE "%' + arr[0] + '%"';
 
     for (let i = 1; i < arr.length; i++) {
@@ -117,14 +117,12 @@ function likeFormula2(formula) {
     }
 
     res = res + ')'
-
     return res
 }
 
 function likeFormula3(formula) {
 
     const arr = formula.match(/[A-Z][a-z]+_?|[A-Z]+_?|\^/g);
-
     var res = '%';
 
     for (let elem of arr) {
@@ -247,60 +245,80 @@ Important: May return nothing on sameness level 2 - app needs to check for that!
 */
 export async function getAlternatives(root_id, sameness, count) {
 
-    return new Promise(async function(resolve, reject) {
+    async function getAlternativesHelper(root_id, sameness, count, excluded_ids) {
 
-        var query = 'SELECT DISTINCT name, formula, split FROM Compounds JOIN CCMapping USING (compound_id)';
-        var query_condition =  ' WHERE compound_id != ?';
+        return new Promise(async function(resolve, reject) {
 
-        if (sameness > 0) {
-            query_condition = query_condition + categoryCondition(await getCategoriesOfCompound(root_id), 'AND');
-            console.log(query_condition);
-        }
-        if (sameness == 2) {
-            let compound = await getCompound(root_id);
-            let formula = compound[0].formula;
-            let formulaLike2 = likeFormula2(formula);
+            if (sameness < 0) {
+                console.log("Sameness < 0 -> resolving with empty array");
+                console.log("This might occur, when there are not enough items in databse to fulfill alternatives count");
+                resolve([]);
+            }
 
-            query_condition = query_condition + 'AND ' + formulaLike2;
-        }
-        else if (sameness == 3) {
-            let compound = await getCompound(root_id);
-            let formula = compound[0].formula;
-            let formulaLike3 = likeFormula3(formula);
+            var query = 'SELECT DISTINCT compound_id, name, formula, split FROM Compounds JOIN CCMapping USING (compound_id)';
+            var query_condition =  ' WHERE compound_id != ?' + generateQueryCondition('AND NOT', 'OR', 'compound_id', excluded_ids);
 
-            query_condition = query_condition + ' AND formula LIKE "' + formulaLike3 + '"';
+            if (sameness > 0) {
+                query_condition = query_condition + generateQueryCondition('AND', 'OR', 'category_id', await(getCategoriesOfCompound(root_id)));
+                console.log(query_condition);
+            }
+            if (sameness == 2) {
+                let compound = await getCompound(root_id);
+                let formula = compound[0].formula;
+                let formulaLike2 = likeFormula2(formula);
 
-        }
+                query_condition = query_condition + 'AND ' + formulaLike2;
+            }
+            else if (sameness == 3) {
+                let compound = await getCompound(root_id);
+                let formula = compound[0].formula;
+                let formulaLike3 = likeFormula3(formula);
 
-        query = query + query_condition + ' ORDER BY Random() LIMIT ?';
-        console.log(query); 
+                query_condition = query_condition + ' AND formula LIKE "' + formulaLike3 + '"';
 
-        db.readTransaction(function(tx) {
-            
-            tx.executeSql(query, [root_id, count], async function(tx, rs) {
-                if (rs.rows.length == 0) {
-                    console.log("Error: not enough items in database to fulfill alternative request with count " + count);
-                    console.log("Returning alternatives less than intended value!");
-                    resolve([]);
-                }
-                else if (rs.rows.length == count) {
-                    resolve(convertResultToArray(rs));
-                }
-                else if (rs.rows.length < count) {
-                    resolve(convertResultToArray(rs).concat(await getAlternatives(root_id, sameness - 1, count - rs.rows.length)));
-                }
-                else {
-                    reject("Error: getAlternatives function is doing weird stuff");
-                }
+            }
+
+            query = query + query_condition + ' ORDER BY Random() LIMIT ?';
+            console.log(query); 
+
+            db.readTransaction(function(tx) {
+                
+                tx.executeSql(query, [root_id, count], async function(tx, rs) {
+                    //convert query result to array
+                    let res = convertResultToArray(rs);
+                    if (res.length == count) {
+                        resolve(res);
+                    }
+                    else if (res.length < count) {
+                        // add all elements of compounds currently in results to excluded_ids to avoid duplicates
+                        for (let elem of res) {
+                            excluded_ids.push(elem.compound_id);
+                        }
+                        
+                        resolve(res.concat(await getAlternativesHelper(root_id, sameness - 1, count - res.length, excluded_ids)));
+                    }
+                    else {
+                        reject("Error: getAlternatives function is doing weird stuff");
+                    }
+                }, function(error) {
+                    console.log(error);
+                    reject(error);
+                })
             }, function(error) {
                 console.log(error);
-                reject(error);
+                reject(error)
             })
-        }, function(error) {
-            console.log(error);
-            reject(error)
         })
+    }
+
+    return new Promise(async function(resolve, reject) {
+
+        getAlternativesHelper(root_id, sameness, count, []).then(
+            function(value) {resolve(value)},
+            function(error) {reject(error)}
+        );
     })
+    
 }
 
 // returns count of categories in database
@@ -327,7 +345,7 @@ export async function getCompoundCount(category_list) {
 
             let query = 'SELECT DISTINCT count(*) as c FROM Compounds JOIN CCMapping USING (compound_id)';
 
-            query = query + categoryCondition(category_list, ' WHERE');
+            query = query + generateQueryCondition('WHERE', 'OR', 'category_id', category_list);
         
             tx.executeSql(query, [], function(tx, rs) {
                 resolve(rs.rows.item(0).c);
@@ -375,7 +393,7 @@ function createQuestionSet(round_id, category_list, amount) {
             // generate query to select compound_ids according given categories, sorted by descending ranking first, then ascending difficulty 
             var select_query = 'SELECT ? as round_id, compound_id FROM (SELECT * FROM Compounds JOIN CCMapping USING (compound_id)';
             
-            select_query = select_query + categoryCondition(category_list, ' WHERE');
+            select_query = select_query + generateQueryCondition('WHERE', 'OR', 'category_id', category_list);
 
             select_query = select_query + ' GROUP BY compound_id ORDER BY RANDOM() LIMIT ?) ORDER BY ranking DESC, difficulty ASC';
             let insert_query = 'INSERT INTO Questions (round_id, compound_id) ' + select_query;
