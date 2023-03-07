@@ -267,7 +267,7 @@ export async function getAlternatives(root_id, sameness, count) {
                 let formula = compound[0].formula;
                 let formulaLike2 = likeFormula2(formula);
 
-                query_condition = query_condition + 'AND ' + formulaLike2;
+                query_condition = query_condition + ' AND ' + formulaLike2;
             }
             else if (sameness == 3) {
                 let compound = await getCompound(root_id);
