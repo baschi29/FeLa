@@ -397,10 +397,18 @@ export async function check(roundID, level, index, answer, modeString) {
        
     //Drag and Drop    
     } else if (level === 'level2') {
-        questAnswer = document.getElementById('tab1'+index).innerText + document.getElementById('tab2'+index).innerText +
-                      document.getElementById('tab3'+index).innerText + document.getElementById('tab4'+index).innerText +
-                      document.getElementById('tab5'+index).innerText + document.getElementById('tab6'+index).innerText;
-        
+        // questAnswer = document.getElementById('tab1'+index).innerText + document.getElementById('tab2'+index).innerText +
+        //               document.getElementById('tab3'+index).innerText + document.getElementById('tab4'+index).innerText +
+        //               document.getElementById('tab5'+index).innerText + document.getElementById('tab6'+index).innerText;
+        questAnswer = '';
+        for (let i = 1; i < 7; i++) {
+            let temp = document.getElementById('tab'+i+index).innerText;
+            console.log(temp);
+            if (!(temp === 'Place')) {
+                questAnswer += temp;
+            }   
+        }
+        console.log(questAnswer);
         if (modeString === 'learn') {
             if (questAnswer === answer){
                 // ergebniss speichern
