@@ -14,7 +14,7 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
 
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
-    const alternatives = await feladb.getAlternatives(questNumber, 1, 3);
+    const alternatives = await feladb.getAlternatives(questNumber, 3, 3);
     const formulars = [answer];
     if (direction === 'direct3') { // formel -> name
         formulars.push(alternatives[0].formula, alternatives[1].formula, alternatives[2].formula);
@@ -97,7 +97,7 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
     // carussel item hinzufügen für drag and drop mit tabelle und Buttons
     const questCar = document.querySelector('#questCar');
     let splitted;
-    const alternatives = await feladb.getAlternatives(questNumber, 1, 10);
+    const alternatives = await feladb.getAlternatives(questNumber, 2, 10);
     if (directString === 'direct3') { //Summenformel -> Name;
         splitted = feladb.splitFormula(answer, 0);
         console.log(splitted);
