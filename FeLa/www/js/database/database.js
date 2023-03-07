@@ -237,6 +237,7 @@ async function getCategoriesOfCompound(compound_id) {
 }
 
 /* returns count random compounds that are not the given compound according to sameness
+if not enough results are found, the remaining alternatives get selected from the sameness -1
 multiple function calls may return identical alternative compounds - possible TODO for future? 
 sameness 0 means random alternatives
 sameness > 0 means alternatives from same category
@@ -276,8 +277,21 @@ export async function getAlternatives(root_id, sameness, count) {
 
         db.readTransaction(function(tx) {
             
-            tx.executeSql(query, [root_id, count], function(tx, rs) {
-                resolve(convertResultToArray(rs));
+            tx.executeSql(query, [root_id, count], async function(tx, rs) {
+                if (rs.rows.length == 0) {
+                    console.log("Error: not enough items in database to fulfill alternative request with count " + count);
+                    console.log("Returning alternatives less than intended value!");
+                    resolve([]);
+                }
+                else if (rs.rows.length == count) {
+                    resolve(convertResultToArray(rs));
+                }
+                else if (rs.rows.length < count) {
+                    resolve(convertResultToArray(rs).concat(await getAlternatives(root_id, sameness - 1, count - rs.rows.length)));
+                }
+                else {
+                    reject("Error: getAlternatives function is doing weird stuff");
+                }
             }, function(error) {
                 console.log(error);
                 reject(error);
@@ -329,7 +343,8 @@ export async function getCompoundCount(category_list) {
 
 /* creates a question
 should only be use manually to add questions that are asked again in the same round
-returns new object of open questions for round*/
+returns new object of open questions for round
+TODO: refactor based on question_id -> repeat question in round, only return new question*/
 export async function addQuestionToRound(round_id, compound_id) {
 
     return new Promise(function(resolve, reject) {
@@ -610,8 +625,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            //window.getAlternatives = getAlternatives;
-                            window.split = splitFormula;
+                            window.getAlternatives = getAlternatives;
                         }, function(error) {
                             throw error;
                         }
