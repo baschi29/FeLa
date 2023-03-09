@@ -220,7 +220,7 @@ function addFTEItem(roundID, questNumber, modeString, question, answer) {
 }  
 
 // https://onsen.io/v2/guide/tutorial.html#carousels
-async function testMode(modeString) {
+async function learnMode(modeString) {
     // Inhalte aus den ons-selector holen
     const level = document.getElementById("choose-sel1" + modeString);
     const lvList = level.options;
@@ -305,6 +305,47 @@ async function testMode(modeString) {
     }
     questCar.next();
 
+}
+
+async function testMode() {
+    await document.querySelector('#mainNavigator').pushPage('views/carousel.html', {data: {title: 'Fragen Testmodus'}});
+
+    let round = await feladb.createRound('test', [], 30);
+    const levels = ['MC', 'DaD', 'FTE'];
+    const directions = ['direct2', 'direct3'];
+
+    for (let i = 0; i < round.questions.length; i++) {
+        let question = round.questions[i];
+        console.log(question.name);
+        console.log(i);
+        let dir = directions[Math.floor(Math.random() * directions.length)];
+        let randlevel = levels[Math.floor(Math.random() * levels.length)];
+        switch(randlevel) {
+            case 'MC':
+                if (dir === 'direct3') {
+                     await addMCItem(round.id, question.question_id, dir,  'test', question.name, question.formula);    
+                } else if (dir === 'direct2') {
+                    await addMCItem(round.id, question.question_id, dir,  'test', question.formula, question.name); 
+                }
+              break;
+            case 'DaD':
+                if (dir === 'direct3') {
+                    await addDaDItem(round.id, question.question_id, 'test', dir, question.name, question.formula, question.split);       
+                } else if (dir === 'direct2') {
+                    await addDaDItem(round.id, question.question_id, 'test', dir, question.formula, question.name, question.split);
+                }
+              break;
+            case 'FTE':
+                if (dir === 'direct3') {
+                    addFTEItem(round.id, question.question_id, 'test', question.name, question.formula);                      
+                } else if (dir === 'direct2') {
+                    addFTEItem(round.id, question.question_id, 'test', question.formula, question.name);                      
+                }
+            default:
+              // code block
+          }
+    }
+    questCar.next();
 }
 
 
@@ -477,10 +518,10 @@ document.addEventListener('init', function(event) {
 
     //console.log(page);
     if (page.id === 'test') {
-        page.querySelector('#push-button').onclick = function() {testMode('test')};
+        page.querySelector('#push-button').onclick = function() {testMode()};
 
     } else if (page.id === 'learn') {
-        page.querySelector('#push-button').onclick = function() {testMode('learn')};
+        page.querySelector('#push-button').onclick = function() {learnMode('learn')};
     
     } else if (page.id === 'q_test') {
         page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
