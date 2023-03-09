@@ -63,14 +63,18 @@ async function createVersion0(db) {
             | data      |              -1 |
             +-----------+-----------------+ */
             tx.executeSql('CREATE TABLE Versioning (version_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL UNIQUE, version INTEGER NOT NULL)');
-            /* creates Categories table for storing categories 
+            /* creates Categories table for storing categories
+            ranking is highest archieved ranking from a test of the category 
             +-----------+--------------+
             | name TEXT | ranking REAL |
             +-----------+--------------+
             |           |              |
             +-----------+--------------+ */
             tx.executeSql('CREATE TABLE Categories (category_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, ranking REAL)');
-            /* creates Compounds table for storing chemical compounds       
+            /* creates Compounds table for storing chemical compounds
+            ranking represents how good the questions was answered in the recent future
+            ranking starts at 0, result 0 represents false answer, result 1 true answer
+            formula: ranking = (1-a)*ranking + a*result
             +-----------+--------------+------------+--------------+--------------------+
             | name TEXT | formula TEXT | split TEXT | ranking REAL | difficulty INTEGER |
             +-----------+--------------+------------+--------------+--------------------+
@@ -85,6 +89,7 @@ async function createVersion0(db) {
             +---------------------------------+---------------------------------+*/
             tx.executeSql('CREATE TABLE CCMapping (ccmapping_id INTEGER PRIMARY KEY AUTOINCREMENT, category_id INTEGER NOT NULL, compound_id INTEGER NOT NULL, FOREIGN KEY(category_id) REFERENCES Categories(category_id), FOREIGN KEY(compound_id) REFERENCES Compounds(compound_id))');
             /* creates Rounds table for storing information over attempted question rounds
+            ranking is the percentage of right answers to total answers
             +-----------+-------------------+--------------+
             | type TEXT | timestamp INTEGER | ranking REAL |
             +-----------+-------------------+--------------+
