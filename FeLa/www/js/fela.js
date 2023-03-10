@@ -309,16 +309,26 @@ async function learnMode(modeString) {
 
 async function testMode() {
     await document.querySelector('#mainNavigator').pushPage('views/carousel.html', {data: {title: 'Fragen Testmodus'}});
-
-    let round = await feladb.createRound('test', [], 30);
+    
+    const typ = document.getElementById("choose-sel2test");
+    const typList = typ.options;
+    var selectedTyp = typList[typ.selectedIndex].value;
+    
+    let round;
+    if (selectedTyp === 'Alle') {
+        round = await feladb.createRound('test', [], 30);
+    } else {
+        round = await feladb.createRound('test', selectedTyp, 30);
+    }
+    //let round = await feladb.createRound('test', [], 30);
     const levels = ['MC', 'DaD', 'FTE'];
     const directions = ['direct2', 'direct3'];
-
+    
+    
     for (let i = 0; i < round.questions.length; i++) {
         let question = round.questions[i];
-        console.log(question.name);
-        console.log(i);
         let dir = directions[Math.floor(Math.random() * directions.length)];
+
         let randlevel = levels[Math.floor(Math.random() * levels.length)];
         switch(randlevel) {
             case 'MC':
