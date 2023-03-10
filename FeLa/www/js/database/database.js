@@ -140,7 +140,10 @@ async function readSchemeVersion(tx) {
     
     return new Promise(function(resolve, reject) {
 
-        tx.executeSql('SELECT version FROM Versioning WHERE type = "scheme"', [], function(tx, rs) {
+        tx.executeSql('SELECT version \
+            FROM Versioning \
+            WHERE type = "scheme"', [], 
+        function(tx, rs) {
             resolve(rs.rows.item(0).version);         
         }, function(tx, error) {
             reject("Error: Failed opening version table" + JSON.stringify(error));
@@ -154,7 +157,10 @@ async function readDataVersion(tx) {
     
     return new Promise(function(resolve, reject) {
 
-        tx.executeSql('SELECT version FROM Versioning WHERE type = "data"', [], function(tx, rs) {
+        tx.executeSql('SELECT version \
+            FROM Versioning \
+            WHERE type = "data"', [], 
+        function(tx, rs) {
             resolve(rs.rows.item(0).version);         
         }, function(tx, error) {
             reject("Error: Failed opening version table" + JSON.stringify(error));
@@ -169,7 +175,10 @@ async function isDatabaseEmpty(tx) {
     
     return new Promise(function(resolve, reject) {
 
-        tx.executeSql('SELECT count(*) AS tableCount FROM sqlite_master WHERE type = "table"', [], function(tx, rs) {
+        tx.executeSql('SELECT count(*) AS tableCount \
+            FROM sqlite_master \
+            WHERE type = "table"', [], 
+        function(tx, rs) {
             // evaluates to true if database is empty
             resolve(rs.rows.item(0).tableCount == 0);
         }, function(tx, error) {
@@ -188,7 +197,9 @@ export async function getCategories() {
     return new Promise(function(resolve, reject) {
         
         db.readTransaction(function(tx) {
-            tx.executeSql('SELECT category_id, name, ranking FROM Categories', [], function(tx, rs) {
+            tx.executeSql('SELECT category_id, name, ranking \
+                FROM Categories', [], 
+            function(tx, rs) {
                 resolve(convertResultToArray(rs));
             }, function(tx, error) {
                 reject("Error: Error reading categories from database " + JSON.stringify(error));
@@ -202,7 +213,10 @@ async function getCompound(compound_id) {
 
     return new Promise(function(resolve, reject) {
         db.readTransaction(function(tx) {
-            tx.executeSql('SELECT * FROM Compounds WHERE compound_id = ?', [compound_id], function(tx, rs) {
+            tx.executeSql('SELECT * \
+                FROM Compounds \
+                WHERE compound_id = ?', [compound_id], 
+            function(tx, rs) {
                 resolve(convertResultToArray(rs));
             }, function(tx, error) {
                 reject(error);
@@ -220,7 +234,11 @@ async function getCategoriesOfCompound(compound_id) {
 
         db.readTransaction(function(tx) {
             
-            tx.executeSql('SELECT category_id FROM Compounds JOIN CCMapping USING (compound_id) WHERE compound_id = ? GROUP BY category_id', [compound_id], function(tx, rs) {
+            tx.executeSql('SELECT category_id \
+                FROM Compounds JOIN CCMapping USING (compound_id) \
+                WHERE compound_id = ? \
+                GROUP BY category_id', [compound_id], 
+            function(tx, rs) {
                 let result = [];
                 for (let i = 0; i < rs.rows.length; i++) {
                     let item = rs.rows.item(i);
@@ -255,7 +273,9 @@ export async function getAlternatives(root_id, sameness, count) {
                 resolve([]);
             }
 
-            var query = 'SELECT DISTINCT compound_id, name, formula, split FROM Compounds JOIN CCMapping USING (compound_id)';
+            var query = 'SELECT DISTINCT compound_id, name, formula, split \
+                FROM Compounds JOIN CCMapping USING (compound_id)';
+
             var query_condition =  ' WHERE compound_id != ?' + generateQueryCondition('AND NOT', 'OR', 'compound_id', excluded_ids);
 
             if (sameness == 1) {
@@ -326,7 +346,9 @@ export async function getCategoryCount(){
     return new Promise(function(resolve, reject) {
 
         db.readTransaction(function(tx) {
-            tx.executeSql('SELECT count(*) as c FROM CATEGORIES', [], function(tx, rs) {
+            tx.executeSql('SELECT count(*) as c \
+            FROM CATEGORIES', [], 
+        function(tx, rs) {
                 resolve(rs.rows.item(0).c);
             })
         }, function(tx, error) {
@@ -342,7 +364,8 @@ export async function getCompoundCount(category_list) {
 
         db.readTransaction(function(tx) {
 
-            let query = 'SELECT DISTINCT count(*) as c FROM Compounds JOIN CCMapping USING (compound_id)';
+            let query = 'SELECT DISTINCT count(*) as c \
+                FROM Compounds JOIN CCMapping USING (compound_id)';
 
             query = query + generateQueryCondition('WHERE', 'OR', 'category_id', category_list);
         
@@ -367,7 +390,9 @@ export async function addQuestionToRound(round_id, compound_id) {
     return new Promise(function(resolve, reject) {
         
         db.transaction(function(tx) {
-            tx.executeSql('INSERT INTO Questions (round_id, compound_id) VALUES (?, ?)', [round_id, compound_id], async function(tx, rs) {
+            tx.executeSql('INSERT INTO Questions (round_id, compound_id) \
+                VALUES (?, ?)', [round_id, compound_id], 
+            async function(tx, rs) {
                 resolve(await getOpenQuestions(round_id));
             }, function(tx, error) {
                 reject(error);
@@ -390,7 +415,8 @@ function createQuestionSet(round_id, category_list, amount) {
         db.transaction(function(tx) {
 
             // generate query to select compound_ids according given categories, sorted by descending ranking first, then ascending difficulty 
-            var select_query = 'SELECT ? as round_id, compound_id FROM (SELECT * FROM Compounds JOIN CCMapping USING (compound_id)';
+            var select_query = 'SELECT ? as round_id, compound_id \
+                FROM (SELECT * FROM Compounds JOIN CCMapping USING (compound_id)';
             
             select_query = select_query + generateQueryCondition('WHERE', 'OR', 'category_id', category_list);
 
@@ -416,7 +442,10 @@ export async function getOpenQuestions(round_id) {
 
         db.readTransaction(function(tx) {
 
-            tx.executeSql('SELECT question_id, result, compound_id, c.name, c.formula, c.split, c.ranking, c.difficulty FROM Questions as q JOIN Compounds as c USING (compound_id) WHERE round_id = ?', [round_id], function(tx, rs) {
+            tx.executeSql('SELECT question_id, result, compound_id, c.name, c.formula, c.split, c.ranking, c.difficulty \
+                FROM Questions as q JOIN Compounds as c USING (compound_id) \
+                WHERE round_id = ?', [round_id], 
+            function(tx, rs) {
                 resolve({"id": round_id, "questions": convertResultToArray(rs)});
             }, function(tx, error) {
                 reject(error);
@@ -435,7 +464,10 @@ export async function getOpenRounds() {
 
         db.readTransaction(function(tx) {
 
-            tx.executeSql('SELECT * FROM Rounds WHERE ranking IS NULL', [], function(tx, rs) {
+            tx.executeSql('SELECT * \
+                FROM Rounds \
+                WHERE result IS NULL', [], 
+            function(tx, rs) {
                 resolve(convertResultToArray(rs));
             }, function(tx, error) {
                 reject(error);
@@ -454,7 +486,10 @@ export async function isRoundFinished(round_id) {
 
         db.readTransaction(function(tx) {
 
-            tx.executeSql('SELECT count(*) as c FROM Questions WHERE round_id = ? AND result IS NULL', [round_id], function(tx, rs) {
+            tx.executeSql('SELECT count(*) as c \
+                FROM Questions \
+                WHERE round_id = ? AND result IS NULL', [round_id], 
+            function(tx, rs) {
                 let res = rs.rows.item(0).c == 0;
                 resolve(res);
             }, function(tx, error) {
@@ -469,14 +504,21 @@ export async function isRoundFinished(round_id) {
 /* writes results of a question in question table -> closes question in that sense
 type is either mc, free or d&d
 result is 0 for false, 1 for true
-difficulty can be calculated by app, needs to be real
+difficulty can be calculated by app, needs to be real # TODO: not used for now
 */
 export async function closeQuestion(round_id, question_id, type, result, difficulty) {
 
     return new Promise(function(resolve, reject) {
 
         db.transaction(function(tx) {
-            tx.executeSql('UPDATE Questions SET type = ?, result = ?, difficulty = ?, timestamp = ? WHERE question_id = ?', [type, result, difficulty, NowInEpoch(), question_id], async function(tx, rs) {
+            tx.executeSql('UPDATE Questions \
+                SET type = ?, \
+                    result = ?, \
+                    difficulty = ?, \
+                    timestamp = ? \
+                WHERE question_id = ?', 
+                [type, result, difficulty, NowInEpoch(), question_id], 
+            async function(tx, rs) {
                 if (await isRoundFinished(round_id)) {
                     closeRound(round_id);
                 }
@@ -490,15 +532,17 @@ export async function closeQuestion(round_id, question_id, type, result, difficu
     })
 }
 
-/* closes round - round counts as finished if ranking is set
-TODO: ranking related stuff*/
+/* closes round - round counts as finished if result is set*/
 async function closeRound(round_id) {
 
         return new Promise(function(resolve, reject) {
 
             db.transaction(function(tx) {
 
-                tx.executeSql('UPDATE Rounds SET ranking = ? WHERE round_id = ?', [0.0 ,round_id], function(tx, rs) {
+                tx.executeSql('UPDATE Rounds \
+                    SET result = ? \
+                    WHERE round_id = ?', [0.0 ,round_id], 
+                function(tx, rs) {
                     resolve();
                 }, function(tx, error) {
                     reject(error);
@@ -518,7 +562,9 @@ async function writeRound(type) {
         db.transaction(function(tx) {
             let time = NowInEpoch();
 
-            tx.executeSql('INSERT INTO Rounds (type, timestamp) VALUES (?, ?)', [type , time], function(tx, rs) {
+            tx.executeSql('INSERT INTO Rounds (type, timestamp) \
+                VALUES (?, ?)', [type , time], 
+            function(tx, rs) {
                 tx.executeSql('SELECT round_id FROM Rounds WHERE timestamp = ?', [time], function(tx, rs) {
                     resolve(rs.rows.item(0).round_id);
                 });

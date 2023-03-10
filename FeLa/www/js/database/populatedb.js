@@ -4,7 +4,9 @@ var logLevel = 0;
 // adds a category with ranking 0, needs a transaction tx as an argument
 function addCategory(tx, catName) {
     
-    tx.executeSql('INSERT INTO Categories (name, ranking) VALUES (?, ?)', [catName, 0.0], function(tx, resultSet) {
+    tx.executeSql('INSERT INTO Categories (name, ranking) \
+        VALUES (?, ?)', [catName, 0.0], 
+    function(tx, resultSet) {
         if (logLevel > 0) {
             console.log('Added category ' + catName);
         }
@@ -16,7 +18,9 @@ function addCategory(tx, catName) {
 // adds a Compound with ranking 0, needs a transaction tx as an argument
 function addCompound(tx, compName, formula, compSplit, difficulty) {
 
-    tx.executeSql('INSERT INTO Compounds (name, formula, split, ranking, difficulty) VALUES (?, ?, ?, ?, ?)', [compName, formula, compSplit, 0.0, difficulty], function(tx, resultSet) {
+    tx.executeSql('INSERT INTO Compounds (name, formula, split, ranking, difficulty) \
+        VALUES (?, ?, ?, ?, ?)', [compName, formula, compSplit, 0.0, difficulty], 
+    function(tx, resultSet) {
         if (logLevel > 0) {
             console.log('Added compound ' + compName);
         }
@@ -29,7 +33,16 @@ function addCompound(tx, compName, formula, compSplit, difficulty) {
 // searches for ids in own subtransaction
 function mapCategoryCompound(tx, catName, compName) {
 
-    tx.executeSql('INSERT INTO CCMapping (category_id, compound_id) VALUES ((SELECT category_id FROM Categories WHERE name = ?),(SELECT compound_id FROM Compounds WHERE name = ?))', [catName, compName], function(tx, resultSet) {
+    tx.executeSql('INSERT INTO CCMapping (category_id, compound_id) \
+        VALUES (\
+        (SELECT category_id \
+            FROM Categories \
+            WHERE name = ?),\
+        (SELECT compound_id \
+            FROM Compounds \
+            WHERE name = ?))', 
+        [catName, compName], 
+    function(tx, resultSet) {
         if (logLevel > 0) {
             console.log("Mapped category " + catName + " and compound " + compName);
         }
@@ -41,7 +54,11 @@ function mapCategoryCompound(tx, catName, compName) {
 // updates data version to value specified by <version>
 function updateDataVersion(tx, version) {
     
-    tx.executeSql('UPDATE Versioning SET version = ? WHERE type = "data"', [version], function(tx, resultSet) {
+    tx.executeSql('UPDATE Versioning \
+        SET version = ? \
+        WHERE type = "data"', 
+        [version], 
+    function(tx, resultSet) {
         console.log('Set data version successfully to ' + version);
     }, function(error) {
         throw error;

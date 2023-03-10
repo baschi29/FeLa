@@ -1,7 +1,9 @@
 // inserts scheme version field into versioning table and sets it to <version>
 function insertSchemeVersion(tx, version) {
 
-    tx.executeSql('INSERT INTO Versioning (type, version) VALUES (?, ?)', ['scheme', 0], function(tx, resultSet) {
+    tx.executeSql('INSERT INTO Versioning (type, version) \
+        VALUES (?, ?)', ['scheme', 0], 
+    function(tx, resultSet) {
         console.log('Set scheme version successfully to ' + version);
     }, function(tx, error) {
         throw error;
@@ -11,7 +13,9 @@ function insertSchemeVersion(tx, version) {
 // inserts data version field into versioning table and sets it to -1
 function insertDataVersion(tx) {
 
-    tx.executeSql('INSERT INTO Versioning (type, version) VALUES (?, ?)', ['data', -1], function(tx, resultSet) {
+    tx.executeSql('INSERT INTO Versioning (type, version) \
+        VALUES (?, ?)', ['data', -1], 
+    function(tx, resultSet) {
         console.log('Set data version successfully to -1');
     }, function(tx, error) {
         throw error;
@@ -55,6 +59,8 @@ async function createVersion0(db) {
     
     return new Promise(function(resolve, reject) {
         db.transaction(function(tx) {
+            // --- Table Creation ---
+
             /* creates Versioning table for storing scheme and data version information
             +-----------+-----------------+
             | type TEXT | version INTEGER |
@@ -62,40 +68,61 @@ async function createVersion0(db) {
             | scheme    |               0 |
             | data      |              -1 |
             +-----------+-----------------+ */
-            tx.executeSql('CREATE TABLE Versioning (version_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL UNIQUE, version INTEGER NOT NULL)');
+            tx.executeSql('CREATE TABLE Versioning (\
+                version_id INTEGER PRIMARY KEY AUTOINCREMENT, \
+                type TEXT NOT NULL UNIQUE, \
+                version INTEGER NOT NULL)');
             /* creates Categories table for storing categories
-            ranking is highest archieved ranking from a test of the category 
+            ranking is the mean of all compound rankings of the category
             +-----------+--------------+
             | name TEXT | ranking REAL |
             +-----------+--------------+
             |           |              |
             +-----------+--------------+ */
-            tx.executeSql('CREATE TABLE Categories (category_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, ranking REAL)');
+            tx.executeSql('CREATE TABLE Categories (\
+                category_id INTEGER PRIMARY KEY AUTOINCREMENT, \
+                name TEXT NOT NULL UNIQUE, \
+                ranking REAL)');
             /* creates Compounds table for storing chemical compounds
             ranking represents how good the questions was answered in the recent future
             ranking starts at 0, result 0 represents false answer, result 1 true answer
-            formula: ranking = (1-a)*ranking + a*result
+            formula: ranking = (1-a)*ranking + a*result (Exponential Weighted Moving Average, a=0.125)
             +-----------+--------------+------------+--------------+--------------------+
             | name TEXT | formula TEXT | split TEXT | ranking REAL | difficulty INTEGER |
             +-----------+--------------+------------+--------------+--------------------+
             |           |              |            |              |                    |
             +-----------+--------------+------------+--------------+--------------------+ */
-            tx.executeSql('CREATE TABLE Compounds (compound_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, formula TEXT NOT NULL, split TEXT NOT NULL, ranking REAL, difficulty INTEGER NOT NULL)');
+            tx.executeSql('CREATE TABLE Compounds (\
+                compound_id INTEGER PRIMARY KEY AUTOINCREMENT, \
+                name TEXT NOT NULL, \
+                formula TEXT NOT NULL, \
+                split TEXT NOT NULL, \
+                ranking REAL, \
+                difficulty INTEGER NOT NULL)');
             /* creates CCMapping for mapping compounds and categories
             +---------------------------------+---------------------------------+
             | category_id INTEGER FOREIGN KEY | compound_id INTEGER FOREIGN KEY |
             +---------------------------------+---------------------------------+
             |                                 |                                 |
             +---------------------------------+---------------------------------+*/
-            tx.executeSql('CREATE TABLE CCMapping (ccmapping_id INTEGER PRIMARY KEY AUTOINCREMENT, category_id INTEGER NOT NULL, compound_id INTEGER NOT NULL, FOREIGN KEY(category_id) REFERENCES Categories(category_id), FOREIGN KEY(compound_id) REFERENCES Compounds(compound_id))');
+            tx.executeSql('CREATE TABLE CCMapping (\
+                ccmapping_id INTEGER PRIMARY KEY AUTOINCREMENT, \
+                category_id INTEGER NOT NULL, \
+                compound_id INTEGER NOT NULL, \
+                FOREIGN KEY(category_id) REFERENCES Categories(category_id), \
+                FOREIGN KEY(compound_id) REFERENCES Compounds(compound_id))');
             /* creates Rounds table for storing information over attempted question rounds
-            ranking is the percentage of right answers to total answers
+            result is currently only used to indicate wheter round is finished
             +-----------+-------------------+--------------+
-            | type TEXT | timestamp INTEGER | ranking REAL |
+            | type TEXT | timestamp INTEGER | result  REAL |
             +-----------+-------------------+--------------+
             |           |                   |              |
             +-----------+-------------------+--------------+ */
-            tx.executeSql('CREATE TABLE Rounds (round_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, timestamp INTEGER NOT NULL, ranking REAL)');
+            tx.executeSql('CREATE TABLE Rounds (\
+                round_id INTEGER PRIMARY KEY AUTOINCREMENT, \
+                type TEXT NOT NULL, \
+                timestamp INTEGER NOT NULL, \
+                result REAL)');
             /*creates Questions table for storing what compounds where asked in which round
             +-----------+-------------------+----------------+-----------------+-------------------------------+---------------------------------+
             | type TEXT | timestamp INTEGER | result INTEGER | difficulty REAL | round_id INTEGER FOREIGN KEY  | compound_id INTEGER FOREIGN KEY |
@@ -103,7 +130,27 @@ async function createVersion0(db) {
             |           |                   |                |                 |                               |                                 |
             +-----------+-------------------+----------------+-----------------+-------------------------------+---------------------------------+
             */
-            tx.executeSql('CREATE TABLE Questions (question_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, timestamp INTEGER, result INTEGER, difficulty REAL, round_id INTEGER NOT NULL, compound_id INTEGER NOT NULL, FOREIGN KEY(round_id) REFERENCES Rounds(round_id), FOREIGN KEY(compound_id) REFERENCES Compounds(compound_id))');
+            tx.executeSql('CREATE TABLE Questions (\
+                question_id INTEGER PRIMARY KEY AUTOINCREMENT, \
+                type TEXT, \
+                timestamp INTEGER, \
+                result INTEGER, \
+                difficulty REAL, \
+                round_id INTEGER NOT NULL, \
+                compound_id INTEGER NOT NULL, \
+                FOREIGN KEY(round_id) REFERENCES Rounds(round_id), \
+                FOREIGN KEY(compound_id) REFERENCES Compounds(compound_id))');
+            
+            // --- Trigger creation ---
+
+            /* Trigger to update compound ranking and corresponding category ranking(s) after question result update
+            compound formula: ranking = (1-a)*ranking + a*result
+            category formula: mean of all rankings in category
+            */
+           //tx.executeSql('CREATE TRIGGER ranking_update AFTER UPDATE ON ')
+
+            // --- writing version information into database ---
+
             insertSchemeVersion(tx, 0);
             insertDataVersion(tx);
           }, function(error) {
