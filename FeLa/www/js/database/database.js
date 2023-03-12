@@ -132,6 +132,40 @@ function likeFormula3(formula) {
     return res;
 }
 
+// helper function to show formula in the correct way using subscripts and superscripts
+export function niceFormula(formula) {
+    let res = '';
+    let subsup = '';
+
+    for (const element of formula) {
+        if (isNaN(parseInt(element)) && element != '+' && element != '-') {
+            if (element == '_' || element == '^') {
+                subsup = element;
+            } else {
+                res += element;
+            }
+        } else {
+            if (subsup == '_') {
+                res += '<sub>'+element+'</sub>';
+            } else if (subsup == '^') {
+                res += '<sup>'+element+'</sup>';
+            } else {
+                res += element;
+            }
+        }
+    }
+
+    return res;
+}
+
+// helper function to make nice elements of an array
+export function niceFormulaList(formulars) {
+    for (let i = 0; i < formulars.length; i++) {
+        formulars[i] = niceFormula(formulars[i]);
+    }
+    return formulars;
+}
+
 // --- functions to obtain information about status of database ----
 
 /* reads the scheme version from the database

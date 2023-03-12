@@ -31,6 +31,7 @@
     }
   },
   "dependencies": {
+    "cordova": "^11.1.0",
     "jquery": "^3.6.1",
     "onsenui": "^2.12.6"
   }
