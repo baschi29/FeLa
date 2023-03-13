@@ -176,6 +176,25 @@ async function createVersion0(db) {
                                 AND ccm.compound_id = new.compound_id); \
                 END');
 
+            // --- creating views ---
+            
+            /* view for statistics for categories
+            */
+            tx.executeSql('CREATE VIEW category_statistics \
+                AS \
+                SELECT \
+                    Categories.category_id AS category_id, \
+                    Categories.name AS name, \
+                    Categories.ranking AS ranking, \
+                    COUNT(*) AS total_questions, \
+                    SUM(CASE WHEN Questions.result = 0 THEN 0 ELSE 1 END) AS right_questions, \
+                    SUM(CASE WHEN Questions.result = 0 THEN 1 ELSE 0 END) AS wrong_questions, \
+                    100 * SUM(CASE WHEN Questions.result = 0 THEN 0 ELSE 1 END) / COUNT(*) AS right_percentage \
+                FROM Categories, CCMapping, Questions \
+                WHERE Categories.category_id = CCMapping.category_id \
+                    AND CCMapping.compound_id = Questions.compound_id \
+                GROUP BY Categories.category_id');
+            
             // --- writing version information into database ---
 
             insertSchemeVersion(tx, 0);
