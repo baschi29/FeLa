@@ -165,11 +165,10 @@ async function createVersion0(db) {
                 WHEN old.ranking <> new.ranking \
                 BEGIN \
                     UPDATE Categories \
-                        SET ranking = (SELECt AVG(ranking) \
+                        SET ranking = (SELECT AVG(ranking) \
                             FROM Compounds AS co, CCMapping AS ccm \
                             WHERE co.compound_id = ccm.compound_id \
-                                AND ccm.compound_id = new.compound_id \
-                                and ccm.category_id = category_id\
+                                AND ccm.category_id = category_id \
                             GROUP BY category_id) \
                         WHERE category_id IN (SELECT category_id AS id \
                             FROM Compounds AS co, CCMapping AS ccm \
