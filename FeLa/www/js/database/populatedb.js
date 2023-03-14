@@ -109,7 +109,7 @@ async function populateVersion0(db) {
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 
         // read data json and transform it to an js object
-        let js0 = await import("/data/data0.js");
+        let js0 = await import("/www/data/data0.js");
         let data = js0.default;
         //transaction for actually adding stuff
         db.transaction(function(tx) {

@@ -1,5 +1,10 @@
 import * as feladb from './database/database.js';
 
+// --> functions for the learn and test pages <-- //
+
+// build the 3 different question modes //
+
+// multiple choice mode
 async function addMCItem(roundID, questNumber, direction, modeString, question, answer) {
     function shuffle(a) {
         var j, x, i;
@@ -83,6 +88,7 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
     
 }
 
+// drag and drop mode
 async function addDaDItem(roundID, questNumber, modeString, directString, question, answer, split) {
     function shuffle(a) {
         var j, x, i;
@@ -199,6 +205,7 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
     questCar.appendChild(carouselItem);   
 }  
 
+// insert text mode
 function addFTEItem(roundID, questNumber, modeString, question, answer) {
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
@@ -222,6 +229,8 @@ function addFTEItem(roundID, questNumber, modeString, question, answer) {
 
     questCar.appendChild(carouselItem); 
 }  
+
+// build learn and test environment //
 
 // https://onsen.io/v2/guide/tutorial.html#carousels
 async function learnMode(modeString) {
@@ -361,9 +370,7 @@ async function testMode() {
     questCar.next();
 }
 
-
-
-//Functions for Drag and Drop
+// helper functions for drag and drop
 export function mark(pushedButton, buttonID) {
     let marked = localStorage.getItem("marked");
     if ((marked === null) || (marked === "false") ) {
@@ -397,7 +404,7 @@ export function pushInTable(tableField) {
     }
 }
 
-// checks if answer is correct
+// check function if given answer is correct
 export async function check(roundID, level, index, answer, modeString) {
     // console.log(level); 
     // console.log(index);
@@ -405,6 +412,10 @@ export async function check(roundID, level, index, answer, modeString) {
     var carausel = document.getElementById('questCar');
     var questAnswer;
     let convertedAnswer = feladb.niceFormula(answer);
+
+    // überprüfe, ob Runde geschlossen
+    // wenn ja, add stats item
+
     // Multiple Choice
     if (level === 'level1') {
         var x;
@@ -427,6 +438,9 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
                 alert('Richtig');
+                // HIER: Funktion, die guckt, ob es vorbei ist.
+                // an jeder dieser Stelle:
+                    // carausel.next(); oder Statistikseite
                 carausel.next();
             } else {
                 // Zeile rot machen
@@ -450,7 +464,7 @@ export async function check(roundID, level, index, answer, modeString) {
             }
         }
        
-    //Drag and Drop    
+    // Drag and Drop    
     } else if (level === 'level2') {
         // questAnswer = document.getElementById('tab1'+index).innerText + document.getElementById('tab2'+index).innerText +
         //               document.getElementById('tab3'+index).innerText + document.getElementById('tab4'+index).innerText +
@@ -531,7 +545,61 @@ export async function check(roundID, level, index, answer, modeString) {
     }
 }
 
+// --> functions for the statistic page <-- //
 
+function buildStats() {
+    
+    // doughnut chart: contains overview of the statistic data
+    let xValues0 = ["Kann ich", "Muss ich wiederholen", "Kommt noch"];
+    let yValues0 = [55, 49, 44];
+    let barColors0 = [
+        "#1e7145", // green
+        "#b91d47", // red
+        "#00aba9", // turkey 
+    ];
+    
+    new Chart("chart0", {
+    type: "doughnut",
+    data: {
+        labels: xValues0,
+        datasets: [{
+        backgroundColor: barColors0,
+        data: yValues0
+        }]
+    },
+    options: {
+        title: {
+        display: true,
+        text: "Gesamtübersicht"
+        }
+    }
+    });
+
+    // bar chart: contains statistics for each category
+    let xValues1 = ["Ionen", "Wasserstoff, Sauerstoff", "Natrium, Calcium", "Stickstoff", "Kohlenstoff", "Phosphor, Schwefel", "Halogene", "Kohlenwasserstoffe"];
+    let yValues1 = [55, 49, 44, 24, 15, 16, 52, 28];
+    let barColors1 = ["red","green","blue","orange","pink","yellow","purple","grey"];
+
+    new Chart("chart1", {
+    type: "bar",
+    data: {
+        labels: xValues1,
+        datasets: [{
+        backgroundColor: barColors1,
+        data: yValues1
+        }]
+    },
+    options: {
+        legend: {display: false},
+        title: {
+        display: true,
+        text: "Kategorieübersicht"
+        }
+    }
+    });
+}
+
+// additional stuff
 document.addEventListener('init', function(event) {
     // var testknopf = document.getElementById("push-button");
     // console.log(testknopf);
@@ -543,11 +611,10 @@ document.addEventListener('init', function(event) {
 
     } else if (page.id === 'learn') {
         page.querySelector('#push-button').onclick = function() {learnMode('learn')};
-    
-    } else if (page.id === 'q_test') {
-        page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-    
-    } 
+
+    } else if (page.id === 'stats') {
+        buildStats();
+    }
 });
 
 window.check = check;
