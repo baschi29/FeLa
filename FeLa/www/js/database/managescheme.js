@@ -180,20 +180,22 @@ async function createVersion0(db) {
             
             /* view for statistics for categories
             */
-            tx.executeSql('CREATE VIEW category_statistics \
+            tx.executeSql('CREATE VIEW statistics_merge \
                 AS \
                 SELECT \
                     Categories.category_id AS category_id, \
-                    Categories.name AS name, \
-                    Categories.ranking AS ranking, \
-                    COUNT(*) AS total_questions, \
-                    SUM(CASE WHEN Questions.result = 1 THEN 1 ELSE 0 END) AS right_questions, \
-                    SUM(CASE WHEN Questions.result = 0 THEN 1 ELSE 0 END) AS wrong_questions, \
-                    100 * SUM(CASE WHEN Questions.result = 1 THEN 1 ELSE 0 END) / COUNT(*) AS right_percentage \
-                FROM Categories, CCMapping, Questions \
+                    Categories.name AS categories_name, \
+                    Categories.ranking AS categories_ranking, \
+                    Questions.result AS result, \
+                    Questions.timestamp AS question_timestamp, \
+                    Questions.type AS question_type, \
+                    Rounds.round_id AS round_id, \
+                    Rounds.type AS round_type, \
+                    Rounds.timestamp AS round_timestamp \
+                FROM Categories, CCMapping, Questions, Rounds \
                 WHERE Categories.category_id = CCMapping.category_id \
                     AND CCMapping.compound_id = Questions.compound_id \
-                GROUP BY Categories.category_id');
+                    AND Questions.round_id = Rounds.round_id');
             
             // --- writing version information into database ---
 

@@ -715,7 +715,16 @@ export async function getCategoryStatistics() {
     return new Promise(async function(resolve, reject) {
 
         db.readTransaction(function(tx) {
-            tx.executeSql('SELECT * FROM category_statistics', [], 
+            tx.executeSql('SELECT \
+                    category_id AS category_id, \
+                    categories_name AS name, \
+                    categories_ranking AS ranking, \
+                    COUNT(*) AS total_questions, \
+                    SUM(CASE WHEN result = 1 THEN 1 ELSE 0 END) AS right_questions, \
+                    SUM(CASE WHEN result = 0 THEN 1 ELSE 0 END) AS wrong_questions, \
+                    100 * SUM(CASE WHEN result = 1 THEN 1 ELSE 0 END) / COUNT(*) AS right_percentage \
+                FROM statistics_merge \
+                GROUP BY category_id', [], 
             function(tx, rs) {
                 resolve(convertResultToArray(rs));
             }) 
