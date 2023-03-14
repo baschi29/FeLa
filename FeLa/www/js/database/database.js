@@ -550,13 +550,19 @@ export async function closeQuestion(round_id, question_id, type, result, difficu
                     result = ?, \
                     difficulty = ?, \
                     timestamp = ? \
-                WHERE question_id = ?', 
+                WHERE question_id = ? \
+                    AND result IS NULL', 
                 [type, result, difficulty, NowInEpoch(), question_id], 
             async function(tx, rs) {
-                if (await isRoundFinished(round_id)) {
-                    closeRound(round_id);
+                if (rs.rowsAffected > 0) {
+                    if (await isRoundFinished(round_id)) {
+                        closeRound(round_id);
+                    }
+                    resolve();
                 }
-                resolve();
+                else {
+                    reject("Error: No row found matching question_id with result NULL");
+                }
             }, function(tx, error) {
                 reject(error);
             })
@@ -575,9 +581,15 @@ async function closeRound(round_id) {
 
                 tx.executeSql('UPDATE Rounds \
                     SET result = ? \
-                    WHERE round_id = ?', [0.0 ,round_id], 
+                    WHERE round_id = ? \
+                        AND result is NULL', [0.0 ,round_id], 
                 function(tx, rs) {
-                    resolve();
+                    if (rs.rowsAffected > 0) {
+                        resolve();
+                    }
+                    else {
+                        reject("Error: No round found matching round_id with result NULL");
+                    }
                 }, function(tx, error) {
                     reject(error);
                 })
