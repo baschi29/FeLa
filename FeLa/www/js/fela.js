@@ -355,8 +355,7 @@ async function testMode() {
     //let round = await feladb.createRound('test', [], 30);
     const levels = ['MC', 'DaD', 'FTE'];
     const directions = ['direct2', 'direct3'];
-    
-    
+   
     for (let i = 0; i < round.questions.length; i++) {
         let question = round.questions[i];
         let dir = directions[Math.floor(Math.random() * directions.length)];
@@ -422,10 +421,13 @@ export function pushInTable(tableField) {
 }
 
 async function nextPage(roundID, carausel) {
-    if (feladb.isRoundClosed(roundID)){
-        // stastik anhängen 
+    console.log(await feladb.isRoundClosed(roundID));
+    if (await feladb.isRoundClosed(roundID)){
+        // @ToDo: stastik seite anhängen 
         carausel.next();
         carausel.setAttribute('swipeable', 'true');
+        document.getElementById('loadingScreen').remove();
+        
     } else {
         carausel.next();
     }
@@ -436,14 +438,17 @@ export async function check(button, roundID, level, index, answer, modeString) {
     // console.log(level); 
     // console.log(index);
     // console.log(modeString);
-    console.log(button);
+    // console.log(button);
     var carausel = document.getElementById('questCar');
     var questAnswer;
     let convertedAnswer = feladb.niceFormula(answer);
 
-    // überprüfe, ob Runde geschlossen
-    // wenn ja, add stats item
-
+    if (localStorage.getItem('learnButtonSwitch') === 'true'){
+        nextPage(roundID, carausel);
+        localStorage.setItem('learnButtonSwitch', 'false');
+        button.setAttribute('disabled','true');
+        return;
+    }
 
     // Multiple Choice
     if (level === 'level1') {
@@ -467,22 +472,30 @@ export async function check(button, roundID, level, index, answer, modeString) {
         if (modeString === 'learn') {
             if (questAnswer.includes(convertedAnswer)){
                 // ergebniss speichern
-                await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
-                alert('Richtig');
+
+                if (!(await feladb.isQuestionClosed(index))){
+                    await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
+                }
+
                 for (var i = 1; i <= 4; i++) {
                     if ((document.getElementById('rd'+ i +index).checked)) {
                         document.getElementById('label'+ i + index).style.color = 'green';
                     }
                 }
-                nextPage(roundID, carausel);
+                // nextPage(roundID, carausel);
+                localStorage.setItem('learnButtonSwitch', 'true');
+                button.innerHTML = 'Nächste Frage';
+
             } else {
+                if (!(await feladb.isQuestionClosed(index))){
+                    await feladb.closeQuestion(roundID, index, 'mc', 0, 0);
+                }
                 // Zeile rot machen
                 for (var i = 1; i <= 4; i++) {
                     if ((document.getElementById('rd'+ i +index).checked)) {
                         document.getElementById('label'+ i + index).style.color = 'red';
                     }
                 }
-                alert('Falsch');
             }
         } else if (modeString === 'test'){
             if (questAnswer.includes(convertedAnswer)){
@@ -535,18 +548,28 @@ export async function check(button, roundID, level, index, answer, modeString) {
         if (modeString === 'learn') {
             if (questAnswer === convertedAnswer2){
                 // ergebniss speichern
-                await feladb.closeQuestion(roundID, index, 'd&d', 1, 0);
-                alert('Richtig');
-                //carausel.next();
-                nextPage(roundID, carausel);
+                if (!(await feladb.isQuestionClosed(index))){
+                    await feladb.closeQuestion(roundID, index, 'd&d', 1, 0);
+                }
+                for (let i = 1; i <= 6; i++) {
+                    let field = document.getElementById('tab' + i + index);
+                    if (!(field.innerHTML === 'Place')) {
+                        field.style.color = 'green';
+                    }    
+                }
+                localStorage.setItem('learnButtonSwitch', 'true');
+                button.innerHTML = 'Nächste Frage';
+                
             } else {
+                if (!(await feladb.isQuestionClosed(index))){
+                    await feladb.closeQuestion(roundID, index, 'd&d', 0, 0);
+                }
                 for (let i = 1; i <= 6; i++) {
                     let field = document.getElementById('tab' + i + index);
                     if (!(field.innerHTML === 'Place')) {
                         field.style.color = 'red';
                     }    
                 }
-                alert('Falsch');
             }
         } else if (modeString === 'test'){
             if (questAnswer === answer){
@@ -584,15 +607,22 @@ export async function check(button, roundID, level, index, answer, modeString) {
         if (modeString === 'learn') {
             if (questAnswer === answer){
                 // ergebniss speichern
-                await feladb.closeQuestion(roundID, index, 'free', 1, 0);
-                alert('Richtig');
-                //carausel.next();
-                nextPage(roundID, carausel);
+                if (!(await feladb.isQuestionClosed(index))){
+                    await feladb.closeQuestion(roundID, index, 'free', 1, 0);
+                }
+
+                document.getElementById("answertest" + index).style.color = 'green';
+                localStorage.setItem('learnButtonSwitch', 'true');
+                button.innerHTML = 'Nächste Frage';
+
             } else {
+                if (!(await feladb.isQuestionClosed(index))){
+                    await feladb.closeQuestion(roundID, index, 'free', 0, 0);
+                }
                 // Zeile rot machen
                 console.log(document.getElementById("answertest" + index));
                 document.getElementById("answertest" + index).style.color = 'red';
-                alert('Falsch');
+                
             }
         } else if (modeString === 'test'){
             if (questAnswer === answer){
