@@ -468,7 +468,8 @@ function createQuestionSet(round_id, category_list, amount) {
     })
 }
 
-/* returns {"id": round_id, "questions": question_set} for round_id
+/* returns all open questions for a given round
+{"id": round_id, "questions": question_set} for round_id
 */
 export async function getOpenQuestions(round_id) {
     
@@ -512,6 +513,30 @@ export async function getOpenRounds() {
     })
 }
 
+/* returns if there are open questions in a given round
+*/
+async function isRoundWithoutOpenQuestions(round_id) {
+
+    return new Promise(function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+
+            tx.executeSql('SELECT count(*) as count \
+                FROM Questions \
+                WHERE round_id = ? AND result IS NULL', [round_id], 
+            function(tx, rs) {
+                let res = (rs.rows.item(0).count == 0); // evaluates to true if count is 0 else false
+                resolve(res);
+            }, function(tx, error) {
+                reject(error);
+            })
+        }, function(error) {
+            reject(error);
+        })
+    })
+}
+
+
 /* returns true if there are no open questions left for a given round
 */
 export async function isRoundClosed(round_id) {
@@ -520,13 +545,36 @@ export async function isRoundClosed(round_id) {
 
         db.readTransaction(function(tx) {
 
-            tx.executeSql('SELECT count(*) as c \
-                FROM Questions \
-                WHERE round_id = ? AND result IS NULL', [round_id], 
+            tx.executeSql('SELECT result \
+                FROM Rounds \
+                WHERE round_id = ?', [round_id], 
             function(tx, rs) {
-                let res = rs.rows.item(0).c == 0;
+                let res = (rs.rows.item(0).result !== null); // evaluates to true if result != null else false
                 resolve(res);
             }, function(tx, error) {
+                reject(error);
+            })
+        }, function(error) {
+            reject(error);
+        })
+    })
+}
+
+/* returns true if question is closed <=> if result is set
+*/
+export async function isQuestionClosed(question_id) {
+
+    return new Promise(function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+
+            tx.executeSql('SELECT result \
+                FROM Questions \
+                WHERE question_id = ?', [question_id],
+            function(tx, rs) {
+                let res = (rs.rows.item(0).result !== null); // evaluates to true if result != null else false
+                resolve(res);
+            }, function(error) {
                 reject(error);
             })
         }, function(error) {
@@ -542,53 +590,32 @@ difficulty can be calculated by app, needs to be real # TODO: not used for now
 */
 export async function closeQuestion(round_id, question_id, type, result, difficulty) {
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(async function(resolve, reject) {
 
-        db.transaction(function(tx) {
-            tx.executeSql('UPDATE Questions \
-                SET type = ?, \
-                    result = ?, \
-                    difficulty = ?, \
-                    timestamp = ? \
-                WHERE question_id = ? \
-                    AND result IS NULL', 
-                [type, result, difficulty, NowInEpoch(), question_id], 
-            async function(tx, rs) {
-                if (rs.rowsAffected > 0) {
-                    if (await isRoundClosed(round_id)) {
-                        closeRound(round_id);
-                    }
-                    resolve();
-                }
-                else {
-                    reject("Error: No row found matching question_id with result NULL");
-                }
-            }, function(tx, error) {
-                reject(error);
-            })
-        }, function(error) {
-            reject(error);
-        })
-    })
-}
-
-/* closes round - round counts as finished if result is set*/
-async function closeRound(round_id) {
-
-        return new Promise(function(resolve, reject) {
+        if (await isQuestionClosed(question_id)) {
+            reject("Error closing question " + question_id + ": already closed");
+        }
+        else {
 
             db.transaction(function(tx) {
 
-                tx.executeSql('UPDATE Rounds \
-                    SET result = ? \
-                    WHERE round_id = ? \
-                        AND result is NULL', [0.0 ,round_id], 
-                function(tx, rs) {
+                tx.executeSql('UPDATE Questions \
+                    SET type = ?, \
+                        result = ?, \
+                        difficulty = ?, \
+                        timestamp = ? \
+                    WHERE question_id = ? \
+                        AND result IS NULL', 
+                    [type, result, difficulty, NowInEpoch(), question_id], 
+                async function(tx, rs) {
                     if (rs.rowsAffected > 0) {
+                        if (await isRoundWithoutOpenQuestions(round_id)) {
+                            closeRound(round_id);
+                        }
                         resolve();
                     }
                     else {
-                        reject("Error: No round found matching round_id with result NULL");
+                        reject("Error: No row found matching question_id with result NULL");
                     }
                 }, function(tx, error) {
                     reject(error);
@@ -596,6 +623,40 @@ async function closeRound(round_id) {
             }, function(error) {
                 reject(error);
             })
+        }
+    })
+}
+
+/* closes round - round counts as finished if result is set*/
+async function closeRound(round_id) {
+
+        return new Promise(async function(resolve, reject) {
+
+            if (await isRoundClosed(round_id)) {
+                reject("Error closing round " + round_id + ": already closed");
+            }
+            else {
+
+                db.transaction(function(tx) {
+
+                    tx.executeSql('UPDATE Rounds \
+                        SET result = ? \
+                        WHERE round_id = ? \
+                            AND result is NULL', [0.0 ,round_id], 
+                    function(tx, rs) {
+                        if (rs.rowsAffected > 0) {
+                            resolve();
+                        }
+                        else {
+                            reject("Error: No round found matching round_id with result NULL");
+                        }
+                    }, function(tx, error) {
+                        reject(error);
+                    })
+                }, function(error) {
+                    reject(error);
+                })
+            }
         })
 }
 
