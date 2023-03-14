@@ -143,12 +143,58 @@ async function createVersion0(db) {
             
             // --- Trigger creation ---
 
-            /* Trigger to update compound ranking and corresponding category ranking(s) after question result update
-            compound formula: ranking = (1-a)*ranking + a*result
+            /* Trigger to update compound ranking after question result update
+            compound formula: ranking = (1-a)*ranking + a*result, a=0.125
+            */
+            tx.executeSql('CREATE TRIGGER compound_ranking_update \
+                AFTER UPDATE ON Questions \
+                WHEN (old.result <> new.result) \
+                    OR (old.result IS NULL AND new.result IS NOT NULL) \
+                BEGIN \
+                    UPDATE Compounds \
+                        SET ranking = (((1-0.125) * ranking) + (0.125 * new.result)) \
+                        WHERE \
+                            new.compound_id = compound_id; \
+                END');
+
+            /* Trigger to update category ranking after compound ranking update
             category formula: mean of all rankings in category
             */
-           //tx.executeSql('CREATE TRIGGER ranking_update AFTER UPDATE ON ')
+            tx.executeSql('CREATE TRIGGER category_ranking_update \
+                AFTER UPDATE ON Compounds \
+                WHEN old.ranking <> new.ranking \
+                BEGIN \
+                    UPDATE Categories \
+                        SET ranking = (SELECT AVG(ranking) \
+                            FROM Compounds AS co, CCMapping AS ccm \
+                            WHERE co.compound_id = ccm.compound_id \
+                                AND ccm.category_id = category_id \
+                            GROUP BY category_id) \
+                        WHERE category_id IN (SELECT category_id AS id \
+                            FROM Compounds AS co, CCMapping AS ccm \
+                            WHERE co.compound_id = ccm.compound_id \
+                                AND ccm.compound_id = new.compound_id); \
+                END');
 
+            // --- creating views ---
+            
+            /* view for statistics for categories
+            */
+            tx.executeSql('CREATE VIEW category_statistics \
+                AS \
+                SELECT \
+                    Categories.category_id AS category_id, \
+                    Categories.name AS name, \
+                    Categories.ranking AS ranking, \
+                    COUNT(*) AS total_questions, \
+                    SUM(CASE WHEN Questions.result = 0 THEN 0 ELSE 1 END) AS right_questions, \
+                    SUM(CASE WHEN Questions.result = 0 THEN 1 ELSE 0 END) AS wrong_questions, \
+                    100 * SUM(CASE WHEN Questions.result = 0 THEN 0 ELSE 1 END) / COUNT(*) AS right_percentage \
+                FROM Categories, CCMapping, Questions \
+                WHERE Categories.category_id = CCMapping.category_id \
+                    AND CCMapping.compound_id = Questions.compound_id \
+                GROUP BY Categories.category_id');
+            
             // --- writing version information into database ---
 
             insertSchemeVersion(tx, 0);

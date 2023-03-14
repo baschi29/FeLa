@@ -599,11 +599,14 @@ async function writeRound(type) {
             tx.executeSql('INSERT INTO Rounds (type, timestamp) \
                 VALUES (?, ?)', [type , time], 
             function(tx, rs) {
-                tx.executeSql('SELECT round_id FROM Rounds WHERE timestamp = ?', [time], function(tx, rs) {
+                tx.executeSql('SELECT round_id \
+                    FROM Rounds \
+                    WHERE timestamp = ?', [time],
+                function(tx, rs) {
                     resolve(rs.rows.item(0).round_id);
                 });
-            }, function(tx, error) {
-                reject(error);
+                }, function(tx, error) {
+                    reject(error);
             })
         }, function(error) {
             reject(error);
@@ -628,6 +631,24 @@ export async function createRound(type, category_list, amount) {
         let result = await createQuestionSet(round_id, category_list, amount);
         
         resolve(result);
+    })
+}
+
+// ---- Statistics ----
+
+//returns category statistics (view!) TODO: option to filter for a category
+export async function getCategoryStatistics() {
+
+    return new Promise(async function(resolve, reject) {
+
+        db.readTransaction(function(tx) {
+            tx.executeSql('SELECT * FROM category_statistics', [], 
+            function(tx, rs) {
+                resolve(convertResultToArray(rs));
+            }) 
+        }, function(error) {
+            reject(error);
+        })
     })
 }
 
@@ -722,7 +743,7 @@ async function initializeDatabase() {
                         async function(msg) {
                             console.log(msg);
                             dispatchReadyEvent();
-                            window.getAlternatives = getAlternatives;
+                            window.getCategoryStatistics = getCategoryStatistics;
                         }, function(error) {
                             throw error;
                         }

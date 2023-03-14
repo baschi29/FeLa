@@ -16,7 +16,12 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
         }
         return a;
     }
-
+    var buttonText;
+    if (modeString === 'test') {
+        buttonText = 'Weiter';
+    } else {
+        buttonText = 'Antwort überprüfen';
+    }
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
     const alternatives = await feladb.getAlternatives(questNumber, 3, 3);
@@ -75,7 +80,7 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
                      </ons-list-item>
                 </ons-list>
 
-            <ons-button modifier="large" onclick="check(${roundID}, 'level1', ${questNumber}, '${answer}', '${modeString}')">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check(${roundID}, 'level1', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
             
 
 
@@ -99,6 +104,13 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
             a[j] = x;
         }
         return a;
+    }
+
+    var buttonText;
+    if (modeString === 'test') {
+        buttonText = 'Weiter';
+    } else {
+        buttonText = 'Antwort überprüfen';
     }
 
     // carussel item hinzufügen für drag and drop mit tabelle und Buttons
@@ -197,7 +209,7 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
             </table>
             <p></p>
 
-            <ons-button modifier="large" onclick="check(${roundID}, 'level2', ${questNumber}, '${answer}', '${modeString}')">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check(${roundID}, 'level2', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
             
         </ons-carausel-item>
     `);
@@ -212,6 +224,13 @@ function addFTEItem(roundID, questNumber, modeString, question, answer) {
     console.log(answer)
     question = feladb.niceFormula(question);
 
+    var buttonText;
+    if (modeString === 'test') {
+        buttonText = 'Weiter';
+    } else {
+        buttonText = 'Antwort überprüfen';
+    }
+
     const carouselItem = ons.createElement(`
         <ons-carausel-item>    
             <h1 align='center'>
@@ -222,7 +241,7 @@ function addFTEItem(roundID, questNumber, modeString, question, answer) {
                 <ons-input id="answer${questNumber}" input-id="answertest${questNumber}" modifier="underbar" placeholder="Antwort" float></ons-input>
             </p>
             
-            <ons-button modifier="large" onclick="check(${roundID}, 'level3', ${questNumber}, '${answer}' , '${modeString}')">Antwort überprüfen</ons-button>
+            <ons-button modifier="large" onclick="check(${roundID}, 'level3', ${questNumber}, '${answer}' , '${modeString}')">${buttonText}</ons-button>
             
         </ons-carausel-item>  
     `);
@@ -363,8 +382,6 @@ async function testMode() {
                 } else if (dir === 'direct2') {
                     addFTEItem(round.id, question.question_id, 'test', question.formula, question.name);                      
                 }
-            default:
-              // code block
           }
     }
     questCar.next();
@@ -431,6 +448,8 @@ export async function check(roundID, level, index, answer, modeString) {
         } else if (document.getElementById('rd4'+index).checked) {
             questAnswer = document.getElementById('label4'+index).innerHTML;
             x=4;
+        } else {
+            questAnswer = '';
         }
 
         if (modeString === 'learn') {
