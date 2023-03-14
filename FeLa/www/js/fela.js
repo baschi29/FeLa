@@ -80,7 +80,7 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
                      </ons-list-item>
                 </ons-list>
 
-            <ons-button modifier="large" onclick="check(${roundID}, 'level1', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
+            <ons-button modifier="large" onclick="check(this, ${roundID}, 'level1', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
             
 
 
@@ -209,7 +209,7 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
             </table>
             <p></p>
 
-            <ons-button modifier="large" onclick="check(${roundID}, 'level2', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
+            <ons-button modifier="large" onclick="check(this, ${roundID}, 'level2', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
             
         </ons-carausel-item>
     `);
@@ -241,7 +241,7 @@ function addFTEItem(roundID, questNumber, modeString, question, answer) {
                 <ons-input id="answer${questNumber}" input-id="answertest${questNumber}" modifier="underbar" placeholder="Antwort" float></ons-input>
             </p>
             
-            <ons-button modifier="large" onclick="check(${roundID}, 'level3', ${questNumber}, '${answer}' , '${modeString}')">${buttonText}</ons-button>
+            <ons-button modifier="large" onclick="check(this, ${roundID}, 'level3', ${questNumber}, '${answer}' , '${modeString}')">${buttonText}</ons-button>
             
         </ons-carausel-item>  
     `);
@@ -348,9 +348,9 @@ async function testMode() {
     
     let round;
     if (selectedTyp === 'Alle') {
-        round = await feladb.createRound('test', [], 30);
+        round = await feladb.createRound('test', [], 10);
     } else {
-        round = await feladb.createRound('test', selectedTyp, 30);
+        round = await feladb.createRound('test', selectedTyp, 10);
     }
     //let round = await feladb.createRound('test', [], 30);
     const levels = ['MC', 'DaD', 'FTE'];
@@ -421,17 +421,29 @@ export function pushInTable(tableField) {
     }
 }
 
+async function nextPage(roundID, carausel) {
+    if (feladb.isRoundFinished(roundID)){
+        // stastik anhängen 
+        carausel.next();
+        carausel.setAttribute('swipeable', 'true');
+    } else {
+        carausel.next();
+    }
+} 
+
 // check function if given answer is correct
-export async function check(roundID, level, index, answer, modeString) {
+export async function check(button, roundID, level, index, answer, modeString) {
     // console.log(level); 
     // console.log(index);
     // console.log(modeString);
+    console.log(button);
     var carausel = document.getElementById('questCar');
     var questAnswer;
     let convertedAnswer = feladb.niceFormula(answer);
 
     // überprüfe, ob Runde geschlossen
     // wenn ja, add stats item
+
 
     // Multiple Choice
     if (level === 'level1') {
@@ -457,10 +469,12 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
                 alert('Richtig');
-                // HIER: Funktion, die guckt, ob es vorbei ist.
-                // an jeder dieser Stelle:
-                    // carausel.next(); oder Statistikseite
-                carausel.next();
+                for (var i = 1; i <= 4; i++) {
+                    if ((document.getElementById('rd'+ i +index).checked)) {
+                        document.getElementById('label'+ i + index).style.color = 'green';
+                    }
+                }
+                nextPage(roundID, carausel);
             } else {
                 // Zeile rot machen
                 for (var i = 1; i <= 4; i++) {
@@ -474,12 +488,26 @@ export async function check(roundID, level, index, answer, modeString) {
             if (questAnswer.includes(convertedAnswer)){
                 await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
                 //alert('Richtig: später nicht mehr angezeigt');
-                carausel.next();               
+                //carausel.next(); 
+                await nextPage(roundID, carausel); 
+                for (var i = 1; i <= 4; i++) {
+                    if ((document.getElementById('rd'+ i +index).checked)) {
+                        document.getElementById('label'+ i + index).style.color = 'green';
+                    }
+                }
+                button.setAttribute('disabled','true');
             } else {
                 // ergebnis speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 0, 0);
                 //alert('Falsch: später nicht mehr anzeigen');
-                carausel.next();
+                //carausel.next();
+                await nextPage(roundID, carausel);
+                for (var i = 1; i <= 4; i++) {
+                    if ((document.getElementById('rd'+ i +index).checked)) {
+                        document.getElementById('label'+ i + index).style.color = 'red';
+                    }
+                }
+                button.setAttribute('disabled','true');
             }
         }
        
@@ -509,7 +537,8 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'd&d', 1, 0);
                 alert('Richtig');
-                carausel.next();
+                //carausel.next();
+                nextPage(roundID, carausel);
             } else {
                 for (let i = 1; i <= 6; i++) {
                     let field = document.getElementById('tab' + i + index);
@@ -524,12 +553,28 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
                 //alert('Richtig: später nicht mehr angezeigt');
-                carausel.next();               
+                //carausel.next(); 
+                await nextPage(roundID, carausel);   
+                for (let i = 1; i <= 6; i++) {
+                    let field = document.getElementById('tab' + i + index);
+                    if (!(field.innerHTML === 'Place')) {
+                        field.style.color = 'green';
+                    }    
+                }
+                button.setAttribute('disabled','true');           
             } else {
                 // ergebnis speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 0, 0);
                 //alert('Falsch: später nicht mehr anzeigen');
-                carausel.next();
+                //carausel.next();
+                await nextPage(roundID, carausel);
+                for (let i = 1; i <= 6; i++) {
+                    let field = document.getElementById('tab' + i + index);
+                    if (!(field.innerHTML === 'Place')) {
+                        field.style.color = 'red';
+                    }    
+                }
+                button.setAttribute('disabled','true');
             }
         }
             
@@ -541,7 +586,8 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'free', 1, 0);
                 alert('Richtig');
-                carausel.next();
+                //carausel.next();
+                nextPage(roundID, carausel);
             } else {
                 // Zeile rot machen
                 console.log(document.getElementById("answertest" + index));
@@ -553,12 +599,20 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'free', 1, 0);
                 //alert('Richtig: später nicht mehr angezeigt');
-                carausel.next();               
+                //carausel.next(); 
+                await nextPage(roundID, carausel); 
+                document.getElementById("answertest" + index).style.color = 'green';
+                document.getElementById("answertest" + index).setAttribute('readonly', 'true');
+                button.setAttribute('disabled','true');             
             } else {
                 // ergebnis speichern
                 await feladb.closeQuestion(roundID, index, 'free', 0, 0);
                 //alert('Falsch: später nicht mehr anzeigen');
-                carausel.next();
+                //carausel.next();
+                await nextPage(roundID, carausel);
+                document.getElementById("answertest" + index).style.color = 'red';
+                document.getElementById("answertest" + index).setAttribute('readonly', 'true');
+                button.setAttribute('disabled','true');
             }
         }   
     }
