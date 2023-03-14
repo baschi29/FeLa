@@ -514,7 +514,7 @@ export async function getOpenRounds() {
 
 /* returns true if there are no open questions left for a given round
 */
-export async function isRoundFinished(round_id) {
+export async function isRoundClosed(round_id) {
 
     return new Promise(function(resolve, reject) {
 
@@ -555,7 +555,7 @@ export async function closeQuestion(round_id, question_id, type, result, difficu
                 [type, result, difficulty, NowInEpoch(), question_id], 
             async function(tx, rs) {
                 if (rs.rowsAffected > 0) {
-                    if (await isRoundFinished(round_id)) {
+                    if (await isRoundClosed(round_id)) {
                         closeRound(round_id);
                     }
                     resolve();

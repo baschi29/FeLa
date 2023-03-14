@@ -422,7 +422,7 @@ export function pushInTable(tableField) {
 }
 
 async function nextPage(roundID, carausel) {
-    if (feladb.isRoundFinished(roundID)){
+    if (feladb.isRoundClosed(roundID)){
         // stastik anhängen 
         carausel.next();
         carausel.setAttribute('swipeable', 'true');
