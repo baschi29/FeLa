@@ -187,9 +187,9 @@ async function createVersion0(db) {
                     Categories.name AS name, \
                     Categories.ranking AS ranking, \
                     COUNT(*) AS total_questions, \
-                    SUM(CASE WHEN Questions.result = 0 THEN 0 ELSE 1 END) AS right_questions, \
+                    SUM(CASE WHEN Questions.result = 1 THEN 1 ELSE 0 END) AS right_questions, \
                     SUM(CASE WHEN Questions.result = 0 THEN 1 ELSE 0 END) AS wrong_questions, \
-                    100 * SUM(CASE WHEN Questions.result = 0 THEN 0 ELSE 1 END) / COUNT(*) AS right_percentage \
+                    100 * SUM(CASE WHEN Questions.result = 1 THEN 1 ELSE 0 END) / COUNT(*) AS right_percentage \
                 FROM Categories, CCMapping, Questions \
                 WHERE Categories.category_id = CCMapping.category_id \
                     AND CCMapping.compound_id = Questions.compound_id \
