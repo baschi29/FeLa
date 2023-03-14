@@ -332,7 +332,7 @@ export async function getAlternatives(root_id, sameness, count) {
             }
 
             query = query + query_condition + ' ORDER BY Random() LIMIT ?';
-            console.log(query); 
+            //console.log(query); 
 
             db.readTransaction(function(tx) {
                 
