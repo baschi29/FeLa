@@ -1,5 +1,10 @@
 import * as feladb from './database/database.js';
 
+// --> functions for the learn and test pages <-- //
+
+// build the 3 different question modes //
+
+// multiple choice mode
 async function addMCItem(roundID, questNumber, direction, modeString, question, answer) {
     function shuffle(a) {
         var j, x, i;
@@ -75,7 +80,7 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
                      </ons-list-item>
                 </ons-list>
 
-            <ons-button modifier="large" onclick="check(${roundID}, 'level1', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
+            <ons-button modifier="large" onclick="check(this, ${roundID}, 'level1', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
             
 
 
@@ -88,6 +93,7 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
     
 }
 
+// drag and drop mode
 async function addDaDItem(roundID, questNumber, modeString, directString, question, answer, split) {
     function shuffle(a) {
         var j, x, i;
@@ -203,7 +209,7 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
             </table>
             <p></p>
 
-            <ons-button modifier="large" onclick="check(${roundID}, 'level2', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
+            <ons-button modifier="large" onclick="check(this, ${roundID}, 'level2', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
             
         </ons-carausel-item>
     `);
@@ -211,6 +217,7 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
     questCar.appendChild(carouselItem);   
 }  
 
+// insert text mode
 function addFTEItem(roundID, questNumber, modeString, question, answer) {
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
@@ -234,13 +241,15 @@ function addFTEItem(roundID, questNumber, modeString, question, answer) {
                 <ons-input id="answer${questNumber}" input-id="answertest${questNumber}" modifier="underbar" placeholder="Antwort" float></ons-input>
             </p>
             
-            <ons-button modifier="large" onclick="check(${roundID}, 'level3', ${questNumber}, '${answer}' , '${modeString}')">${buttonText}</ons-button>
+            <ons-button modifier="large" onclick="check(this, ${roundID}, 'level3', ${questNumber}, '${answer}' , '${modeString}')">${buttonText}</ons-button>
             
         </ons-carausel-item>  
     `);
 
     questCar.appendChild(carouselItem); 
 }  
+
+// build learn and test environment //
 
 // https://onsen.io/v2/guide/tutorial.html#carousels
 async function learnMode(modeString) {
@@ -339,9 +348,9 @@ async function testMode() {
     
     let round;
     if (selectedTyp === 'Alle') {
-        round = await feladb.createRound('test', [], 30);
+        round = await feladb.createRound('test', [], 10);
     } else {
-        round = await feladb.createRound('test', selectedTyp, 30);
+        round = await feladb.createRound('test', selectedTyp, 10);
     }
     //let round = await feladb.createRound('test', [], 30);
     const levels = ['MC', 'DaD', 'FTE'];
@@ -378,9 +387,7 @@ async function testMode() {
     questCar.next();
 }
 
-
-
-//Functions for Drag and Drop
+// helper functions for drag and drop
 export function mark(pushedButton, buttonID) {
     let marked = localStorage.getItem("marked");
     if ((marked === null) || (marked === "false") ) {
@@ -414,14 +421,30 @@ export function pushInTable(tableField) {
     }
 }
 
-// checks if answer is correct
-export async function check(roundID, level, index, answer, modeString) {
+async function nextPage(roundID, carausel) {
+    if (feladb.isRoundFinished(roundID)){
+        // stastik anhängen 
+        carausel.next();
+        carausel.setAttribute('swipeable', 'true');
+    } else {
+        carausel.next();
+    }
+} 
+
+// check function if given answer is correct
+export async function check(button, roundID, level, index, answer, modeString) {
     // console.log(level); 
     // console.log(index);
     // console.log(modeString);
+    console.log(button);
     var carausel = document.getElementById('questCar');
     var questAnswer;
     let convertedAnswer = feladb.niceFormula(answer);
+
+    // überprüfe, ob Runde geschlossen
+    // wenn ja, add stats item
+
+
     // Multiple Choice
     if (level === 'level1') {
         var x;
@@ -446,7 +469,12 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
                 alert('Richtig');
-                carausel.next();
+                for (var i = 1; i <= 4; i++) {
+                    if ((document.getElementById('rd'+ i +index).checked)) {
+                        document.getElementById('label'+ i + index).style.color = 'green';
+                    }
+                }
+                nextPage(roundID, carausel);
             } else {
                 // Zeile rot machen
                 for (var i = 1; i <= 4; i++) {
@@ -460,16 +488,30 @@ export async function check(roundID, level, index, answer, modeString) {
             if (questAnswer.includes(convertedAnswer)){
                 await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
                 //alert('Richtig: später nicht mehr angezeigt');
-                carausel.next();               
+                //carausel.next(); 
+                await nextPage(roundID, carausel); 
+                for (var i = 1; i <= 4; i++) {
+                    if ((document.getElementById('rd'+ i +index).checked)) {
+                        document.getElementById('label'+ i + index).style.color = 'green';
+                    }
+                }
+                button.setAttribute('disabled','true');
             } else {
                 // ergebnis speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 0, 0);
                 //alert('Falsch: später nicht mehr anzeigen');
-                carausel.next();
+                //carausel.next();
+                await nextPage(roundID, carausel);
+                for (var i = 1; i <= 4; i++) {
+                    if ((document.getElementById('rd'+ i +index).checked)) {
+                        document.getElementById('label'+ i + index).style.color = 'red';
+                    }
+                }
+                button.setAttribute('disabled','true');
             }
         }
        
-    //Drag and Drop    
+    // Drag and Drop    
     } else if (level === 'level2') {
         // questAnswer = document.getElementById('tab1'+index).innerText + document.getElementById('tab2'+index).innerText +
         //               document.getElementById('tab3'+index).innerText + document.getElementById('tab4'+index).innerText +
@@ -495,7 +537,8 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'd&d', 1, 0);
                 alert('Richtig');
-                carausel.next();
+                //carausel.next();
+                nextPage(roundID, carausel);
             } else {
                 for (let i = 1; i <= 6; i++) {
                     let field = document.getElementById('tab' + i + index);
@@ -510,12 +553,28 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
                 //alert('Richtig: später nicht mehr angezeigt');
-                carausel.next();               
+                //carausel.next(); 
+                await nextPage(roundID, carausel);   
+                for (let i = 1; i <= 6; i++) {
+                    let field = document.getElementById('tab' + i + index);
+                    if (!(field.innerHTML === 'Place')) {
+                        field.style.color = 'green';
+                    }    
+                }
+                button.setAttribute('disabled','true');           
             } else {
                 // ergebnis speichern
                 await feladb.closeQuestion(roundID, index, 'mc', 0, 0);
                 //alert('Falsch: später nicht mehr anzeigen');
-                carausel.next();
+                //carausel.next();
+                await nextPage(roundID, carausel);
+                for (let i = 1; i <= 6; i++) {
+                    let field = document.getElementById('tab' + i + index);
+                    if (!(field.innerHTML === 'Place')) {
+                        field.style.color = 'red';
+                    }    
+                }
+                button.setAttribute('disabled','true');
             }
         }
             
@@ -527,7 +586,8 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'free', 1, 0);
                 alert('Richtig');
-                carausel.next();
+                //carausel.next();
+                nextPage(roundID, carausel);
             } else {
                 // Zeile rot machen
                 console.log(document.getElementById("answertest" + index));
@@ -539,18 +599,80 @@ export async function check(roundID, level, index, answer, modeString) {
                 // ergebniss speichern
                 await feladb.closeQuestion(roundID, index, 'free', 1, 0);
                 //alert('Richtig: später nicht mehr angezeigt');
-                carausel.next();               
+                //carausel.next(); 
+                await nextPage(roundID, carausel); 
+                document.getElementById("answertest" + index).style.color = 'green';
+                document.getElementById("answertest" + index).setAttribute('readonly', 'true');
+                button.setAttribute('disabled','true');             
             } else {
                 // ergebnis speichern
                 await feladb.closeQuestion(roundID, index, 'free', 0, 0);
                 //alert('Falsch: später nicht mehr anzeigen');
-                carausel.next();
+                //carausel.next();
+                await nextPage(roundID, carausel);
+                document.getElementById("answertest" + index).style.color = 'red';
+                document.getElementById("answertest" + index).setAttribute('readonly', 'true');
+                button.setAttribute('disabled','true');
             }
         }   
     }
 }
 
+// --> functions for the statistic page <-- //
 
+function buildStats() {
+    
+    // doughnut chart: contains overview of the statistic data
+    let xValues0 = ["Kann ich", "Muss ich wiederholen", "Kommt noch"];
+    let yValues0 = [55, 49, 44];
+    let barColors0 = [
+        "#1e7145", // green
+        "#b91d47", // red
+        "#00aba9", // turkey 
+    ];
+    
+    new Chart("chart0", {
+    type: "doughnut",
+    data: {
+        labels: xValues0,
+        datasets: [{
+        backgroundColor: barColors0,
+        data: yValues0
+        }]
+    },
+    options: {
+        title: {
+        display: true,
+        text: "Gesamtübersicht"
+        }
+    }
+    });
+
+    // bar chart: contains statistics for each category
+    let xValues1 = ["Ionen", "Wasserstoff, Sauerstoff", "Natrium, Calcium", "Stickstoff", "Kohlenstoff", "Phosphor, Schwefel", "Halogene", "Kohlenwasserstoffe"];
+    let yValues1 = [55, 49, 44, 24, 15, 16, 52, 28];
+    let barColors1 = ["red","green","blue","orange","pink","yellow","purple","grey"];
+
+    new Chart("chart1", {
+    type: "bar",
+    data: {
+        labels: xValues1,
+        datasets: [{
+        backgroundColor: barColors1,
+        data: yValues1
+        }]
+    },
+    options: {
+        legend: {display: false},
+        title: {
+        display: true,
+        text: "Kategorieübersicht"
+        }
+    }
+    });
+}
+
+// additional stuff
 document.addEventListener('init', function(event) {
     // var testknopf = document.getElementById("push-button");
     // console.log(testknopf);
@@ -562,11 +684,10 @@ document.addEventListener('init', function(event) {
 
     } else if (page.id === 'learn') {
         page.querySelector('#push-button').onclick = function() {learnMode('learn')};
-    
-    } else if (page.id === 'q_test') {
-        page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-    
-    } 
+
+    } else if (page.id === 'stats') {
+        buildStats();
+    }
 });
 
 window.check = check;
