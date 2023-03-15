@@ -709,7 +709,7 @@ export async function createRound(type, category_list, amount) {
 
 // ---- Statistics ----
 
-//returns category statistics (view!) TODO: option to filter for a category
+//returns category statistics
 export async function getCategoryStatistics() {
 
     return new Promise(async function(resolve, reject) {
@@ -734,6 +734,35 @@ export async function getCategoryStatistics() {
     })
 }
 
+/*returns round statistics
+round_id_lists can either be an array of round ids or an empty array for all rounds*/
+export async function getRoundStatistics(round_id_list) {
+
+    return new Promise(function(resolve, reject) {
+
+        let query = `SELECT \
+                round_id AS round_id, \
+                round_type AS type, \
+                round_timestamp AS timestamp, \
+                COUNT(*) AS total_questions, \
+                SUM(CASE WHEN result = 1 THEN 1 ELSE 0 END) AS right_questions, \
+                SUM(CASE WHEN result = 0 THEN 1 ELSE 0 END) AS wrong_questions, \
+                100 * SUM(CASE WHEN result = 1 THEN 1 ELSE 0 END) / COUNT(*) AS right_percentage \
+            FROM statistics_merge \
+            ${generateQueryCondition("WHERE", "OR", "round_id", round_id_list)} \
+            GROUP BY round_id`;
+
+        db.readTransaction(function(tx) {
+
+            tx.executeSql(query, [],
+            function(tx, rs) {
+                resolve(convertResultToArray(rs));
+            })
+        }, function(error) {
+            reject(error);
+        })
+    })
+}
 
 // ---- Initialization ----
 
@@ -826,6 +855,7 @@ async function initializeDatabase() {
                             console.log(msg);
                             dispatchReadyEvent();
                             window.getCategoryStatistics = getCategoryStatistics;
+                            window.getRoundStatistics = getRoundStatistics;
                         }, function(error) {
                             throw error;
                         }
