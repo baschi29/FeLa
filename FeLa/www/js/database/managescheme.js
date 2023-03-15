@@ -191,7 +191,8 @@ async function createVersion0(db) {
                     Questions.type AS question_type, \
                     Rounds.round_id AS round_id, \
                     Rounds.type AS round_type, \
-                    Rounds.timestamp AS round_timestamp \
+                    Rounds.timestamp AS round_timestamp, \
+                    Rounds.result AS round_result \
                 FROM Categories, CCMapping, Questions, Rounds \
                 WHERE Categories.category_id = CCMapping.category_id \
                     AND CCMapping.compound_id = Questions.compound_id \

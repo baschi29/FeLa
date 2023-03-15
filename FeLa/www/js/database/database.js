@@ -744,6 +744,7 @@ export async function getRoundStatistics(round_id_list) {
                 round_id AS round_id, \
                 round_type AS type, \
                 round_timestamp AS timestamp, \
+                round_result AS round_result, \
                 COUNT(*) AS total_questions, \
                 SUM(CASE WHEN result = 1 THEN 1 ELSE 0 END) AS right_questions, \
                 SUM(CASE WHEN result = 0 THEN 1 ELSE 0 END) AS wrong_questions, \
