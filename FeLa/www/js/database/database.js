@@ -742,15 +742,22 @@ export async function getRoundStatistics(round_id_list) {
 
         let query = `SELECT \
                 round_id AS round_id, \
-                round_type AS type, \
-                round_timestamp AS timestamp, \
-                round_result AS round_result, \
+                type, \
+                timestamp, \
+                round_result, \
                 COUNT(*) AS total_questions, \
                 SUM(CASE WHEN result = 1 THEN 1 ELSE 0 END) AS right_questions, \
                 SUM(CASE WHEN result = 0 THEN 1 ELSE 0 END) AS wrong_questions, \
                 100 * SUM(CASE WHEN result = 1 THEN 1 ELSE 0 END) / COUNT(*) AS right_percentage \
-            FROM statistics_merge \
-            ${generateQueryCondition("WHERE", "OR", "round_id", round_id_list)} \
+            FROM (SELECT \
+                round_id AS round_id, \
+                round_type AS type, \
+                round_timestamp AS timestamp, \
+                round_result AS round_result, \
+                result \
+                FROM statistics_merge \
+                ${generateQueryCondition("WHERE", "OR", "round_id", round_id_list)} \
+                GROUP BY question_id) \
             GROUP BY round_id`;
 
         db.readTransaction(function(tx) {
