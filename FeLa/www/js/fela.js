@@ -421,9 +421,10 @@ export function pushInTable(tableField) {
 }
 
 async function nextPage(roundID, carausel) {
-    console.log(await feladb.isRoundClosed(roundID));
+    BuildStats();
+    
     if (await feladb.isRoundClosed(roundID)){
-        // @ToDo: stastik seite anhängen 
+        // round stats
         carausel.next();
         carausel.setAttribute('swipeable', 'true');
         document.getElementById('loadingScreen').remove();
@@ -650,19 +651,25 @@ export async function check(button, roundID, level, index, answer, modeString) {
 
 // --> functions for the statistic page <-- //
 
-function buildStats() {
+async function BuildStats() {
     
-    // doughnut chart: contains overview of the statistic data
-    let xValues0 = ["Kann ich", "Muss ich wiederholen", "Kommt noch"];
-    let yValues0 = [55, 49, 44];
-    let barColors0 = [
-        "#1e7145", // green
-        "#b91d47", // red
-        "#00aba9", // turkey 
-    ];
+    let res = await feladb.getCategoryStatistics();
+    console.log(res);
     
+    // pie chart: contains number of questions answerd per category
+    let xValues0 = ["Ionen", "Wasserstoff, Sauerstoff", "Natrium, Calcium", "Stickstoff", "Kohlenstoff", "Phosphor, Schwefel", "Halogene", "Kohlenwasserstoffe"];
+
+    let yValues0 = [0,0,0,0,0,0,0,0];
+    if (res.length != 0) {
+        for (let i = 0; i < res.length; i++) {
+            yValues0[res[i].category_id-1] = res[i].total_questions;
+        }
+    }
+
+    let barColors0 = ["red","green","blue","orange","pink","yellow","purple","grey"];
+
     new Chart("chart0", {
-    type: "doughnut",
+    type: "polarArea",
     data: {
         labels: xValues0,
         datasets: [{
@@ -673,14 +680,21 @@ function buildStats() {
     options: {
         title: {
         display: true,
-        text: "Gesamtübersicht"
+        text: "Anzahl Fragen beantwortet"
         }
     }
     });
 
-    // bar chart: contains statistics for each category
+    // bar chart: contains rankting for each category
     let xValues1 = ["Ionen", "Wasserstoff, Sauerstoff", "Natrium, Calcium", "Stickstoff", "Kohlenstoff", "Phosphor, Schwefel", "Halogene", "Kohlenwasserstoffe"];
-    let yValues1 = [55, 49, 44, 24, 15, 16, 52, 28];
+
+    let yValues1 = [0,0,0,0,0,0,0,0];
+    if (res.length != 0) {
+        for (let i = 0; i < res.length; i++) {
+            yValues1[res[i].category_id-1] = res[i].ranking;
+        }
+    }
+
     let barColors1 = ["red","green","blue","orange","pink","yellow","purple","grey"];
 
     new Chart("chart1", {
@@ -696,7 +710,48 @@ function buildStats() {
         legend: {display: false},
         title: {
         display: true,
-        text: "Kategorieübersicht"
+        text: "Ranking"
+        }
+    }
+    });
+
+    // bar chart: contains number of right and wrong answered questions per category
+    let xValues2 = [
+        "Ionen", "Ionen",
+        "Wasserstoff, Sauerstoff", "Wasserstoff, Sauerstoff",
+        "Natrium, Calcium", "Natrium, Calcium",
+        "Stickstoff", "Stickstoff",
+        "Kohlenstoff", "Kohlenstoff",
+        "Phosphor, Schwefel", "Phosphor, Schwefel",
+        "Halogene", "Halogene",
+        "Kohlenwasserstoffe", "Kohlenwasserstoffe"
+    ];
+
+    let yValues2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    if (res.length != 0) {
+        for (let i = 0; i < res.length; i++) {
+            yValues2[(res[i].category_id-1)*2] = res[i].right_questions;
+            yValues2[(res[i].category_id-1)*2+1] = res[i].wrong_questions;
+        }
+    }
+    console.log(yValues2);
+
+    let barColors2 = ["green","red","green","red","green","red","green","red","green","red","green","red","green","red","green","red"];
+
+    new Chart("chart2", {
+    type: "bar",
+    data: {
+        labels: xValues2,
+        datasets: [{
+        backgroundColor: barColors2,
+        data: yValues2
+        }]
+    },
+    options: {
+        legend: {display: false},
+        title: {
+        display: true,
+        text: "Anzahl richtiger und falscher Antworten"
         }
     }
     });
@@ -704,11 +759,8 @@ function buildStats() {
 
 // additional stuff
 document.addEventListener('init', function(event) {
-    // var testknopf = document.getElementById("push-button");
-    // console.log(testknopf);
     var page = event.target;
 
-    //console.log(page);
     if (page.id === 'test') {
         page.querySelector('#push-button').onclick = function() {testMode()};
 
@@ -716,7 +768,10 @@ document.addEventListener('init', function(event) {
         page.querySelector('#push-button').onclick = function() {learnMode('learn')};
 
     } else if (page.id === 'stats') {
-        buildStats();
+        document.addEventListener("feladbready", (e) => {
+            BuildStats();
+            console.log('Statistics successful builded');
+        });
     }
 });
 
