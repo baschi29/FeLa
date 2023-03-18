@@ -348,9 +348,9 @@ async function testMode() {
     
     let round;
     if (selectedTyp === 'Alle') {
-        round = await feladb.createRound('test', [], 10);
+        round = await feladb.createRound('test', [], 30);
     } else {
-        round = await feladb.createRound('test', selectedTyp, 10);
+        round = await feladb.createRound('test', selectedTyp, 30);
     }
     //let round = await feladb.createRound('test', [], 30);
     const levels = ['MC', 'DaD', 'FTE'];
