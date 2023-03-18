@@ -189,6 +189,7 @@ async function createVersion0(db) {
                     Questions.result AS result, \
                     Questions.timestamp AS question_timestamp, \
                     Questions.type AS question_type, \
+                    Questions.question_id AS question_id, \
                     Rounds.round_id AS round_id, \
                     Rounds.type AS round_type, \
                     Rounds.timestamp AS round_timestamp, \
