@@ -715,43 +715,47 @@ async function BuildStats() {
     }
     });
 
-    // bar chart: contains number of right and wrong answered questions per category
-    let xValues2 = [
-        "Ionen", "Ionen",
-        "Wasserstoff, Sauerstoff", "Wasserstoff, Sauerstoff",
-        "Natrium, Calcium", "Natrium, Calcium",
-        "Stickstoff", "Stickstoff",
-        "Kohlenstoff", "Kohlenstoff",
-        "Phosphor, Schwefel", "Phosphor, Schwefel",
-        "Halogene", "Halogene",
-        "Kohlenwasserstoffe", "Kohlenwasserstoffe"
-    ];
+    // stacked bar chart: contains number of right and wrong answered questions per category
+    let xValues2 = ["Ionen", "Wasserstoff, Sauerstoff", "Natrium, Calcium", "Stickstoff", "Kohlenstoff", "Phosphor, Schwefel", "Halogene", "Kohlenwasserstoffe"];
 
-    let yValues2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    let yValues2a = [0,0,0,0,0,0,0,0];
+    let yValues2b = [0,0,0,0,0,0,0,0];
     if (res.length != 0) {
         for (let i = 0; i < res.length; i++) {
-            yValues2[(res[i].category_id-1)*2] = res[i].right_questions;
-            yValues2[(res[i].category_id-1)*2+1] = res[i].wrong_questions;
+            yValues2a[(res[i].category_id-1)*2] = res[i].right_questions;
+            yValues2b[(res[i].category_id-1)*2+1] = -res[i].wrong_questions;
         }
     }
-    console.log(yValues2);
-
-    let barColors2 = ["green","red","green","red","green","red","green","red","green","red","green","red","green","red","green","red"];
 
     new Chart("chart2", {
     type: "bar",
     data: {
         labels: xValues2,
         datasets: [{
-        backgroundColor: barColors2,
-        data: yValues2
+        label: "Richtig",
+        backgroundColor: "green",
+        data: yValues2a
+        }, {
+        label: "Falsch",
+        backgroundColor: "red",
+        data: yValues2b
         }]
     },
     options: {
-        legend: {display: false},
-        title: {
-        display: true,
-        text: "Anzahl richtiger und falscher Antworten"
+        plugins: {
+            title: {
+                display: true,
+                text: "Anzahl richtiger und falscher Antworten"
+                }
+        },
+        responsive: true,
+        scales: {
+            x: {
+                stacked: true
+            },
+            y: {
+                stacked: true
+            }
         }
     }
     });
