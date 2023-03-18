@@ -424,7 +424,7 @@ async function nextPage(roundID, carausel) {
     BuildStats();
     
     if (await feladb.isRoundClosed(roundID)){
-        // round stats
+        roundStats(roundID, carausel);
         carausel.next();
         carausel.setAttribute('swipeable', 'true');
         document.getElementById('loadingScreen').remove();
@@ -742,12 +742,10 @@ async function BuildStats() {
         }]
     },
     options: {
-        plugins: {
-            title: {
-                display: true,
-                text: "Anzahl richtiger und falscher Antworten"
-                }
-        },
+        title: {
+            display: true,
+            text: "Anzahl richtiger und falscher Antworten"
+            },
         responsive: true,
         scales: {
             x: {
@@ -759,6 +757,101 @@ async function BuildStats() {
         }
     }
     });
+}
+
+async function roundStats(roundID, carausel) {
+    
+    const carouselItem = ons.createElement(`
+    <ons-carousel-item>
+        <canvas id="roundChart0" style="width:75%;max-width:700px;max-height:550px"></canvas>
+        <canvas id="roundChart1" style="width:100%;max-width:700px;max-height:550px"></canvas>
+    </ons-carousel-item>
+    `)
+    carausel.appendChild(carouselItem);
+
+    // doughnut chart: represents the right and wrong percentage of the results of the current round
+    let res = await feladb.getRoundStatistics([roundID]);
+    console.log("hihi");
+    console.log(res);
+
+    let xValues0 = ["Richtig", "Falsch"];
+
+    let percentage = res[0].right_percentage;
+    console.log(percentage);
+    let yValues0 = [percentage, 100-percentage];
+
+    let barColors0 = ["green", "red"];
+
+    new Chart("roundChart0", {
+        type: "doughnut",
+        data: {
+            labels: xValues0,
+            datasets: [{
+            backgroundColor: barColors0,
+            data: yValues0
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "Auswertung der aktuellen Runde"
+            }
+        }
+    });
+
+    let pastRes;
+    let pastRoundIDs = [];
+    let i = 4;
+    while (roundID > 0 && i >= 0) {
+        pastRoundIDs.push(roundID);
+        roundID--;
+        i--;
+    }
+    console.log('past rounds');
+    console.log(pastRoundIDs);
+    pastRes = await feladb.getRoundStatistics(pastRoundIDs);
+
+    // stacked bar chart: contains number of right and wrong answered questions for the current and the last four rounds
+    let xValues1 = ["aktuelle Runde", "eine Runde zuvor", "zwei Runden zuvor", "drei Runden zuvor", "vier Runden zuvor"];
+
+    let yValues1a = [];
+    let yValues1b = [];
+    for (let i = 0; i < pastRes.length; i++) {
+        yValues1a.push(pastRes[i].right_questions);
+        yValues1b.push(-pastRes[i].wrong_questions);
+    }
+
+    new Chart("roundChart1", {
+    type: "bar",
+    data: {
+        labels: xValues1,
+        datasets: [{
+        label: "Richtig",
+        backgroundColor: "green",
+        data: yValues1a
+        }, {
+        label: "Falsch",
+        backgroundColor: "red",
+        data: yValues1b
+        }]
+    },
+    options: {
+        title: {
+            display: true,
+            text: "Vergleich mit den letzten Ergebnissen"
+            },
+        responsive: true,
+        scales: {
+            x: {
+                stacked: true
+            },
+            y: {
+                stacked: true
+            }
+        }
+    }
+    });
+
 }
 
 // additional stuff
