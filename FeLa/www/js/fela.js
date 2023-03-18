@@ -655,21 +655,21 @@ async function BuildStats() {
     
     let res = await feladb.getCategoryStatistics();
     console.log(res);
-    
-    // pie chart: contains number of questions answerd per category
+
+    // bar chart: contains rankting for each category
     let xValues0 = ["Ionen", "Wasserstoff, Sauerstoff", "Natrium, Calcium", "Stickstoff", "Kohlenstoff", "Phosphor, Schwefel", "Halogene", "Kohlenwasserstoffe"];
 
     let yValues0 = [0,0,0,0,0,0,0,0];
     if (res.length != 0) {
         for (let i = 0; i < res.length; i++) {
-            yValues0[res[i].category_id-1] = res[i].total_questions;
+            yValues0[res[i].category_id-1] = res[i].ranking;
         }
     }
 
     let barColors0 = ["red","green","blue","orange","pink","yellow","purple","grey"];
 
     new Chart("chart0", {
-    type: "polarArea",
+    type: "bar",
     data: {
         labels: xValues0,
         datasets: [{
@@ -678,27 +678,28 @@ async function BuildStats() {
         }]
     },
     options: {
+        legend: {display: false},
         title: {
         display: true,
-        text: "Anzahl Fragen beantwortet"
+        text: "Ranking"
         }
     }
     });
-
-    // bar chart: contains rankting for each category
+    
+    // pie chart: contains number of questions answerd per category
     let xValues1 = ["Ionen", "Wasserstoff, Sauerstoff", "Natrium, Calcium", "Stickstoff", "Kohlenstoff", "Phosphor, Schwefel", "Halogene", "Kohlenwasserstoffe"];
 
     let yValues1 = [0,0,0,0,0,0,0,0];
     if (res.length != 0) {
         for (let i = 0; i < res.length; i++) {
-            yValues1[res[i].category_id-1] = res[i].ranking;
+            yValues1[res[i].category_id-1] = res[i].total_questions;
         }
     }
 
     let barColors1 = ["red","green","blue","orange","pink","yellow","purple","grey"];
 
     new Chart("chart1", {
-    type: "bar",
+    type: "polarArea",
     data: {
         labels: xValues1,
         datasets: [{
@@ -707,10 +708,9 @@ async function BuildStats() {
         }]
     },
     options: {
-        legend: {display: false},
         title: {
         display: true,
-        text: "Ranking"
+        text: "Anzahl Fragen beantwortet"
         }
     }
     });
