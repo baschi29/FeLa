@@ -1,20 +1,15 @@
-    <ons-page id="carousel">
-        <ons-toolbar>
-          <div class="left"><ons-back-button onclick="localStorage.clear()">Zurück</ons-back-button></div>
-          <div class="center"></div>
-        </ons-toolbar>
-        
-        <ons-carousel id="questCar" fullscreen auto-scroll auto-refresh>
-            <ons-carousel-item id="loadingScreen">
-                <br></br>
-                <p style="text-align: center;">
-                    <ons-progress-circular indeterminate></ons-progress-circular>
-                </p>
-            </ons-carousel-item>
-
-        
-            
-        </ons-carousel>
-        
+<ons-page id="carousel">
+    <ons-toolbar>
+        <div class="left"><ons-back-button onclick="localStorage.clear()">Zurück</ons-back-button></div>
+        <div class="center"></div>
+    </ons-toolbar>
     
-    </ons-page>
+    <ons-carousel id="questCar" fullscreen auto-scroll auto-refresh>
+        <ons-carousel-item id="loadingScreen">
+            <br></br>
+            <p style="text-align: center;">
+                <ons-progress-circular indeterminate></ons-progress-circular>
+            </p>
+        </ons-carousel-item>
+    </ons-carousel>
+</ons-page>

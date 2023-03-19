@@ -421,7 +421,7 @@ export function pushInTable(tableField) {
 }
 
 async function nextPage(roundID, carausel) {
-    BuildStats();
+    buildStats();
     
     if (await feladb.isRoundClosed(roundID)){
         roundStats(roundID, carausel);
@@ -432,7 +432,7 @@ async function nextPage(roundID, carausel) {
     } else {
         carausel.next();
     }
-} 
+}
 
 // check function if given answer is correct
 export async function check(button, roundID, level, index, answer, modeString) {
@@ -651,10 +651,10 @@ export async function check(button, roundID, level, index, answer, modeString) {
 
 // --> functions for the statistic page <-- //
 
-async function BuildStats() {
+// funtion to generate the overall statistic page which location is in the ons-tabbar
+async function buildStats() {
     
     let res = await feladb.getCategoryStatistics();
-    console.log(res);
 
     // bar chart: contains rankting for each category
     let xValues0 = ["Ionen", "Wasserstoff, Sauerstoff", "Natrium, Calcium", "Stickstoff", "Kohlenstoff", "Phosphor, Schwefel", "Halogene", "Kohlenwasserstoffe"];
@@ -771,13 +771,10 @@ async function roundStats(roundID, carausel) {
 
     // doughnut chart: represents the right and wrong percentage of the results of the current round
     let res = await feladb.getRoundStatistics([roundID]);
-    console.log("hihi");
-    console.log(res);
 
     let xValues0 = ["Richtig", "Falsch"];
 
     let percentage = res[0].right_percentage;
-    console.log(percentage);
     let yValues0 = [percentage, 100-percentage];
 
     let barColors0 = ["green", "red"];
@@ -799,6 +796,9 @@ async function roundStats(roundID, carausel) {
         }
     });
 
+    // stacked bar chart: contains number of right and wrong answered questions for the current and the last four rounds
+    let xValues1 = ["aktuelle Runde", "eine Runde zuvor", "zwei Runden zuvor", "drei Runden zuvor", "vier Runden zuvor"];
+
     let pastRes;
     let pastRoundIDs = [];
     let i = 4;
@@ -807,13 +807,7 @@ async function roundStats(roundID, carausel) {
         roundID--;
         i--;
     }
-    console.log('past rounds');
-    console.log(pastRoundIDs);
     pastRes = await feladb.getRoundStatistics(pastRoundIDs);
-
-    // stacked bar chart: contains number of right and wrong answered questions for the current and the last four rounds
-    let xValues1 = ["aktuelle Runde", "eine Runde zuvor", "zwei Runden zuvor", "drei Runden zuvor", "vier Runden zuvor"];
-
     let yValues1a = [];
     let yValues1b = [];
     for (let i = 0; i < pastRes.length; i++) {
@@ -866,7 +860,7 @@ document.addEventListener('init', function(event) {
 
     } else if (page.id === 'stats') {
         document.addEventListener("feladbready", (e) => {
-            BuildStats();
+            buildStats();
             console.log('Statistics successful builded');
         });
     }
