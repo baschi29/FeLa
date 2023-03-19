@@ -4,7 +4,15 @@ import * as feladb from './database/database.js';
 
 // build the 3 different question modes //
 
-// multiple choice mode
+/** 
+ * Function to create and push a multiple choice question into the carausel
+ * @param roundID ID of the questionRound
+ * @param questNumber ID of the explicit question
+ * @param direction direction of the Question: direct2 for Summenformel -> Name or direct3 for Name -> Summenformel
+ * @param modeString String for test or learn  
+ * @param question the question
+ * @param answer the answer for the question 
+*/
 async function addMCItem(roundID, questNumber, direction, modeString, question, answer) {
     function shuffle(a) {
         var j, x, i;
@@ -93,7 +101,16 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
     
 }
 
-// drag and drop mode
+/** 
+ * Function to create and push a Drag and Drop question into the carausel
+ * @param roundID ID of the questionRound
+ * @param questNumber ID of the explicit question
+ * @param modeString String for test or learn  
+ * @param directString direction of the Question: direct2 for Summenformel -> Name or direct3 for Name -> Summenformel
+ * @param question the question
+ * @param answer the answer for the question 
+ * @param split the splitted anwer
+*/
 async function addDaDItem(roundID, questNumber, modeString, directString, question, answer, split) {
     function shuffle(a) {
         var j, x, i;
@@ -217,7 +234,14 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
     questCar.appendChild(carouselItem);   
 }  
 
-// insert text mode
+/** 
+ * Function to create and push a Freitext question into the carausel
+ * @param roundID ID of the questionRound
+ * @param questNumber ID of the explicit question
+ * @param modeString String for test or learn  
+ * @param question the question
+ * @param answer the answer for the question 
+*/
 function addFTEItem(roundID, questNumber, modeString, question, answer) {
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
@@ -249,9 +273,10 @@ function addFTEItem(roundID, questNumber, modeString, question, answer) {
     questCar.appendChild(carouselItem); 
 }  
 
-// build learn and test environment //
-
-// https://onsen.io/v2/guide/tutorial.html#carousels
+/** 
+ * Function to build learn mode environment
+ * @param modeString String for test or learn, here always learn (old param, not really used anymore) 
+ */
 async function learnMode(modeString) {
     // Inhalte aus den ons-selector holen
     const level = document.getElementById("choose-sel1" + modeString);
@@ -270,7 +295,7 @@ async function learnMode(modeString) {
     await document.querySelector('#mainNavigator').pushPage('views/carousel.html', {data: {title: 'Fragen Testmodus'}});
     
     
-    console.log(selectedTyp);
+    // console.log(selectedTyp);
     let round;
     if (selectedTyp === 'Alle') {
         round = await feladb.createRound(modeString, [], 10);
@@ -339,6 +364,9 @@ async function learnMode(modeString) {
 
 }
 
+/** 
+ * Function to build test mode environment
+ */
 async function testMode() {
     await document.querySelector('#mainNavigator').pushPage('views/carousel.html', {data: {title: 'Fragen Testmodus'}});
     
@@ -386,7 +414,11 @@ async function testMode() {
     questCar.next();
 }
 
-// helper functions for drag and drop
+/** 
+ * First helper function for Drag and Drop. Mark the clicked button.
+ * @param pushedButton the button which is clicked and need too be marked
+ * @param buttonID ID of the clicked button 
+ */
 export function mark(pushedButton, buttonID) {
     let marked = localStorage.getItem("marked");
     if ((marked === null) || (marked === "false") ) {
@@ -397,6 +429,10 @@ export function mark(pushedButton, buttonID) {
     } 
 }
 
+/** 
+ * Second helper function for Drag and Drop. Pushes the button text into the table.
+ * @param tableField field in which the button text needs to be pushed
+ */
 export function pushInTable(tableField) {
     if (tableField.innerText === 'Place') {
         var markedButton = document.getElementById(localStorage.getItem("markedButton"));
@@ -420,10 +456,18 @@ export function pushInTable(tableField) {
     }
 }
 
+/** 
+ * Function to show next carausel site. Checks if the round is over and shows statistics.
+ * @param roundID ID of the round
+ * @param carausel the carausel
+ */
 async function nextPage(roundID, carausel) {
     buildStats();
-    
-    if (await feladb.isRoundClosed(roundID)){
+    // console.log(await feladb.isRoundClosed(roundID));
+    await feladb.isRoundClosed(roundID);
+    var closed = await feladb.isRoundClosed(roundID);
+    // console.log(closed);
+    if (closed){
         roundStats(roundID, carausel);
         carausel.next();
         carausel.setAttribute('swipeable', 'true');
@@ -434,7 +478,15 @@ async function nextPage(roundID, carausel) {
     }
 }
 
-// check function if given answer is correct
+/** 
+ * Checks the given answer of a question
+ * @param button the button whish is clicked
+ * @param roundID ID of the round
+ * @param level String for the level: eather level1 for multiple choice, level2 for Drag and drop or level3 for Freitext
+ * @param index index of the carausel site
+ * @param answer the correct answer for the question
+ * @param modeString String for test or learn  
+ */
 export async function check(button, roundID, level, index, answer, modeString) {
     // console.log(level); 
     // console.log(index);
@@ -575,7 +627,7 @@ export async function check(button, roundID, level, index, answer, modeString) {
         } else if (modeString === 'test'){
             if (questAnswer === answer){
                 // ergebniss speichern
-                await feladb.closeQuestion(roundID, index, 'mc', 1, 0);
+                await feladb.closeQuestion(roundID, index, 'd&d', 1, 0);
                 //alert('Richtig: später nicht mehr angezeigt');
                 //carausel.next(); 
                 await nextPage(roundID, carausel);   
@@ -588,7 +640,7 @@ export async function check(button, roundID, level, index, answer, modeString) {
                 button.setAttribute('disabled','true');           
             } else {
                 // ergebnis speichern
-                await feladb.closeQuestion(roundID, index, 'mc', 0, 0);
+                await feladb.closeQuestion(roundID, index, 'd&d', 0, 0);
                 //alert('Falsch: später nicht mehr anzeigen');
                 //carausel.next();
                 await nextPage(roundID, carausel);
