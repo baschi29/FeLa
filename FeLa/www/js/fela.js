@@ -136,7 +136,7 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
     const alternatives = await feladb.getAlternatives(questNumber, 2, 10);
     if (directString === 'direct3') { //Summenformel -> Name;
         splitted = feladb.splitFormula(answer, 0);
-        console.log(splitted);
+        //console.log(splitted);
         
         const splittedAlternatives = [];
         for (let i = 0; i < alternatives.length; i++) {
@@ -156,7 +156,7 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
         }
     } else if (directString === 'direct2') { //Name -> Summenformel
         splitted = feladb.splitName(split);
-        console.log(splitted);
+        //console.log(splitted);
 
         const splittedAlternatives = [];
         for (let i = 0; i < alternatives.length; i++) {
@@ -245,7 +245,7 @@ async function addDaDItem(roundID, questNumber, modeString, directString, questi
 function addFTEItem(roundID, questNumber, modeString, question, answer) {
     // carussel item hinzufügen für multiple chooice
     const questCar = document.querySelector('#questCar');
-    console.log(answer)
+    //console.log(answer)
     question = feladb.niceFormula(question);
 
     var buttonText;
@@ -585,7 +585,7 @@ export async function check(button, roundID, level, index, answer, modeString) {
         questAnswer = '';
         for (let i = 1; i < 7; i++) {
             let temp = document.getElementById('tab'+i+index).innerHTML;
-            console.log(temp);
+            //console.log(temp);
             if (!(temp === 'Place')) {
                 questAnswer += temp;
             }   
@@ -673,7 +673,7 @@ export async function check(button, roundID, level, index, answer, modeString) {
                     await feladb.closeQuestion(roundID, index, 'free', 0, 0);
                 }
                 // Zeile rot machen
-                console.log(document.getElementById("answertest" + index));
+                //console.log(document.getElementById("answertest" + index));
                 document.getElementById("answertest" + index).style.color = 'red';
                 
             }
@@ -913,7 +913,7 @@ document.addEventListener('init', function(event) {
     } else if (page.id === 'stats') {
         document.addEventListener("feladbready", (e) => {
             buildStats();
-            console.log('Statistics successful builded');
+            //console.log('Statistics successful builded');
         });
     }
 });
