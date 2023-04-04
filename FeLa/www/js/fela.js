@@ -264,16 +264,18 @@ function addFTEItem(roundID, questNumber, modeString, question, answer) {
     }
 
     const carouselItem = ons.createElement(`
-        <ons-carausel-item>    
-            <h1 align='center'>
-                ${question}
-            </h1>
-            <br></br>
-            <p align='center'>
-                <ons-input id="answer${questNumber}" input-id="answertest${questNumber}" modifier="underbar" placeholder="Antwort" float></ons-input>
-            </p>
+        <ons-carausel-item> 
+            <div align="center" style="margin-top: 20px; margin-bottom:20px; height: 40px;">   
+                <h1 align='center'>
+                    ${question}
+                </h1>
+            </div>
             
-            <ons-button modifier="large" onclick="check(this, ${roundID}, 'level3', ${questNumber}, '${answer}' , '${modeString}')">${buttonText}</ons-button>
+            <div align='center' style="margin-top: 20px; margin-left: 10px; margin-right: 10px;">
+                <ons-input id="answer${questNumber}" input-id="answertest${questNumber}" modifier="underbar" placeholder="Antwort" float></ons-input>
+            </div>
+            
+            <ons-button modifier="large" style="margin-top: 20px;" onclick="check(this, ${roundID}, 'level3', ${questNumber}, '${answer}' , '${modeString}')">${buttonText}</ons-button>
             
         </ons-carausel-item>  
     `);
