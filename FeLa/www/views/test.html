@@ -1,5 +1,5 @@
 <ons-page id="test">
-
+    
     <!-- <img src="views/pictures/Prüfung.jpg" style="height: 100%"> -->
     
     <!-- 
@@ -14,35 +14,38 @@
             </ons-select>
         </p>
     -->
-    <p>
-        <h4>Verbindungsart:</h4>
-        <ons-select id="choose-sel2test" >
-            <option value="Alle">Alle</option>
-            <option value="1">Ionen</option>
-            <option value="2">Wasserstoff, Sauerstoff</option>
-            <option value="3">Natrium, Calcium</option>
-            <option value="4">Stickstoff</option>
-            <option value="5">Kohlenstoff</option>
-            <option value="6">Phosphor, Schwefel</option>
-            <option value="7">Halogene</option>
-            <option value="8">Kohlenwasserstoffe</option>
-        </ons-select>
-    </p>
-    
-    <!--
-        <p>
-            <h4>Richtung:</h4>
-            <ons-select id="choose-sel3test" >
-                <option value="direct1">Gemischt</option>
-                <option value="direct2">Summenformel -> Name</option>
-                <option value="direct3">Name -> Summenformel</option>
+    <div align="center" class ="center" style="margin-right: 5px; margin-left: 5px;">
+        
+        <h3 style="margin-top: 20px;">Wähle deinen Prüfungsmodus:</h3>
+
+        <div style="margin-top: 25px;">
+            <h4>Verbindungsart:</h4>
+            <ons-select id="choose-sel2test" >
+                <option value="Alle">Alle</option>
+                <option value="1">Ionen</option>
+                <option value="2">Wasserstoff, Sauerstoff</option>
+                <option value="3">Natrium, Calcium</option>
+                <option value="4">Stickstoff</option>
+                <option value="5">Kohlenstoff</option>
+                <option value="6">Phosphor, Schwefel</option>
+                <option value="7">Halogene</option>
+                <option value="8">Kohlenwasserstoffe</option>
             </ons-select>
-        </p>
-    -->
-    <p style="text-align: center;">
-    <ons-button id="push-button">
-        <v-ons-icon icon="md-face"></v-ons-icon>
-       Prüfung starten
-    </ons-button>
-</p>
+        </div>
+    
+        <!--
+            <p>
+                <h4>Richtung:</h4>
+                <ons-select id="choose-sel3test" >
+                    <option value="direct1">Gemischt</option>
+                    <option value="direct2">Summenformel -> Name</option>
+                    <option value="direct3">Name -> Summenformel</option>
+                </ons-select>
+            </p>
+        -->
+
+        <ons-button id="push-button" style="margin-top: 30px; text-align:center">
+            Prüfung starten
+        </ons-button>
+    </div>
 </ons-page>
