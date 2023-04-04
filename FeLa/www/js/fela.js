@@ -45,8 +45,10 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
     
     const carouselItem = ons.createElement(`
             <ons-carousel-item>
-                <h1 align="center">${question}</h1>
-                <ons-list>
+                <div align="center" style="margin-top: 20px; margin-bottom:20px; height: 40px;">
+                    <h1 align="center">${question}</h1>
+                </div>
+                <ons-list style="margin-top: 20px; margin-left: 10px; margin-right: 10px;">
                     <ons-list-item tappable>
                         <label class="left">
                                 <ons-radio id=rd1${questNumber} name="questions" input-id="radio-1${questNumber}" ></ons-radio>
@@ -88,7 +90,7 @@ async function addMCItem(roundID, questNumber, direction, modeString, question, 
                      </ons-list-item>
                 </ons-list>
 
-            <ons-button modifier="large" onclick="check(this, ${roundID}, 'level1', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
+            <ons-button modifier="large" style="margin-top: 20px;" onclick="check(this, ${roundID}, 'level1', ${questNumber}, '${answer}', '${modeString}')">${buttonText}</ons-button>
             
 
 
