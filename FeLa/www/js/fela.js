@@ -796,10 +796,12 @@ async function buildStats() {
         datasets: [{
         label: "Richtig",
         backgroundColor: "green",
+        stack: 'Stack 0',
         data: yValues2a
         }, {
         label: "Falsch",
         backgroundColor: "red",
+        stack: 'Stack 0',
         data: yValues2b
         }]
     },
@@ -811,7 +813,7 @@ async function buildStats() {
         responsive: true,
         scales: {
             x: {
-                stacked: true
+                stacked: true,
             },
             y: {
                 stacked: true
@@ -884,10 +886,12 @@ async function roundStats(roundID, carausel) {
         datasets: [{
         label: "Richtig",
         backgroundColor: "green",
+        stack: 'Stack 0',
         data: yValues1a
         }, {
         label: "Falsch",
         backgroundColor: "red",
+        stack: 'Stack 0',
         data: yValues1b
         }]
     },
