@@ -784,8 +784,8 @@ async function buildStats() {
     let yValues2b = [0,0,0,0,0,0,0,0];
     if (res.length != 0) {
         for (let i = 0; i < res.length; i++) {
-            yValues2a[(res[i].category_id-1)*2] = res[i].right_questions;
-            yValues2b[(res[i].category_id-1)*2+1] = -res[i].wrong_questions;
+            yValues2a[(res[i].category_id-1)] = res[i].right_questions;
+            yValues2b[(res[i].category_id-1)] = -res[i].wrong_questions;
         }
     }
 
